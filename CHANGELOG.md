@@ -10,3 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New module based on the functions available in DscResource.Template
+
+### Changed
+
+- skip tests using New-CimInstance when OS is not Windows (see issue #1)
