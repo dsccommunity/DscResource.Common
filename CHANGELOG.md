@@ -13,4 +13,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- skip tests using New-CimInstance when OS is not Windows (see issue #1)
+- skip tests (it ...) using New-CimInstance when OS is not Windows (see issue #1)
