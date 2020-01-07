@@ -10,8 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updating pipeline files to the latest in the template.
-- Updating Code of conduct.
-- Updating contribution guidelines.
+- Updating and added section Code of conduct.
+- Updating and added section contribution.
+- Update README.md.
 - The cmdlet `Get-LocalizedData` can now detect localized filenames
   that is using both the basename and the basename plus the suffix `strings`. E.g.
   - `MSFT_Cluster.psd1`
