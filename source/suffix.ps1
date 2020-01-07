@@ -1,2 +1,2 @@
 
-$script:localizedData = Get-LocalizedData -DefaultUICulture en-US
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
