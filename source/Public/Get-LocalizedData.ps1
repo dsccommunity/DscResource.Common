@@ -139,27 +139,27 @@ function Get-LocalizedData
         [Alias('Variable')]
         [ValidateNotNullOrEmpty()]
         [System.String]
-        ${BindingVariable},
+        $BindingVariable,
 
         [Parameter(Position = 1, ParameterSetName = 'TargetedUICulture')]
         [System.String]
-        ${UICulture},
+        $UICulture,
 
         [Parameter()]
         [System.String]
-        ${BaseDirectory},
+        $BaseDirectory,
 
         [Parameter()]
         [System.String]
-        ${FileName},
+        $FileName,
 
         [Parameter()]
         [System.String[]]
-        ${SupportedCommand},
+        $SupportedCommand,
 
         [Parameter(Position = 1, ParameterSetName = 'DefaultUICulture')]
         [System.String]
-        ${DefaultUICulture}
+        $DefaultUICulture
     )
 
     begin
@@ -218,9 +218,9 @@ function Get-LocalizedData
                 {
                     $filePath = [io.Path]::Combine($callingScriptRoot, $CurrentCulture.Name, $fullFileName)
 
-                    if (Test-Path $filePath)
+                    if (Test-Path -Path $filePath)
                     {
-                        Write-Debug "Found $filePath"
+                        Write-Debug -Message "Found $filePath"
 
                         $languageFile = $filePath
 
@@ -232,7 +232,7 @@ function Get-LocalizedData
                     }
                     else
                     {
-                        Write-Debug "File $filePath not found"
+                        Write-Debug -Message "File $filePath not found"
                     }
                 }
 

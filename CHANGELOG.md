@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updating and added section contribution.
 - Update README.md.
 - The cmdlet `Get-LocalizedData` can now detect localized filenames
-  that is using both the basename and the basename plus the suffix `strings`. E.g.
+  that are using both the basename and the basename plus the suffix `strings`. E.g.
   - `MSFT_Cluster.psd1`
   - `MSFT_Cluster.strings.psd1`
 

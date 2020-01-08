@@ -24,12 +24,9 @@ InModuleScope $ProjectName {
                     Out-File -Force -FilePath 'TestDrive:\execute.ps1'
             }
 
-
             It 'Should fail finding a Strings file in different locale' {
                 { $null = &'TestDrive:\execute.ps1' } | Should -Throw
             }
-
-
         }
 
         Context 'When falling back to a DefaultUICulture' {
@@ -54,7 +51,7 @@ ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be t
         }
 
         Context 'When called with just DefaultUICulture' {
-            Context 'When expected to find a localized string file' {
+            Context 'When no localized string file is found' {
                 BeforeAll {
                     New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
 
@@ -67,14 +64,14 @@ ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be t
                 }
             }
 
-            Context 'When expected to find a localized string filename without suffix' {
+            Context 'When expecting to find a localized string filename without suffix' {
                 BeforeAll {
                     New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
 
                     $null = "
 ConvertFrom-StringData @`'
 # en-US strings
-ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be the first attribute of each parameter and be on its own line. See https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md#correct-format-for-parameter-block
+StringKey    = String value
 '@
                     " | Out-File -Force -FilePath 'TestDrive:\en-US\DSC_Resource1.psd1'
 
@@ -87,14 +84,14 @@ ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be t
                 }
             }
 
-            Context "When expected to find a localized string filename using suffix '.strings'" {
+            Context "When expecting to find a localized string filename using suffix '.strings'" {
                 BeforeAll {
                     New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
 
                     $null = "
 ConvertFrom-StringData @`'
 # en-US strings
-ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be the first attribute of each parameter and be on its own line. See https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md#correct-format-for-parameter-block
+StringKey    = String value
 '@
                     " | Out-File -Force -FilePath 'TestDrive:\en-US\DSC_Resource2.strings.psd1'
 
