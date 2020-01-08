@@ -9,7 +9,7 @@ Import-Module $ProjectName
 
 InModuleScope $ProjectName {
     Describe 'Get-LocalizedData' {
-        Context 'When using the default Import-LocalizedData behavior' {
+        Context 'When specifying a specific filename' {
             BeforeAll {
                 New-Item -Force -Path 'TestDrive:\ar-SA' -ItemType Directory
 
@@ -29,7 +29,7 @@ InModuleScope $ProjectName {
             }
         }
 
-        Context 'When falling back to a DefaultUICulture' {
+        Context 'When specifying a specific filename and falling back to a DefaultUICulture' {
             BeforeAll {
                 New-Item -Force -Path 'TestDrive:\ar-SA' -ItemType Directory
 
@@ -50,10 +50,18 @@ ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be t
             }
         }
 
-        Context 'When called with just DefaultUICulture' {
+        Context 'When a filename is not specified' {
+            BeforeAll {
+                <#
+                    We need to mock the test using the current OS UI culture so
+                    that the tests passes.
+                #>
+                $mockCurrentUICulture = Get-UICulture
+            }
+
             Context 'When no localized string file is found' {
                 BeforeAll {
-                    New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
+                    New-Item -Force -Path ('TestDrive:\{0}' -f $mockCurrentUICulture) -ItemType Directory
 
                     "Get-LocalizedData -DefaultUICulture 'en-US' -EA Stop" |
                         Out-File -Force -FilePath 'TestDrive:\DSC_Resource.psm1'
@@ -66,14 +74,14 @@ ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be t
 
             Context 'When expecting to find a localized string filename without suffix' {
                 BeforeAll {
-                    New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
+                    New-Item -Force -Path ('TestDrive:\{0}' -f $mockCurrentUICulture) -ItemType Directory
 
                     $null = "
 ConvertFrom-StringData @`'
 # en-US strings
 StringKey    = String value
 '@
-                    " | Out-File -Force -FilePath 'TestDrive:\en-US\DSC_Resource1.psd1'
+                    " | Out-File -Force -FilePath ('TestDrive:\{0}\DSC_Resource1.psd1' -f $mockCurrentUICulture)
 
                     "Get-LocalizedData -DefaultUICulture 'en-US' -EA Stop" |
                         Out-File -Force -FilePath 'TestDrive:\DSC_Resource1.psm1'
@@ -86,14 +94,14 @@ StringKey    = String value
 
             Context "When expecting to find a localized string filename using suffix '.strings'" {
                 BeforeAll {
-                    New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
+                    New-Item -Force -Path ('TestDrive:\{0}' -f $mockCurrentUICulture) -ItemType Directory
 
                     $null = "
 ConvertFrom-StringData @`'
 # en-US strings
 StringKey    = String value
 '@
-                    " | Out-File -Force -FilePath 'TestDrive:\en-US\DSC_Resource2.strings.psd1'
+                    " | Out-File -Force -FilePath ('TestDrive:\{0}\DSC_Resource2.strings.psd1' -f $mockCurrentUICulture)
 
                     "Get-LocalizedData -DefaultUICulture 'en-US' -EA Stop" |
                         Out-File -Force -FilePath 'TestDrive:\DSC_Resource2.psm1'
