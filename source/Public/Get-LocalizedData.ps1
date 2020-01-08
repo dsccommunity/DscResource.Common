@@ -172,11 +172,11 @@ function Get-LocalizedData
         {
             if ($myInvocation.ScriptName)
             {
-                $file = ([io.FileInfo] $myInvocation.ScriptName)
+                $file = ([System.IO.FileInfo] $myInvocation.ScriptName)
             }
             else
             {
-                $file = [io.FileInfo] $myInvocation.MyCommand.Module.Path
+                $file = [System.IO.FileInfo] $myInvocation.MyCommand.Module.Path
             }
 
             $FileName = $file.BaseName
