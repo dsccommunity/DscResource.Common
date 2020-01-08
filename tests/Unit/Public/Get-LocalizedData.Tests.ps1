@@ -98,7 +98,7 @@ StringKey    = String value
 
                     $null = "
 ConvertFrom-StringData @`'
-# en-US strings
+# sv-SE strings
 StringKey    = Sträng värde
 '@
                     " | Out-File -Force -FilePath 'TestDrive:\sv-SE\DSC_Resource1.psd1'
@@ -138,7 +138,7 @@ StringKey    = String value
 
                     $null = "
 ConvertFrom-StringData @`'
-# en-US strings
+# sv-SE strings
 StringKey    = Sträng värde
 '@
                     " | Out-File -Force -FilePath 'TestDrive:\sv-SE\DSC_Resource2.strings.psd1'
