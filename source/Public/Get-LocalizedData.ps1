@@ -172,7 +172,7 @@ function Get-LocalizedData
         {
             if ($myInvocation.ScriptName)
             {
-                $file = ([System.IO.FileInfo] $myInvocation.ScriptName)
+                $file = [System.IO.FileInfo] $myInvocation.ScriptName
             }
             else
             {
