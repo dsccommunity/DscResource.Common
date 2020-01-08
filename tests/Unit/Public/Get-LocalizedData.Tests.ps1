@@ -92,7 +92,27 @@ StringKey    = String value
                 }
             }
 
-            Context "When expecting to find a localized string filename using suffix '.strings'" {
+            Context 'When expecting to find the default culture''s localized string filename without suffix' {
+                BeforeAll {
+                    New-Item -Force -Path 'TestDrive:\sv-SE' -ItemType Directory
+
+                    $null = "
+ConvertFrom-StringData @`'
+# en-US strings
+StringKey    = Sträng värde
+'@
+                    " | Out-File -Force -FilePath 'TestDrive:\sv-SE\DSC_Resource1.psd1'
+
+                    "Get-LocalizedData -DefaultUICulture 'sv-SE' -EA Stop" |
+                        Out-File -Force -FilePath 'TestDrive:\DSC_Resource1.psm1'
+                }
+
+                It 'Should retrieve the data' {
+                    { Import-Module -Name 'TestDrive:\DSC_Resource1.psm1' -ErrorAction 'Stop' } | Should -Not -Throw
+                }
+            }
+
+            Context "When expecting to find a localized string filename using the suffix '.strings'" {
                 BeforeAll {
                     New-Item -Force -Path ('TestDrive:\{0}' -f $mockCurrentUICulture) -ItemType Directory
 
@@ -104,6 +124,26 @@ StringKey    = String value
                     " | Out-File -Force -FilePath ('TestDrive:\{0}\DSC_Resource2.strings.psd1' -f $mockCurrentUICulture)
 
                     "Get-LocalizedData -DefaultUICulture 'en-US' -EA Stop" |
+                        Out-File -Force -FilePath 'TestDrive:\DSC_Resource2.psm1'
+                }
+
+                It 'Should retrieve the data' {
+                    { Import-Module -Name 'TestDrive:\DSC_Resource2.psm1' -ErrorAction 'Stop' } | Should -Not -Throw
+                }
+            }
+
+            Context "When expecting to find the default culture's localized string filename with the suffix '.strings'" {
+                BeforeAll {
+                    New-Item -Force -Path 'TestDrive:\sv-SE' -ItemType Directory
+
+                    $null = "
+ConvertFrom-StringData @`'
+# en-US strings
+StringKey    = Sträng värde
+'@
+                    " | Out-File -Force -FilePath 'TestDrive:\sv-SE\DSC_Resource2.strings.psd1'
+
+                    "Get-LocalizedData -DefaultUICulture 'sv-SE' -EA Stop" |
                         Out-File -Force -FilePath 'TestDrive:\DSC_Resource2.psm1'
                 }
 
