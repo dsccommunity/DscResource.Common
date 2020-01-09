@@ -7,11 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updating pipeline files to the latest in the template.
+- Updating and added section Code of conduct.
+- Updating and added section contribution.
+- Update README.md.
+- The cmdlet `Get-LocalizedData` can now detect localized filenames
+  that are using both the basename and the basename plus the suffix `strings`. E.g.
+  - `MSFT_Cluster.psd1`
+  - `MSFT_Cluster.strings.psd1`
+
 ## [0.1.1] - 2019-11-27
 
 ### Added
 
 - New module based on the functions available in DscResource.Template
+- Change the minimum requirement to PowerShell 4.0.
 
 ### Changed
 

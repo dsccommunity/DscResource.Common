@@ -1,4 +1,6 @@
-output/*
+﻿.vscode
+.vs
+output/
 modules/*
 .kitchen/*
 **.bak
