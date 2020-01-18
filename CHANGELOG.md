@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added more function documentation to the README.md.
 - Fix minor style issue in functions.
+- Changed the VS Code project settings to trim trailing whitespace for
+  markdown files too.
+- Changed the VS Code project setting `pipelineIndentationStyle` to use
+  the correct style.
+- The deploy step is no longer run on forks.
+- Azure Pipelines will no longer trigger on changes to just the CHANGELOG.md.
 
 ## [0.2.0] - 2020-01-09
 
