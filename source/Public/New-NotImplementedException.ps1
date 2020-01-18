@@ -1,5 +1,15 @@
+<#
+    .SYNOPSIS
+        Creates and throws an not implemented exception.
 
-function New-NotImplementedException {
+    .PARAMETER Message
+        The message explaining why this error is being thrown.
+
+    .PARAMETER ErrorRecord
+        The error record containing the exception that is causing this terminating error.
+#>
+function New-NotImplementedException
+{
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     param
@@ -15,11 +25,13 @@ function New-NotImplementedException {
         $ErrorRecord
     )
 
-    if ($null -eq $ErrorRecord) {
+    if ($null -eq $ErrorRecord)
+    {
         $invalidOperationException = New-Object -TypeName 'NotImplementedException' `
             -ArgumentList @($Message)
     }
-    else {
+    else
+    {
         $invalidOperationException = New-Object -TypeName 'NotImplementedException' `
             -ArgumentList @($Message, $ErrorRecord.Exception)
     }

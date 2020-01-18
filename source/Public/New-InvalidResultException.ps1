@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
         Creates and throws an invalid result exception.

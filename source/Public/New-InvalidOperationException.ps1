@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
         Creates and throws an invalid operation exception.
@@ -9,7 +8,8 @@
     .PARAMETER ErrorRecord
         The error record containing the exception that is causing this terminating error.
 #>
-function New-InvalidOperationException {
+function New-InvalidOperationException
+{
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     param
@@ -25,11 +25,13 @@ function New-InvalidOperationException {
         $ErrorRecord
     )
 
-    if ($null -eq $ErrorRecord) {
+    if ($null -eq $ErrorRecord)
+    {
         $invalidOperationException = New-Object -TypeName 'InvalidOperationException' `
             -ArgumentList @($Message)
     }
-    else {
+    else
+    {
         $invalidOperationException = New-Object -TypeName 'InvalidOperationException' `
             -ArgumentList @($Message, $ErrorRecord.Exception)
     }
