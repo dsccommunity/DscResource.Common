@@ -25,7 +25,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ## Cmdlet
 
-Refer to the comment-based help for more information about these helper 
+Refer to the comment-based help for more information about these helper
 functions.
 
 ### `Get-LocalizedData`
