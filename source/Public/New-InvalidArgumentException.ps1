@@ -1,12 +1,12 @@
 <#
-.SYNOPSIS
-Creates and throws an invalid argument exception.
+    .SYNOPSIS
+        Creates and throws an invalid argument exception.
 
-.PARAMETER Message
-The message explaining why this error is being thrown.
+    .PARAMETER Message
+        The message explaining why this error is being thrown.
 
-.PARAMETER ArgumentName
-The name of the invalid argument that is causing this error to be thrown.
+    .PARAMETER ArgumentName
+        The name of the invalid argument that is causing this error to be thrown.
 #>
 function New-InvalidArgumentException
 {

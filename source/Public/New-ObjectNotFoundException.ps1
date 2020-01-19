@@ -9,7 +9,8 @@
     .PARAMETER ErrorRecord
         The error record containing the exception that is causing this terminating error.
 #>
-function New-ObjectNotFoundException {
+function New-ObjectNotFoundException
+{
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     param
@@ -25,11 +26,13 @@ function New-ObjectNotFoundException {
         $ErrorRecord
     )
 
-    if ($null -eq $ErrorRecord) {
+    if ($null -eq $ErrorRecord)
+    {
         $exception = New-Object -TypeName 'System.Exception' `
             -ArgumentList @($Message)
     }
-    else {
+    else
+    {
         $exception = New-Object -TypeName 'System.Exception' `
             -ArgumentList @($Message, $ErrorRecord.Exception)
     }
