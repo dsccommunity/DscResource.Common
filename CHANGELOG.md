@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the correct style.
 - The deploy step is no longer run on forks.
 - Azure Pipelines will no longer trigger on changes to just the CHANGELOG.md.
+- Add section "How to implement" in the README.md.
 
 ## [0.2.0] - 2020-01-09
 
