@@ -23,6 +23,11 @@ full release to [PowerShell Gallery](https://www.powershellgallery.com/).
 
 Please check out common DSC Community [contributing guidelines](https://dsccommunity.org/guidelines/contributing).
 
+## How to implement
+
+See the article [DscResource.Common functions in a DSC module](/blog/use-dscresource-common-functions-in-module/)
+how to implement the module [DscResource.Common](https://github.com/dsccommunity/DscResource.Common).
+
 ## Cmdlet
 
 Refer to the comment-based help for more information about these helper
