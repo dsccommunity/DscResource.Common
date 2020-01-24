@@ -7,4 +7,5 @@ ConvertFrom-StringData @'
     PropertyThatDoesNotMatch = {0} - {1}
     ValueOfTypeDoesNotMatch = {0} value for property {1} does not match. Current state is '{2}' and desired state is '{3}'.
     UnableToCompareProperty = Unable to compare property {0} as the type {1} is not handled by the Test-DscParameterState cmdlet.
+    TestIsNanoServerOperatingSystemSku = OperatingSystemSKU {0} was returned by Win32_OperatingSystem when detecting if operating system is Nano Server.
 '@

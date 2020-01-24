@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
 - Added more function documentation to the README.md.
 - Fix minor style issue in functions.
 - Changed the VS Code project settings to trim trailing whitespace for
@@ -16,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The deploy step is no longer run on forks.
 - Azure Pipelines will no longer trigger on changes to just the CHANGELOG.md.
 - Add section "How to implement" in the README.md.
+- Added `Test-IsNanoServer` function - fixes [Issue #9](https://github.com/dsccommunity/DscResource.Common/issues/9).
 
 ## [0.2.0] - 2020-01-09
 
