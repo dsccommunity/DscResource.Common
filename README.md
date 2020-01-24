@@ -138,4 +138,8 @@ catch
 
 ### `Test-DscParameterState`
 
-This method is used to compare current and desired values for any DSC resource.
+This function is used to compare current and desired values for any DSC resource.
+
+### `Test-IsNanoServer`
+
+This function tests if the current OS is a Nano server.
