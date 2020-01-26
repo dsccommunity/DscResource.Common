@@ -26,7 +26,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 ## How to implement
 
 See the article [DscResource.Common functions in a DSC module](/blog/use-dscresource-common-functions-in-module/)
-how to implement the module [DscResource.Common](https://github.com/dsccommunity/DscResource.Common).
+describing how to convert a DSC resource module to use DscResource.Common.
 
 ## Cmdlet
 
