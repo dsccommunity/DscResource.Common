@@ -14,6 +14,16 @@ $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
 Import-Module $ProjectName -Force
 
 Describe 'Test-IsNanoServer' -Tag TestIsNanoServer {
+    function Get-CimInstance
+    {
+        param
+        (
+            [Parameter()]
+            [System.String]
+            $ClassName
+        )
+    }
+
     Context 'When the current computer is a Datacenter Nano server' {
         Mock -CommandName Get-CimInstance `
             -ModuleName $ProjectName `
