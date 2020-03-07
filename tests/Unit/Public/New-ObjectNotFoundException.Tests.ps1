@@ -6,7 +6,7 @@ $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
 
 Import-Module $ProjectName -Force
 
-Describe 'DscResource.Common\New-ObjectNotFoundException' {
+Describe 'New-ObjectNotFoundException' {
     Context 'When calling with Message parameter only' {
         It 'Should throw the correct error' {
             $mockErrorMessage = 'Mocked error'

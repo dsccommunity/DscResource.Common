@@ -33,6 +33,14 @@ describing how to convert a DSC resource module to use DscResource.Common.
 Refer to the comment-based help for more information about these helper
 functions.
 
+### `Assert-Module`
+
+Assert if the specific module is available to be imported.
+
+```powershell
+Assert-Module -ModuleName 'DhcpServer'
+```
+
 ### `Get-LocalizedData`
 
 Gets language-specific data into scripts and functions based on the UI culture

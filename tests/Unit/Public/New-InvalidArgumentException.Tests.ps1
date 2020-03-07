@@ -5,7 +5,7 @@ $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
     }).BaseName
 
 Import-Module $ProjectName -Force
-Describe 'DscResource.Common\New-InvalidArgumentException' {
+Describe 'New-InvalidArgumentException' {
     Context 'When calling with both the Message and ArgumentName parameter' {
         It 'Should throw the correct error' {
             $mockErrorMessage = 'Mocked error'

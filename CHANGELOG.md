@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added the function `Assert-Module`.
+
+### Changed
+
+- Updated the localized strings to have the unique id according to style
+  guideline.
+
 ## [0.3.0] - 2020-02-15
 
 ### Added
