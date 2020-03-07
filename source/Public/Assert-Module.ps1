@@ -22,8 +22,7 @@ function Assert-Module
 
     if (-not (Get-Module -Name $ModuleName -ListAvailable))
     {
-        $errorMsg = $($script:localizedData.ModuleNotFound) -f $ModuleName
-
-        New-TerminatingError -ErrorId 'ModuleNotFound' -ErrorMessage $errorMsg -ErrorCategory ObjectNotFound
+        $errorMessage = $script:localizedData.ModuleNotFound -f $ModuleName
+        New-ObjectNotFoundException -Message $errorMessage
     }
 }
