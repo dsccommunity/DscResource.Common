@@ -20,7 +20,7 @@ function Assert-Module
     (
         [Parameter(Mandatory = $true)]
         [System.String]
-        $ModuleName
+        $ModuleName,
         
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
