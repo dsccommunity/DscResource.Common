@@ -5,6 +5,7 @@ $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
     }).BaseName
 
 Import-Module $ProjectName -Force
+
 Describe 'New-NotImplementedException' {
     Context 'When called with Message parameter only' {
         It 'Should throw the correct error' {
@@ -20,9 +21,14 @@ Describe 'New-NotImplementedException' {
             $mockExceptionErrorMessage = 'Mocked exception error message'
 
             $mockException = New-Object -TypeName System.Exception -ArgumentList $mockExceptionErrorMessage
-            $mockErrorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $mockException, $null, 'InvalidResult', $null
+            $mockErrorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord `
+                -ArgumentList $mockException, $null, 'InvalidResult', $null
 
-            { New-NotImplementedException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord } | Should -Throw ('System.NotImplementedException: {0} ---> System.Exception: {1}' -f $mockErrorMessage, $mockExceptionErrorMessage)
+            # Wildcard processing needed to handle differing Powershell 5/6/7 exception output
+            { New-NotImplementedException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord } |
+                Should -Throw -Passthru | Select-Object -ExpandProperty Exception |
+                    Should -BeLike ('System.Exception: System.NotImplementedException: {0}*System.Exception: {1}*' -f
+                        $mockErrorMessage, $mockExceptionErrorMessage)
         }
     }
 

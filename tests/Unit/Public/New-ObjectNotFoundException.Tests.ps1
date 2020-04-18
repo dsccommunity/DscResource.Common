@@ -21,9 +21,13 @@ Describe 'New-ObjectNotFoundException' {
             $mockExceptionErrorMessage = 'Mocked exception error message'
 
             $mockException = New-Object -TypeName System.Exception -ArgumentList $mockExceptionErrorMessage
-            $mockErrorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $mockException, $null, 'InvalidResult', $null
+            $mockErrorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord `
+                -ArgumentList $mockException, $null, 'InvalidResult', $null
 
-            { New-ObjectNotFoundException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord } | Should -Throw ('System.Exception: {0} ---> System.Exception: {1}' -f $mockErrorMessage, $mockExceptionErrorMessage)
+            { New-ObjectNotFoundException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord } |
+                Should -Throw -Passthru | Select-Object -ExpandProperty Exception |
+                    Should -BeLike ('System.Exception: System.Exception: {0}*System.Exception: {1}*' -f
+                        $mockErrorMessage, $mockExceptionErrorMessage)
         }
     }
 

@@ -5,13 +5,17 @@ $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
     }).BaseName
 
 Import-Module $ProjectName -Force
+
 Describe 'New-InvalidArgumentException' {
     Context 'When calling with both the Message and ArgumentName parameter' {
         It 'Should throw the correct error' {
             $mockErrorMessage = 'Mocked error'
             $mockArgumentName = 'MockArgument'
 
-            { New-InvalidArgumentException -Message $mockErrorMessage -ArgumentName $mockArgumentName } | Should -Throw ('Parameter name: {0}' -f $mockArgumentName)
+            # Wildcard processing needed to handle differing Powershell 5/6/7 exception output
+            { New-InvalidArgumentException -Message $mockErrorMessage -ArgumentName $mockArgumentName } |
+                Should -Throw -PassThru | Select-Object -ExpandProperty Exception |
+                    Should -BeLike ('{0}*Parameter*{1}*' -f $mockErrorMesssage, $mockArgumentName)
         }
     }
 
