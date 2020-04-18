@@ -34,8 +34,24 @@ InModuleScope $ProjectName {
                 }
             }
 
-            It 'Should not throw an error' {
-                { Assert-Module -ModuleName $testModuleName -Verbose } | Should -Not -Throw
+            Context 'When module should not be imported' {
+                It 'Should not throw an error' {
+                    { Assert-Module -ModuleName $testModuleName } | Should -Not -Throw
+                }
+                
+                It 'Should call the expected mocks' {
+                    Assert-MockCalled -CommandName Import-Module -Exactly -Times 0
+                }
+            }
+
+            Context 'When module should be imported' {
+                It 'Should not throw an error' {
+                    { Assert-Module -ModuleName $testModuleName -ImportModule } | Should -Not -Throw
+                }
+                
+                It 'Should call the expected mocks' {
+                    Assert-MockCalled -CommandName Import-Module -Exactly -Times 1
+                }
             }
         }
     }
