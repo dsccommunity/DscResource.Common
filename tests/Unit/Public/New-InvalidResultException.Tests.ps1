@@ -21,9 +21,14 @@ Describe 'New-InvalidResultException' {
             $mockExceptionErrorMessage = 'Mocked exception error message'
 
             $mockException = New-Object -TypeName System.Exception -ArgumentList $mockExceptionErrorMessage
-            $mockErrorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $mockException, $null, 'InvalidResult', $null
+            $mockErrorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord `
+                -ArgumentList $mockException, $null, 'InvalidResult', $null
 
-            { New-InvalidResultException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord } | Should -Throw ('System.Exception: {0} ---> System.Exception: {1}' -f $mockErrorMessage, $mockExceptionErrorMessage)
+            # Wildcard processing needed to handle differing Powershell 5/6/7 exception output
+            { New-InvalidResultException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord } |
+                Should -Throw -Passthru | Select-Object -ExpandProperty Exception |
+                  Should -BeLike ('System.Exception: System.Exception: {0}*System.Exception: {1}*' -f
+                        $mockErrorMessage, $mockExceptionErrorMessage)
         }
     }
 

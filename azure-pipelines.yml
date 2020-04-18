@@ -73,7 +73,7 @@ stages:
               summaryFileLocation: 'output/testResults/CodeCov*.xml'
       - job: test_windows_core
         pool:
-          vmImage: 'win1803'
+          vmImage: 'windows-2019'
         steps:
           - task: DownloadBuildArtifacts@0
             inputs:
@@ -102,7 +102,7 @@ stages:
               summaryFileLocation: 'output/testResults/CodeCov*.xml'
       - job: test_windows_ps
         pool:
-          vmImage: 'win1803'
+          vmImage: 'windows-2019'
         steps:
           - task: DownloadBuildArtifacts@0
             inputs:
