@@ -35,10 +35,10 @@ functions.
 
 ### `Assert-Module`
 
-Assert if the specific module is available to be imported.
+Assert if the specific module is available to be imported and optionally import the module.
 
 ```powershell
-Assert-Module -ModuleName 'DhcpServer'
+Assert-Module -ModuleName 'DhcpServer' -ImportModule
 ```
 
 ### `Get-LocalizedData`
