@@ -7,7 +7,7 @@
 
     .PARAMETER ImportModule
         Specfiies to import the module if it is asserted.
-        
+
     .EXAMPLE
         Assert-Module -ModuleName 'DhcpServer'
 
@@ -21,7 +21,7 @@ function Assert-Module
         [Parameter(Mandatory = $true)]
         [System.String]
         $ModuleName,
-        
+
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
         $ImportModule
@@ -32,7 +32,7 @@ function Assert-Module
         $errorMessage = $script:localizedData.ModuleNotFound -f $ModuleName
         New-ObjectNotFoundException -Message $errorMessage
     }
-    
+
     if ($ImportModule)
     {
         Import-Module -Name $ModuleName
