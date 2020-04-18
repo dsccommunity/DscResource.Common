@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `ImportModule` parameter to `Assert-Module` function.
+
 ### Changed
 
-- Updated pipeline Windows VM image to windows-2019
+- Updated pipeline Windows VM image to windows-2019.
+
+### Fixed
+
+- Fixed the New-*Exception function unit tests to work correctly on PowerShell version 5, 6 and 7.
 
 ## [0.4.0] - 2020-03-09
 
