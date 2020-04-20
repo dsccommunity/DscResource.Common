@@ -40,8 +40,8 @@ There is no built in logic to validate against parameters sets for DSC
 so this can be used instead to validate the parameters that was set in
 the configuration.
 
-THis example thorws and error if `$PSBoundParameters` contains both the
-parameters `Parameter1` and `Parameter2`
+This example throws and exception if `$PSBoundParameters` contains both
+the parameters `Parameter1` and `Parameter2`
 
 ```powershell
 $assertBoundParameterParameters = @{
