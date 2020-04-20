@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the cmdlet `Assert-BoundParameter`. _This cndlet comes from_
   _ComputerManagementDsc._
 
+### Changed
+
+- Only run CI pipeline on branch `master` when there are changes to files
+  inside the `source` folder.
+
+### Fixed
+
+- The regular expression for `minor-version-bump-message` in the file
+  `GitVersion.yml` was changed to only raise minor version when the
+  commit message contain the word `add`, `adds`, `minor`, `feature`,
+  or `features`.
+
 ## [0.5.0] - 2020-04-18
 
 ### Added
