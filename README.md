@@ -33,6 +33,30 @@ describing how to convert a DSC resource module to use DscResource.Common.
 Refer to the comment-based help for more information about these helper
 functions.
 
+### `Assert-BoundParameter`
+
+Asserts that a specified is not passed together with another parameter.
+There is no built in logic to validate against parameters sets for DSC
+so this can be used instead to validate the parameters that was set in
+the configuration.
+
+THis example thorws and error if `$PSBoundParameters` contains both the
+parameters `Parameter1` and `Parameter2`
+
+```powershell
+$assertBoundParameterParameters = @{
+    BoundParameterList = $PSBoundParameters
+    MutuallyExclusiveList1 = @(
+        'Parameter1'
+    )
+    MutuallyExclusiveList2 = @(
+        'Parameter2'
+    )
+}
+
+Assert-BoundParameter @assertBoundParameterParameters
+```
+
 ### `Assert-Module`
 
 Assert if the specific module is available to be imported and optionally import the module.

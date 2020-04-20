@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added the cmdlet `Assert-BoundParameter`. _This cndlet comes from_
+  _ComputerManagementDsc._
+
 ## [0.5.0] - 2020-04-18
 
 ### Added
