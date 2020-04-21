@@ -10,4 +10,5 @@ ConvertFrom-StringData @'
     UnableToCompareProperty = Unable to compare property {0} as the type {1} is not handled by the Test-DscParameterState cmdlet. (DRC0007)
     TestIsNanoServerOperatingSystemSku = OperatingSystemSKU {0} was returned by Win32_OperatingSystem when detecting if operating system is Nano Server. (DRC0008)
     ModuleNotFound = Please ensure that the PowerShell module '{0}' is installed. (DRC0009)
+    ParameterUsageWrong = None of the parameter(s) '{0}' may be used at the same time as any of the parameter(s) '{1}'. (DRC0010)
 '@
