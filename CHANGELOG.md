@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `GitVersion.yml` was changed to only raise minor version when the
   commit message contain the word `add`, `adds`, `minor`, `feature`,
   or `features`.
+- Fixed the pipeline paths trigger.
 
 ## [0.5.0] - 2020-04-18
 
