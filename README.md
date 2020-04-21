@@ -35,12 +35,12 @@ functions.
 
 ### `Assert-BoundParameter`
 
-Asserts that a specified is not passed together with another parameter.
+Asserts that a specified set of parameters are not passed together with another set of parameters.
 There is no built in logic to validate against parameters sets for DSC
-so this can be used instead to validate the parameters that was set in
+so this can be used instead to validate the parameters that were set in
 the configuration.
 
-This example throws and exception if `$PSBoundParameters` contains both
+This example throws an exception if `$PSBoundParameters` contains both
 the parameters `Parameter1` and `Parameter2`
 
 ```powershell

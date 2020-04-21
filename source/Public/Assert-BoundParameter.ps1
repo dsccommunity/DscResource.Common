@@ -10,11 +10,11 @@
 
     .PARAMETER MutuallyExclusiveList1
         An array of parameter names that are not allowed to be bound at the
-        same time and those in MutuallyExclusiveList2.
+        same time as those in MutuallyExclusiveList2.
 
     .PARAMETER MutuallyExclusiveList2
         An array of parameter names that are not allowed to be bound at the
-        same time and those in MutuallyExclusiveList1.
+        same time as those in MutuallyExclusiveList1.
 #>
 function Assert-BoundParameter
 {
