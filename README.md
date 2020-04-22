@@ -100,21 +100,25 @@ Returns the path of the current user's temporary folder.
 
 ```plaintext
 Get-TemporaryFolder [<CommonParameters>]
-````
+```
 
 #### Outputs
 
-Examples of what the cmdlet returns:
-
-- Windows: C:\Users\username\AppData\Local\Temp\
-- macOS: /var/folders/6x/thq2xce46bc84lr66fih2p5h0000gn/T/
-- Linux: /tmp/
+`[System.String]`
 
 #### Example
 
 ```powershell
 Join-Path -Path (Get-TemporaryFolder) -ChildPath 'MyTempFile`
 ```
+
+#### Notes
+
+Examples of what the cmdlet returns:
+
+- Windows: C:\Users\username\AppData\Local\Temp\
+- macOS: /var/folders/6x/thq2xce46bc84lr66fih2p5h0000gn/T/
+- Linux: /tmp/
 
 ### `New-InvalidArgumentException`
 
