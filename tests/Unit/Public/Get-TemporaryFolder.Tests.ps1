@@ -39,7 +39,7 @@ InModuleScope $ProjectName {
 
             $IsLinux
             {
-                $mockTemporaryPath = '/tmp'
+                $mockTemporaryPath = '/tmp/'
             }
 
             Default
