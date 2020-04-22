@@ -96,7 +96,7 @@ in the DSC Community style guideline.
 
 Returns the path of the current user's temporary folder.
 
-#### Synopsis
+#### Syntax
 
 ```plaintext
 Get-TemporaryFolder [<CommonParameters>]
