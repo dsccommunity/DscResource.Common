@@ -104,7 +104,7 @@ Get-TemporaryFolder [<CommonParameters>]
 
 #### Outputs
 
-`[System.String]`
+`System.String`
 
 #### Notes
 
