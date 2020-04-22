@@ -106,12 +106,6 @@ Get-TemporaryFolder [<CommonParameters>]
 
 `[System.String]`
 
-#### Example
-
-```powershell
-Join-Path -Path (Get-TemporaryFolder) -ChildPath 'MyTempFile`
-```
-
 #### Notes
 
 Examples of what the cmdlet returns:
@@ -119,6 +113,12 @@ Examples of what the cmdlet returns:
 - Windows: C:\Users\username\AppData\Local\Temp\
 - macOS: /var/folders/6x/thq2xce46bc84lr66fih2p5h0000gn/T/
 - Linux: /tmp/
+
+#### Example
+
+```powershell
+Join-Path -Path (Get-TemporaryFolder) -ChildPath 'MyTempFile`
+```
 
 ### `New-InvalidArgumentException`
 
