@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added the cmdlet `Assert-BoundParameter`. _This cndlet comes from_
+- Added the cmdlet `Assert-BoundParameter`. _This cmdlet comes from_
   _ComputerManagementDsc._
+- Added the cmdlet `Get-TemporaryFolder`. _This cmdlet comes from_
+  _SqlServerDsc._
 - Added GitHub templates in the repository to help contributors.
 
 ### Changed
