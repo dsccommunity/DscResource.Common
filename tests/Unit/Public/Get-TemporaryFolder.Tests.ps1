@@ -11,7 +11,7 @@ InModuleScope $ProjectName {
     Describe 'SqlServerDsc.Common\Get-TemporaryFolder' -Tag 'GetTemporaryFolder' {
         Context 'When getting the current temporary path' {
             BeforeAll {
-                $mockExpectedTempPath = [IO.Path]::GetTempPath().TrimEnd('\/')
+                $mockExpectedTempPath = [IO.Path]::GetTempPath()
             }
 
             It 'Should return the expected temporary path' {
@@ -24,8 +24,12 @@ InModuleScope $ProjectName {
             # Windows PowerShell or PowerShell 6+ on Windows
             (-not (Test-Path -Path variable:IsWindows) -or $IsWindows)
             {
-                # $env:TEMP used short filename, Get-Item expands it.
-                $mockTemporaryPath = (Get-Item -Path $env:temp).FullName
+                <#
+                    $env:TEMP used short filename, Get-Item expands it then we
+                    need to add a backslash to the path. Because $env:TEMP
+                    is the only one not ending the path with a backslash.
+                #>
+                $mockTemporaryPath = (Get-Item -Path $env:TEMP).FullName + '\'
             }
 
             $IsMacOS

@@ -14,5 +14,5 @@ function Get-TemporaryFolder
     [OutputType([System.String])]
     param ()
 
-    return [IO.Path]::GetTempPath().TrimEnd('\/')
+    return [IO.Path]::GetTempPath()
 }

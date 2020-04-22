@@ -103,8 +103,8 @@ Join-Path -Path (Get-TemporaryFolder) -ChildPath 'MyTempFile`
 Examples of what the cmdlet returns:
 
 - Windows: C:\Users\username\AppData\Local\Temp\
-- macOS: /var/folders/6x/thq2xce46bc84lr66fih2p5h0000gn/T
-- Linux: /tmp
+- macOS: /var/folders/6x/thq2xce46bc84lr66fih2p5h0000gn/T/
+- Linux: /tmp/
 
 ### `New-InvalidArgumentException`
 
