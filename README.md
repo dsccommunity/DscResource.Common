@@ -92,6 +92,34 @@ e.g. `DSC_MyResource.psd1`, or suffixed with `strings`, e.g.
 Read more about localization in the section [Localization](https://dsccommunity.org/styleguidelines/localization/)
 in the DSC Community style guideline.
 
+### `Get-TemporaryFolder`
+
+Returns the path of the current user's temporary folder.
+
+#### Syntax
+
+```plaintext
+Get-TemporaryFolder [<CommonParameters>]
+```
+
+#### Outputs
+
+**`System.String`**
+
+#### Notes
+
+Examples of what the cmdlet returns:
+
+- Windows: C:\Users\username\AppData\Local\Temp\
+- macOS: /var/folders/6x/thq2xce46bc84lr66fih2p5h0000gn/T/
+- Linux: /tmp/
+
+#### Example
+
+```powershell
+Join-Path -Path (Get-TemporaryFolder) -ChildPath 'MyTempFile`
+```
+
 ### `New-InvalidArgumentException`
 
 Creates and throws an invalid argument exception.
