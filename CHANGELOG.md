@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update the README.md with new cmdlet documentation format.
+
 ## [0.6.0] - 2020-04-23
 
 ### Added
