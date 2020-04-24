@@ -28,20 +28,34 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 See the article [DscResource.Common functions in a DSC module](/blog/use-dscresource-common-functions-in-module/)
 describing how to convert a DSC resource module to use DscResource.Common.
 
-## Cmdlet
+## Cmdlets
+<!-- markdownlint-disable MD036 - Emphasis used instead of a heading -->
 
 Refer to the comment-based help for more information about these helper
 functions.
 
 ### `Assert-BoundParameter`
 
-Asserts that a specified set of parameters are not passed together with another set of parameters.
+Asserts that a specified set of parameters are not passed together with
+another set of parameters.
 There is no built in logic to validate against parameters sets for DSC
 so this can be used instead to validate the parameters that were set in
 the configuration.
 
-This example throws an exception if `$PSBoundParameters` contains both
-the parameters `Parameter1` and `Parameter2`
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Assert-BoundParameter [-BoundParameterList] <hashtable> [-MutuallyExclusiveList1] <string[]>
+ [-MutuallyExclusiveList2] <string[]> [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+None.
+
+#### Example
 
 ```powershell
 $assertBoundParameterParameters = @{
@@ -57,13 +71,40 @@ $assertBoundParameterParameters = @{
 Assert-BoundParameter @assertBoundParameterParameters
 ```
 
+This example throws an exception if `$PSBoundParameters` contains both
+the parameters `Parameter1` and `Parameter2`.
+
 ### `Assert-Module`
 
-Assert if the specific module is available to be imported and optionally import the module.
+Assert if the specific module is available to be imported and optionally
+import the module.
+
+#### Syntax
+
+```plaintext
+Assert-Module [-ModuleName] <string> [-ImportModule] [<CommonParameters>]
+```
+
+#### Outputs
+
+None.
+
+#### Example
+
+```powershell
+Assert-Module -ModuleName 'DhcpServer'
+```
+
+This will assert that the module DhcpServer is available. If it is not
+an exception will be thrown.
 
 ```powershell
 Assert-Module -ModuleName 'DhcpServer' -ImportModule
 ```
+
+This will assert that the module DhcpServer is available and the it has
+been imported into the session. If the module is not available an exception
+will be thrown.
 
 ### `Get-LocalizedData`
 
@@ -71,16 +112,29 @@ Gets language-specific data into scripts and functions based on the UI culture
 that is selected for the operating system. Similar to Import-LocalizedData, with
 extra parameter 'DefaultUICulture'.
 
-This should be used at the top of each resource PowerShell module script file
-(.psm1).
+#### Syntax
 
-```powershell
-$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Get-LocalizedData [[-BindingVariable] <string>] [[-DefaultUICulture] <string>] [-BaseDirectory <string>]
+ [-FileName <string>] [-SupportedCommand <string[]>] [<CommonParameters>]
 
-Import-Module -Name $script:resourceHelperModulePath
-
-$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+Get-LocalizedData [[-BindingVariable] <string>] [[-UICulture] <string>] [-BaseDirectory <string>]
+ [-FileName <string>] [-SupportedCommand <string[]>] [<CommonParameters>]
 ```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+**System.Collections.Hashtable**
+
+Optionally the `Get-LocalizedData` saves the hash table in the variable
+that is specified by the value of the `BindingVariable` parameter.
+
+#### Notes
+
+This should preferably be used at the top of each resource PowerShell module
+script file (.psm1).
 
 It will automatically look for a file in the folder for the current UI
 culture, or default to the UI culture folder 'en-US'.
@@ -91,6 +145,16 @@ e.g. `DSC_MyResource.psd1`, or suffixed with `strings`, e.g.
 
 Read more about localization in the section [Localization](https://dsccommunity.org/styleguidelines/localization/)
 in the DSC Community style guideline.
+
+#### Example
+
+```powershell
+$script:resourceHelperModulePath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+
+Import-Module -Name $script:resourceHelperModulePath
+
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+```
 
 ### `Get-TemporaryFolder`
 
@@ -104,7 +168,7 @@ Get-TemporaryFolder [<CommonParameters>]
 
 #### Outputs
 
-**`System.String`**
+**System.String**
 
 #### Notes
 
@@ -124,6 +188,18 @@ Join-Path -Path (Get-TemporaryFolder) -ChildPath 'MyTempFile`
 
 Creates and throws an invalid argument exception.
 
+#### Syntax
+
+```plaintext
+New-InvalidArgumentException [-Message] <string> [-ArgumentName] <string> [<CommonParameters>]
+```
+
+### Outputs
+
+None.
+
+### Example
+
 ```powershell
 if ( -not $resultOfEvaluation )
 {
@@ -138,6 +214,20 @@ if ( -not $resultOfEvaluation )
 ### `New-InvalidOperationException`
 
 Creates and throws an invalid operation exception.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+New-InvalidOperationException [-Message] <string> [[-ErrorRecord] <ErrorRecord>] [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+### Outputs
+
+None.
+
+### Example
 
 ```powershell
 try
@@ -154,6 +244,18 @@ catch
 ### `New-InvalidResultException`
 
 Creates and throws an invalid result exception.
+
+#### Syntax
+
+```plaintext
+New-InvalidResultException [-Message] <string> [[-ErrorRecord] <ErrorRecord>] [<CommonParameters>]
+```
+
+### Outputs
+
+None.
+
+### Example
 
 ```powershell
 try
@@ -176,6 +278,18 @@ catch
 
 Creates and throws an not implemented exception.
 
+#### Syntax
+
+```plaintext
+New-NotImplementedException [-Message] <string> [[-ErrorRecord] <ErrorRecord>] [<CommonParameters>]
+```
+
+### Outputs
+
+None.
+
+### Example
+
 ```powershell
 if ($runFeature)
 {
@@ -187,6 +301,26 @@ if ($runFeature)
 ### `New-ObjectNotFoundException`
 
 Creates and throws an object not found exception.
+
+#### Syntax
+
+```plaintext
+New-ObjectNotFoundException [-Message] <String> [[-ErrorRecord] <ErrorRecord>] [<CommonParameters>]
+```
+
+### Outputs
+
+None.
+
+### Example
+
+```powershell
+if ($runFeature)
+{
+    $errorMessage = $script:localizedData.FeatureMissing -f $path
+    New-NotImplementedException -Message $errorMessage -ErrorRecord $_
+}
+```
 
 ```powershell
 try
@@ -203,8 +337,75 @@ catch
 
 ### `Test-DscParameterState`
 
-This function is used to compare current and desired values for any DSC resource.
+This function is used to compare the values in the current state against
+and desired values for any DSC resource.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Test-DscParameterState [-CurrentValues] <Hashtable> [-DesiredValues] <Object> [[-ValuesToCheck] <Array>]
+ [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+**System.Boolean**
+
+#### Example
+
+<!-- markdownlint-disable MD013 - Line length -->
+```powershell
+$currentState = Get-TargetResource @PSBoundParameters
+
+$returnValue = Test-DscParameterState -CurrentValues $currentState -DesiredValues $PSBoundParameters
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+First is `Get-TargetResource` called using all bound parameters to get
+the values in the current state. The result is then compared to the desired
+state by calling `Test-DscParameterState`.
+
+```powershell
+$getTargetResourceParameters = @{
+    ServerName     = $ServerName
+    InstanceName   = $InstanceName
+    Name           = $Name
+}
+
+$returnValue = Test-DscParameterState `
+    -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
+    -DesiredValues $PSBoundParameters `
+    -ValuesToCheck @(
+        'FailsafeOperator'
+        'NotificationMethod'
+    )
+```
+
+This compares the values in the current state against the desires state.
+`Get-TargetResource` is called using just the required parameters to get
+the values in the current state.
 
 ### `Test-IsNanoServer`
 
 This function tests if the current OS is a Nano server.
+
+#### Syntax
+
+```plaintext
+Test-IsNanoServer [<CommonParameters>]
+```
+
+#### Outputs
+
+**System.Boolean**
+
+#### Example
+
+```powershell
+if ((Test-IsNanoServer)) {
+    'Nano server'
+}
+```
+<!-- markdownlint-enable MD036 - Emphasis used instead of a heading -->
