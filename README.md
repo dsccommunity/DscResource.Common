@@ -330,7 +330,7 @@ catch
 ### `Test-DscParameterState`
 
 This function is used to compare the values in the current state against
-and desired values for any DSC resource.
+the desired values for any DSC resource.
 
 #### Syntax
 
@@ -357,7 +357,7 @@ $returnValue = Test-DscParameterState -CurrentValues $currentState -DesiredValue
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
-First is `Get-TargetResource` called using all bound parameters to get
+`Get-TargetResource` is called first using all bound parameters to get
 the values in the current state. The result is then compared to the desired
 state by calling `Test-DscParameterState`.
 
