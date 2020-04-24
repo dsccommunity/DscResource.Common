@@ -315,14 +315,6 @@ None.
 ### Example
 
 ```powershell
-if ($runFeature)
-{
-    $errorMessage = $script:localizedData.FeatureMissing -f $path
-    New-NotImplementedException -Message $errorMessage -ErrorRecord $_
-}
-```
-
-```powershell
 try
 {
     Get-ChildItem -Path $path
