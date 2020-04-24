@@ -102,7 +102,7 @@ an exception will be thrown.
 Assert-Module -ModuleName 'DhcpServer' -ImportModule
 ```
 
-This will assert that the module DhcpServer is available and the it has
+This will assert that the module DhcpServer is available and that it has
 been imported into the session. If the module is not available an exception
 will be thrown.
 
