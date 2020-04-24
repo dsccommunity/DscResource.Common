@@ -347,6 +347,8 @@ Test-DscParameterState [-CurrentValues] <Hashtable> [-DesiredValues] <Object> [[
 
 #### Example
 
+##### Example 1
+
 <!-- markdownlint-disable MD013 - Line length -->
 ```powershell
 $currentState = Get-TargetResource @PSBoundParameters
@@ -358,6 +360,8 @@ $returnValue = Test-DscParameterState -CurrentValues $currentState -DesiredValue
 First is `Get-TargetResource` called using all bound parameters to get
 the values in the current state. The result is then compared to the desired
 state by calling `Test-DscParameterState`.
+
+##### Example 2
 
 ```powershell
 $getTargetResourceParameters = @{
