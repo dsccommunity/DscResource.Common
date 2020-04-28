@@ -176,7 +176,7 @@ InModuleScope $ProjectName {
                 Test-DscParameterState @testParameters | Should -Be $false
             }
 
-            It 'Should return true when evaluating a table against a CimInstance' {
+            It 'Should return true when evaluating a table against a CimInstance' -skip:(!($isWindows -or $PSEdition -eq 'Desktop')) {
                 $mockCurrentValues = @{
                     Handle = '0'
                     ProcessId = '1000'
@@ -205,7 +205,7 @@ InModuleScope $ProjectName {
                 Test-DscParameterState @testParameters | Should -Be $true
             }
 
-            It 'Should return false when evaluating a table against a CimInstance and a value is wrong' {
+            It 'Should return false when evaluating a table against a CimInstance and a value is wrong' -skip:(!($isWindows -or $PSEdition -eq 'Desktop'))  {
                 $mockCurrentValues = @{
                     Handle = '1'
                     ProcessId = '1000'
