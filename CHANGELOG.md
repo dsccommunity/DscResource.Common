@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update the README.md with new cmdlet documentation format.
 
+### Fixed
+
+- The code in the unit tests for `Test-DscParameterState` is now closer
+  following the style guideline.
+
 ## [0.6.0] - 2020-04-23
 
 ### Added
