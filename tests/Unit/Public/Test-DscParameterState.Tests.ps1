@@ -366,7 +366,7 @@ InModuleScope $ProjectName {
         }
 
         Context 'When passing an CimInstance as DesiredValue and ValuesToCheck is $null' {
-            It 'Should throw the correct error' {
+            It 'Should throw the correct error' -skip:(!($isWindows -or $PSEdition -eq 'Desktop')) {
                 $mockCurrentValues = @{
                     Example = 'something'
                 }
