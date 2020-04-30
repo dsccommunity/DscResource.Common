@@ -7,41 +7,6 @@ $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
 
 Import-Module $ProjectName
 
-<#
-    .SYNOPSIS
-        Returns an invalid argument exception object
-
-    .PARAMETER Message
-        The message explaining why this error is being thrown
-
-    .PARAMETER ArgumentName
-        The name of the invalid argument that is causing this error to be thrown
-#>
-function Get-InvalidArgumentRecord
-{
-    [CmdletBinding()]
-    param
-    (
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [String]
-        $Message,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [String]
-        $ArgumentName
-    )
-
-    $argumentException = New-Object -TypeName 'ArgumentException' -ArgumentList @( $Message,
-        $ArgumentName )
-    $newObjectParams = @{
-        TypeName = 'System.Management.Automation.ErrorRecord'
-        ArgumentList = @( $argumentException, $ArgumentName, 'InvalidArgument', $null )
-    }
-    return New-Object @newObjectParams
-}
-
 InModuleScope $ProjectName {
     Describe 'ComputerManagementDsc.Common\Assert-IPAddress' -Tag 'AssertIPAddress' {
         Context 'When invoking with valid IPv4 Address' {
@@ -71,11 +36,8 @@ InModuleScope $ProjectName {
                     AddressFamily  = 'IPv4'
                 }
 
-                $errorRecord = Get-InvalidArgumentRecord `
-                    -Message ($script:localizedData.AddressFormatError -f $testIPAddressParameters.Address) `
-                    -ArgumentName 'Address'
-
-                { Assert-IPAddress @testIPAddressParameters } | Should -Throw $errorRecord
+                { Assert-IPAddress @testIPAddressParameters } | `
+                    Should -Throw ($script:localizedData.AddressFormatError -f $testIPAddressParameters.Address)
             }
         }
         Context 'When invoking with IPv4 Address and family mismatch' {
@@ -85,11 +47,8 @@ InModuleScope $ProjectName {
                     AddressFamily  = 'IPv6'
                 }
 
-                $errorRecord = Get-InvalidArgumentRecord `
-                        -Message ($script:localizedData.AddressIPv4MismatchError -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily) `
-                        -ArgumentName 'AddressFamily'
-
-                { Assert-IPAddress @testIPAddressParameters } | Should -Throw $errorRecord
+                { Assert-IPAddress @testIPAddressParameters } | `
+                    Should -Throw ($script:localizedData.AddressIPv4MismatchError -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily)
             }
         }
         Context 'When invoking with IPv6 Address and family mismatch' {
@@ -99,11 +58,8 @@ InModuleScope $ProjectName {
                     AddressFamily  = 'IPv4'
                 }
 
-                $errorRecord = Get-InvalidArgumentRecord `
-                        -Message ($script:localizedData.AddressIPv6MismatchError -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily) `
-                        -ArgumentName 'AddressFamily'
-
-                { Assert-IPAddress @testIPAddressParameters } | Should -Throw $errorRecord
+                { Assert-IPAddress @testIPAddressParameters } | `
+                    Should -Throw ($script:localizedData.AddressIPv6MismatchError -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily)
             }
         }
         Context 'When invoking with valid IPv4 Address with no address family' {
