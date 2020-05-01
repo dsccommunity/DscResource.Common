@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update the README.md with new cmdlet documentation format.
+- Update to use HQRM tests from the DscResource.Test module.
 
 ### Fixed
 

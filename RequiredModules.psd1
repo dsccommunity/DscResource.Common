@@ -1,20 +1,21 @@
 @{
-    # Set up a mini virtual environment...
     PSDependOptions             = @{
         AddToPath  = $true
         Target     = 'output\RequiredModules'
         Parameters = @{
+            Repository = ''
         }
     }
 
-    invokeBuild                 = 'latest'
+    InvokeBuild                 = 'latest'
     PSScriptAnalyzer            = 'latest'
-    pester                      = 'latest'
+    Pester                      = 'latest'
     Plaster                     = 'latest'
-    ModuleBuilder               = '1.0.0'
+    ModuleBuilder               = 'latest'
     ChangelogManagement         = 'latest'
     Sampler                     = 'latest'
     MarkdownLinkCheck           = 'latest'
     'DscResource.AnalyzerRules' = 'latest'
     xDscResourceDesigner        = 'latest'
+    'DscResource.Test'          = 'latest'
 }
