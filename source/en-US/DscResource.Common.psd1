@@ -11,4 +11,7 @@ ConvertFrom-StringData @'
     TestIsNanoServerOperatingSystemSku = OperatingSystemSKU {0} was returned by Win32_OperatingSystem when detecting if operating system is Nano Server. (DRC0008)
     ModuleNotFound = Please ensure that the PowerShell module '{0}' is installed. (DRC0009)
     ParameterUsageWrong = None of the parameter(s) '{0}' may be used at the same time as any of the parameter(s) '{1}'. (DRC0010)
+    AddressFormatError = Address '{0}' is not in the correct format. Please correct the Address parameter in the configuration and try again. (DRC0011)
+    AddressIPv4MismatchError = Address '{0}' is in IPv4 format, which does not match server address family {1}. Please correct either of them in the configuration and try again. (DRC0012)
+    AddressIPv6MismatchError = Address '{0}' is in IPv6 format, which does not match server address family {1}. Please correct either of them in the configuration and try again. (DRC0013)
 '@

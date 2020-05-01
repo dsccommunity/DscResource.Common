@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+ - Added the cmdlet `Assert-IPAddress`
+
 ### Changed
 
 - Update the README.md with new cmdlet documentation format.
