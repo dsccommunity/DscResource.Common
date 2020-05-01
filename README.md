@@ -74,6 +74,38 @@ Assert-BoundParameter @assertBoundParameterParameters
 This example throws an exception if `$PSBoundParameters` contains both
 the parameters `Parameter1` and `Parameter2`.
 
+### `Assert-IPAddress`
+
+Asserts if the IP Address is valid and optionally validates
+the IP Address against an Address Family
+
+### Syntax
+
+```plaintext
+Assert-IPAddress [-Address] <string> [[-AddressFamily] <string>] [<CommonParameters>]
+```
+
+#### Outputs
+
+None.
+
+#### Example
+
+```powershell
+Assert-IPAddress -Address '127.0.0.1'
+```
+
+This will assert that the supplied address is a valid IPv4 or IPv6 address.
+If it is not an exception will be thrown.
+
+```powershell
+Assert-Module -Address 'fe80:ab04:30F5:002b::1' AddressFamily  = 'IPv6'
+```
+
+This will assert that address is valid and that it matches the
+supplied address family. If the supplied address family does not match
+the address an exception will be thrown.
+
 ### `Assert-Module`
 
 Assert if the specific module is available to be imported and optionally
@@ -105,37 +137,6 @@ Assert-Module -ModuleName 'DhcpServer' -ImportModule
 This will assert that the module DhcpServer is available and that it has
 been imported into the session. If the module is not available an exception
 will be thrown.
-
-### `Assert-IPAddress`
-Asserts if the IP Address is valid and optionally validates
-the IP Address against an Address Family
-
-### Syntax
-
-```plaintext
-Assert-IPAddress [-Address] <string> [[-AddressFamily] <string>] [<CommonParameters>]
-```
-
-#### Outputs
-
-None.
-
-#### Example
-
-```powershell
-Assert-IPAddress -Address '127.0.0.1'
-```
-
-This will assert that the supplied address is a valid IPv4 or IPv6 address.
-If it is not an exception will be thrown.
-
-```powershell
-Assert-Module -Address 'fe80:ab04:30F5:002b::1' AddressFamily  = 'IPv6'
-```
-
-This will assert that address is valid and that it matches the
-supplied address family. If the supplied address family does not match
-the address an exception will be thrown.
 
 ### `ConvertTo-CimInstance`
 
