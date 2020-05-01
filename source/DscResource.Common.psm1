@@ -1,1 +1,1 @@
-# This file will be generated
+# This file will be generated automatically by ModuleBuilder.
