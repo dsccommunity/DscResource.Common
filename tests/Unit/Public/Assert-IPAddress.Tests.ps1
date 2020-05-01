@@ -57,27 +57,14 @@ InModuleScope $ProjectName {
         }
 
         Context 'When invoking with IPv4 Address and family mismatch' {
-            Context 'When address family is supplied' {
-                It 'Should throw an AddressMismatchError error' {
-                    $testIPAddressParameters = @{
-                        Address        = '192.168.0.1'
-                        AddressFamily  = 'IPv6'
-                    }
-
-                    { Assert-IPAddress @testIPAddressParameters } | `
-                        Should -Throw ($script:localizedData.AddressIPv4MismatchError -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily)
+            It 'Should throw an AddressMismatchError error' {
+                $testIPAddressParameters = @{
+                    Address        = '192.168.0.1'
+                    AddressFamily  = 'IPv6'
                 }
-            }
 
-            Context 'When address family is not supplied' {
-                It 'Should throw an AddressMismatchError error' {
-                    $testIPAddressParameters = @{
-                        Address        = '192.168.0.1'
-                    }
-
-                    { Assert-IPAddress @testIPAddressParameters } | `
-                        Should -Throw ($script:localizedData.AddressIPv4MismatchError -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily)
-                }
+                { Assert-IPAddress @testIPAddressParameters } | `
+                    Should -Throw ($script:localizedData.AddressIPv4MismatchError -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily)
             }
         }
 
