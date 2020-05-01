@@ -1,5 +1,5 @@
 # macOS and Linux does not support CimInstance.
-if ($isWindows -or $PSEdition -eq 'Desktop')
+if (-not ($isWindows -or $PSEdition -eq 'Desktop'))
 {
     return
 }
