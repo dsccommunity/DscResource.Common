@@ -12,6 +12,16 @@
 
     .OUTPUTS
         An object array with CimInstance objects.
+
+    .EXAMPLE
+        ConvertTo-CimInstance -Hashtable @{
+            String = 'a string'
+            Bool   = $true
+            Int    = 99
+            Array  = 'a, b, c'
+        }
+
+        This example returns an CimInstance with the provided hashtable values.
 #>
 function ConvertTo-CimInstance
 {

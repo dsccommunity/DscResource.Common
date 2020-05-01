@@ -28,6 +28,34 @@
     .PARAMETER SortArrayValues
         If the sorting of array values does not matter, values are sorted internally
         before doing the comparison.
+
+    .EXAMPLE
+        $currentState = Get-TargetResource @PSBoundParameters
+
+        $returnValue = Test-DscParameterState -CurrentValues $currentState -DesiredValues $PSBoundParameters
+
+        The function Get-TargetResource is called first using all bound parameters
+        to get the values in the current state. The result is then compared to the
+        desired state by calling `Test-DscParameterState`.
+
+    .EXAMPLE
+        $getTargetResourceParameters = @{
+            ServerName     = $ServerName
+            InstanceName   = $InstanceName
+            Name           = $Name
+        }
+
+        $returnValue = Test-DscParameterState `
+            -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
+            -DesiredValues $PSBoundParameters `
+            -ValuesToCheck @(
+                'FailsafeOperator'
+                'NotificationMethod'
+            )
+
+        This compares the values in the current state against the desires state.
+        The function Get-TargetResource is called using just the required parameters
+        to get the values in the current state.
 #>
 function Test-DscParameterState
 {

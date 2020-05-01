@@ -50,7 +50,6 @@ Pester:
     - tests/QA
     - tests/Unit
   ExcludeTag:
-    - helpQuality
   Tag:
   CodeCoverageThreshold: 50
   CodeCoverageOutputFile: JaCoCo_coverage.xml

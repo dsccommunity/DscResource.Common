@@ -3,11 +3,25 @@
     .SYNOPSIS
         Creates and throws an object not found exception.
 
+    .DESCRIPTION
+        Creates and throws an object not found exception.
+
     .PARAMETER Message
         The message explaining why this error is being thrown.
 
     .PARAMETER ErrorRecord
         The error record containing the exception that is causing this terminating error.
+
+    .EXAMPLE
+        try
+        {
+            Get-ChildItem -Path $path
+        }
+        catch
+        {
+            $errorMessage = $script:localizedData.PathNotFoundMessage -f $path
+            New-ObjectNotFoundException -Message $errorMessage -ErrorRecord $_
+        }
 #>
 function New-ObjectNotFoundException
 {

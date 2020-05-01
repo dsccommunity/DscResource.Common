@@ -2,11 +2,24 @@
     .SYNOPSIS
         Creates and throws an not implemented exception.
 
+    .DESCRIPTION
+        Creates and throws an not implemented exception.
+
     .PARAMETER Message
         The message explaining why this error is being thrown.
 
     .PARAMETER ErrorRecord
         The error record containing the exception that is causing this terminating error.
+
+    .EXAMPLE
+        if ($runFeature)
+        {
+            $errorMessage = $script:localizedData.FeatureMissing -f $path
+            New-NotImplementedException -Message $errorMessage -ErrorRecord $_
+        }
+
+        Throws an not implemented exception if the variable $runFeature contains
+        a value.
 #>
 function New-NotImplementedException
 {

@@ -2,11 +2,20 @@
     .SYNOPSIS
         Creates and throws an invalid argument exception.
 
+    .DESCRIPTION
+        Creates and throws an invalid argument exception.
+
     .PARAMETER Message
         The message explaining why this error is being thrown.
 
     .PARAMETER ArgumentName
         The name of the invalid argument that is causing this error to be thrown.
+
+    .EXAMPLE
+        $errorMessage = $script:localizedData.ActionCannotBeUsedInThisContextMessage `
+                -f $Action, $Parameter
+
+        New-InvalidArgumentException -ArgumentName 'Action' -Message $errorMessage
 #>
 function New-InvalidArgumentException
 {

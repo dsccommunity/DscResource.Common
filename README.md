@@ -388,9 +388,9 @@ $returnValue = Test-DscParameterState -CurrentValues $currentState -DesiredValue
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
-`Get-TargetResource` is called first using all bound parameters to get
-the values in the current state. The result is then compared to the desired
-state by calling `Test-DscParameterState`.
+The function `Get-TargetResource` is called first using all bound parameters
+to get the values in the current state. The result is then compared to the
+desired state by calling `Test-DscParameterState`.
 
 ##### Example 2
 
@@ -411,8 +411,8 @@ $returnValue = Test-DscParameterState `
 ```
 
 This compares the values in the current state against the desires state.
-`Get-TargetResource` is called using just the required parameters to get
-the values in the current state.
+The function `Get-TargetResource` is called using just the required parameters
+to get the values in the current state.
 
 ### `Test-IsNanoServer`
 

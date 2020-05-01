@@ -1,6 +1,15 @@
 <#
     .SYNOPSIS
         Tests if the current OS is a Nano server.
+
+    .DESCRIPTION
+        Tests if the current OS is a Nano server.
+
+    .EXAMPLE
+        Test-IsNanoServer
+
+        Returns $true if the current operating system is Nano Server, if not $false
+        is returned.
 #>
 function Test-IsNanoServer
 {

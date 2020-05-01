@@ -8,9 +8,19 @@
 
     .PARAMETER Hashtable
         The parameter hashtable that should be pruned.
+
+    .EXAMPLE
+        Remove-CommonParameter -Hashtable $PSBoundParameters
+
+        Returns a new hashtable without the common and optional common parameters.
 #>
 function Remove-CommonParameter
 {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSUseShouldProcessForStateChangingFunctions',
+        '',
+        Justification = 'ShouldProcess is not supported in DSC resources.'
+    )]
     [OutputType([System.Collections.Hashtable])]
     [CmdletBinding()]
     param

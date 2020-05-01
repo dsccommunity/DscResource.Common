@@ -11,6 +11,30 @@
 
     .OUTPUTS
         Hashtable
+
+    .EXAMPLE
+        $newInstanceParameters = @{
+            ClassName = 'MSFT_KeyValuePair'
+            Namespace = 'root/microsoft/Windows/DesiredStateConfiguration'
+            ClientOnly = $true
+        }
+
+        $cimInstance = [Microsoft.Management.Infrastructure.CimInstance[]] (
+            (New-CimInstance @newInstanceParameters -Property @{
+                Key   = 'FirstName'
+                Value = 'John'
+            }),
+
+            (New-CimInstance @newInstanceParameters -Property @{
+                Key   = 'LastName'
+                Value = 'Smith'
+            })
+        )
+
+        ConvertTo-HashTable -CimInstance $cimInstance
+
+        This creates a array om CimInstances of the class name MSFT_KeyValuePair
+        and passes it to ConvertTo-HashTable which returns a hashtable.
 #>
 function ConvertTo-HashTable
 {
