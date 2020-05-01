@@ -696,7 +696,7 @@ InModuleScope $ProjectName {
                         k3 = 'v1', 'v2', 'v3', 99
                     }
 
-                    CimInstances = [CimInstance[]](
+                    CimInstances = [Microsoft.Management.Infrastructure.CimInstance[]] (
                         ConvertTo-CimInstance -Hashtable @{
                             String = 'a string'
                             Bool   = $true
@@ -718,7 +718,7 @@ InModuleScope $ProjectName {
                             k3 = 'v1', 'v2', 'v3', 99
                         }
 
-                        CimInstances = [CimInstance[]] (
+                        CimInstances = [Microsoft.Management.Infrastructure.CimInstance[]] (
                             ConvertTo-CimInstance -Hashtable @{
                                 String = 'a string'
                                 Bool   = $true

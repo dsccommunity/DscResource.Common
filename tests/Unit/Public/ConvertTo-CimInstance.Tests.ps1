@@ -1,3 +1,9 @@
+# macOS and Linux does not support CimInstance.
+if ($isWindows -or $PSEdition -eq 'Desktop')
+{
+    return
+}
+
 $ProjectPath = "$PSScriptRoot\..\..\.." | Convert-Path
 $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
         ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
@@ -24,7 +30,9 @@ InModuleScope $ProjectName {
         Context 'When the array contains the expected record count' {
             It 'Should not throw exception' {
                 {
-                    $script:result = [CimInstance[]] ($hashtable | ConvertTo-CimInstance)
+                    $script:result = [Microsoft.Management.Infrastructure.CimInstance[]] (
+                        $hashtable | ConvertTo-CimInstance
+                    )
                 } | Should -Not -Throw
             }
 

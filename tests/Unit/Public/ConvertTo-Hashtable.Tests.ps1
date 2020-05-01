@@ -1,3 +1,9 @@
+# macOS and Linux does not support CimInstance.
+if ($isWindows -or $PSEdition -eq 'Desktop')
+{
+    return
+}
+
 $ProjectPath = "$PSScriptRoot\..\..\.." | Convert-Path
 $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
         ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
@@ -15,7 +21,7 @@ Import-Module $ProjectName -Force
 
 InModuleScope $ProjectName {
     Describe 'NetworkingDsc.Common\ConvertTo-HashTable' {
-        [CimInstance[]] $cimInstances = ConvertTo-CimInstance -Hashtable @{
+        [Microsoft.Management.Infrastructure.CimInstance[]] $cimInstances = ConvertTo-CimInstance -Hashtable @{
             k1 = 'v1'
             k2 = 100
             k3 = 1, 2, 3
