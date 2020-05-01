@@ -95,11 +95,18 @@ None.
 Assert-IPAddress -Address '127.0.0.1'
 ```
 
-This will assert that the supplied address is a valid IPv4 or IPv6 address.
+This will assert that the supplied address is a valid IPv4 address.
 If it is not an exception will be thrown.
 
 ```powershell
-Assert-Module -Address 'fe80:ab04:30F5:002b::1' AddressFamily  = 'IPv6'
+Assert-IPAddress -Address 'fe80:ab04:30F5:002b::1'
+```
+
+This will assert that the supplied address is a valid IPv6 address.
+If it is not an exception will be thrown.
+
+```powershell
+Assert-IPAddress -Address 'fe80:ab04:30F5:002b::1' -AddressFamily 'IPv6'
 ```
 
 This will assert that address is valid and that it matches the

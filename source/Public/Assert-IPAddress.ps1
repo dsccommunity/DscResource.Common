@@ -1,14 +1,36 @@
 <#
     .SYNOPSIS
-        Check the Address details are valid and do not conflict with Address family.
-        If any problems are detected an exception will be thrown.
+        Asserts that the specified IP address is valid.
+
+    .DESCRIPTION
+        Checks the IP address so that it is valid and do not conflict with address
+        family. If any problems are detected an exception will be thrown.
 
     .PARAMETER AddressFamily
-        IP address family (IPv4 or IPv6) that the supplied Address should be in.
-        Valid values are 'IPv4' or 'IPv6'.
+        IP address family that the supplied Address should be in. Valid values are
+        'IPv4' or 'IPv6'.
 
     .PARAMETER Address
-        IPv4 or IPv6 Address.
+        Specifies an IPv4 or IPv6 address.
+
+    .EXAMPLE
+        Assert-IPAddress -Address '127.0.0.1'
+
+        This will assert that the supplied address is a valid IPv4 address.
+        If it is not an exception will be thrown.
+
+    .EXAMPLE
+        Assert-IPAddress -Address 'fe80:ab04:30F5:002b::1'
+
+        This will assert that the supplied address is a valid IPv6 address.
+        If it is not an exception will be thrown.
+
+    .EXAMPLE
+        Assert-IPAddress -Address 'fe80:ab04:30F5:002b::1' -AddressFamily 'IPv6'
+
+        This will assert that address is valid and that it matches the
+        supplied address family. If the supplied address family does not match
+        the address an exception will be thrown.
 #>
 function Assert-IPAddress
 {
