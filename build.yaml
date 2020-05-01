@@ -6,6 +6,7 @@ CopyDirectories:
   - en-US
 prefix: prefix.ps1
 suffix: suffix.ps1
+Encoding: UTF8
 VersionedOutputDirectory: true
 
 ####################################################
@@ -44,19 +45,24 @@ BuildWorkflow:
 
 Pester:
   OutputFormat: NUnitXML
+  ExcludeFromCodeCoverage:
   Script:
+    - tests/QA
     - tests/Unit
   ExcludeTag:
+    - helpQuality
   Tag:
   CodeCoverageThreshold: 50
+  CodeCoverageOutputFile: JaCoCo_coverage.xml
+  CodeCoverageOutputFileEncoding: ascii
 
 DscTest:
-  OutputFormat: NUnitXML
   ExcludeTag:
     - 'Common Tests - New Error-Level Script Analyzer Rules'
+  Tag:
   ExcludeSourceFile:
     - output
-
+  ExcludeModuleFile:
 
 Resolve-Dependency:
   Gallery: 'PSGallery'
