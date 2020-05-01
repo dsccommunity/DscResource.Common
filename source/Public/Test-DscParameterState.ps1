@@ -332,5 +332,6 @@ function Test-DscParameterState
     }
 
     Write-Verbose -Message ($script:localizedData.TestDscParameterResultMessage -f $returnValue)
+
     return $returnValue
 }
