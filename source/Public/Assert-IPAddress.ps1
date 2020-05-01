@@ -1,13 +1,14 @@
 <#
     .SYNOPSIS
-    Check the Address details are valid and do not conflict with Address family.
-    If any problems are detected an exception will be thrown.
+        Check the Address details are valid and do not conflict with Address family.
+        If any problems are detected an exception will be thrown.
 
     .PARAMETER AddressFamily
-    IP address family.
+        IP address family (IPv4 or IPv6) that the supplied Address should be in.
+        Valid values are 'IPv4' or 'IPv6'.
 
     .PARAMETER Address
-    IP Address
+        IPv4 or IPv6 Address.
 #>
 function Assert-IPAddress
 {
@@ -18,6 +19,7 @@ function Assert-IPAddress
         [ValidateSet('IPv4', 'IPv6')]
         [System.String]
         $AddressFamily,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [System.String]
@@ -25,6 +27,7 @@ function Assert-IPAddress
     )
 
     [System.Net.IPAddress] $ipAddress = $null
+
     if (-not ([System.Net.IPAddress]::TryParse($Address, [ref] $ipAddress)))
     {
         New-InvalidArgumentException `
@@ -45,6 +48,7 @@ function Assert-IPAddress
                         -ArgumentName 'AddressFamily'
                 }
             }
+
             'IPv6'
             {
                 if ($ipAddress.AddressFamily -ne [System.Net.Sockets.AddressFamily]::InterNetworkV6.ToString())

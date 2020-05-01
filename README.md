@@ -133,8 +133,8 @@ If it is not an exception will be thrown.
 Assert-Module -Address 'fe80:ab04:30F5:002b::1' AddressFamily  = 'IPv6'
 ```
 
-This will assert that  address is valid and that it matches the
-supplied address family.  If the supplied address family does not match
+This will assert that address is valid and that it matches the
+supplied address family. If the supplied address family does not match
 the address an exception will be thrown.
 
 ### `Get-LocalizedData`
