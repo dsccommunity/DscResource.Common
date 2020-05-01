@@ -137,6 +137,78 @@ This will assert that address is valid and that it matches the
 supplied address family. If the supplied address family does not match
 the address an exception will be thrown.
 
+### `ConvertTo-CimInstance`
+
+This function is used to convert a hashtable into MSFT_KeyValuePair objects.
+These are stored as an CimInstance array. DSC cannot handle hashtables but
+CimInstances arrays storing MSFT_KeyValuePair.
+
+#### Syntax
+
+```plaintext
+ConvertTo-CimInstance -Hashtable <hashtable> [<CommonParameters>]
+```
+
+### Outputs
+
+**System.Object[]**
+
+### Example
+
+```powershell
+ConvertTo-CimInstance -Hashtable @{
+    String = 'a string'
+    Bool   = $true
+    Int    = 99
+    Array  = 'a, b, c'
+}
+```
+
+This example returns an CimInstance with the provided hashtable values.
+
+### `ConvertTo-HashTable`
+
+This function is used to convert a CimInstance array containing
+MSFT_KeyValuePair objects into a hashtable.
+
+#### Syntax
+
+```plaintext
+ConvertTo-HashTable -CimInstance <Microsoft.Management.Infrastructure.CimInstance[]>
+ [<CommonParameters>]
+```
+
+### Outputs
+
+**System.Collections.Hashtable**
+
+### Example
+
+```powershell
+$newInstanceParameters = @{
+    ClassName = 'MSFT_KeyValuePair'
+    Namespace = 'root/microsoft/Windows/DesiredStateConfiguration'
+    ClientOnly = $true
+}
+
+$cimInstance = [Microsoft.Management.Infrastructure.CimInstance[]] (
+    (New-CimInstance @newInstanceParameters -Property @{
+        Key   = 'FirstName'
+        Value = 'John'
+    }),
+
+    (New-CimInstance @newInstanceParameters -Property @{
+        Key   = 'LastName'
+        Value = 'Smith'
+    })
+)
+
+ConvertTo-HashTable -CimInstance $cimInstance
+```
+
+This creates a array om CimInstances of the class name MSFT_KeyValuePair
+and passes it to ConvertTo-HashTable which returns a hashtable.
+
 ### `Get-LocalizedData`
 
 Gets language-specific data into scripts and functions based on the UI culture
@@ -355,8 +427,30 @@ catch
     $errorMessage = $script:localizedData.PathNotFoundMessage -f $path
     New-ObjectNotFoundException -Message $errorMessage -ErrorRecord $_
 }
-
 ```
+
+### `Remove-CommonParameter`
+
+This function serves the purpose of removing common parameters and option
+common parameters from a parameter hashtable.
+
+#### Syntax
+
+```plaintext
+Remove-CommonParameter [-Hashtable] <hashtable> [<CommonParameters>]
+```
+
+### Outputs
+
+**System.Collections.Hashtable**
+
+### Example
+
+```powershell
+Remove-CommonParameter -Hashtable $PSBoundParameters
+```
+
+Returns a new hashtable without the common and optional common parameters.
 
 ### `Test-DscParameterState`
 
@@ -367,8 +461,9 @@ the desired values for any DSC resource.
 
 <!-- markdownlint-disable MD013 - Line length -->
 ```plaintext
-Test-DscParameterState [-CurrentValues] <Hashtable> [-DesiredValues] <Object> [[-ValuesToCheck] <Array>]
- [<CommonParameters>]
+Test-DscParameterState [-CurrentValues] <Object> [-DesiredValues] <Object>
+  [[-ValuesToCheck] <string[]>] [-TurnOffTypeChecking] [-ReverseCheck]
+  [-SortArrayValues] [<CommonParameters>]
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
