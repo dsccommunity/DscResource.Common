@@ -51,7 +51,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $true' {
-                    $script:result | Should -Be $true
+                    $script:result | Should -BeTrue
                 }
             }
 
@@ -76,7 +76,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -101,7 +101,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -126,7 +126,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -146,7 +146,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -167,7 +167,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $true' {
-                    $script:result | Should -Be $true
+                    $script:result | Should -BeTrue
                 }
             }
 
@@ -192,7 +192,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $true' {
-                    $script:result | Should -Be $true
+                    $script:result | Should -BeTrue
                 }
             }
         }
@@ -233,7 +233,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -253,7 +253,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -273,7 +273,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -293,7 +293,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -314,7 +314,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -335,7 +335,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -356,7 +356,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $true' {
-                    $script:result | Should -Be $true
+                    $script:result | Should -BeTrue
                 }
             }
 
@@ -393,7 +393,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $true' {
-                    $script:result | Should -Be $true
+                    $script:result | Should -BeTrue
                 }
             }
         }
@@ -432,7 +432,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -457,7 +457,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -482,7 +482,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -507,7 +507,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -533,7 +533,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $true' {
-                    $script:result | Should -Be $true
+                    $script:result | Should -BeTrue
                 }
             }
 
@@ -559,7 +559,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
 
@@ -585,7 +585,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $true' {
-                    $script:result | Should -Be $true
+                    $script:result | Should -BeTrue
                 }
             }
         }
@@ -621,7 +621,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $true' {
-                    $script:result | Should -Be $true
+                    $script:result | Should -BeTrue
                 }
             }
 
@@ -644,7 +644,7 @@ InModuleScope $ProjectName {
                 }
 
                 It 'Should return $false' {
-                    $script:result | Should -Be $false
+                    $script:result | Should -BeFalse
                 }
             }
         }
@@ -736,7 +736,7 @@ InModuleScope $ProjectName {
                     }
 
                     It 'Should return $true' {
-                        $script:result | Should -Be $true
+                        $script:result | Should -BeTrue
                     }
                 }
 
@@ -766,7 +766,7 @@ InModuleScope $ProjectName {
                     }
 
                     It 'Should return $true' {
-                        $script:result | Should -Be $true
+                        $script:result | Should -BeTrue
                     }
                 }
 
@@ -797,7 +797,7 @@ InModuleScope $ProjectName {
                     }
 
                     It 'Should return $false' {
-                        $script:result | Should -Be $false
+                        $script:result | Should -BeFalse
                     }
                 }
 
@@ -829,7 +829,7 @@ InModuleScope $ProjectName {
                     }
 
                     It 'Should return $false' {
-                        $script:result | Should -Be $false
+                        $script:result | Should -BeFalse
                     }
                 }
 
@@ -860,7 +860,7 @@ InModuleScope $ProjectName {
                     }
 
                     It 'Should return $false' {
-                        $script:result | Should -Be $false
+                        $script:result | Should -BeFalse
                     }
                 }
 
@@ -891,7 +891,7 @@ InModuleScope $ProjectName {
                     }
 
                     It 'Should return $false' {
-                        $script:result | Should -Be $false
+                        $script:result | Should -BeFalse
                     }
                 }
 
@@ -923,7 +923,7 @@ InModuleScope $ProjectName {
                     }
 
                     It 'Should return $true' {
-                        $script:result | Should -Be $true
+                        $script:result | Should -BeTrue
                     }
                 }
             }

@@ -42,25 +42,25 @@ InModuleScope $ProjectName {
             }
 
             It 'Should have retained parameters in the hashtable' {
-                $script:result.Contains('Parameter1') | Should -Be $true
-                $script:result.Contains('Parameter2') | Should -Be $true
+                $script:result.Contains('Parameter1') | Should -BeTrue
+                $script:result.Contains('Parameter2') | Should -BeTrue
             }
 
             It 'Should have removed the common parameters from the hashtable' {
-                $script:result.Contains('Verbose') | Should -Be $false
-                $script:result.Contains('Debug') | Should -Be $false
-                $script:result.Contains('ErrorAction') | Should -Be $false
-                $script:result.Contains('WarningAction') | Should -Be $false
-                $script:result.Contains('InformationAction') | Should -Be $false
-                $script:result.Contains('ErrorVariable') | Should -Be $false
-                $script:result.Contains('WarningVariable') | Should -Be $false
-                $script:result.Contains('OutVariable') | Should -Be $false
-                $script:result.Contains('OutBuffer') | Should -Be $false
-                $script:result.Contains('PipelineVariable') | Should -Be $false
-                $script:result.Contains('InformationVariable') | Should -Be $false
-                $script:result.Contains('WhatIf') | Should -Be $false
-                $script:result.Contains('Confirm') | Should -Be $false
-                $script:result.Contains('UseTransaction') | Should -Be $false
+                $script:result.Contains('Verbose') | Should -BeFalse
+                $script:result.Contains('Debug') | Should -BeFalse
+                $script:result.Contains('ErrorAction') | Should -BeFalse
+                $script:result.Contains('WarningAction') | Should -BeFalse
+                $script:result.Contains('InformationAction') | Should -BeFalse
+                $script:result.Contains('ErrorVariable') | Should -BeFalse
+                $script:result.Contains('WarningVariable') | Should -BeFalse
+                $script:result.Contains('OutVariable') | Should -BeFalse
+                $script:result.Contains('OutBuffer') | Should -BeFalse
+                $script:result.Contains('PipelineVariable') | Should -BeFalse
+                $script:result.Contains('InformationVariable') | Should -BeFalse
+                $script:result.Contains('WhatIf') | Should -BeFalse
+                $script:result.Contains('Confirm') | Should -BeFalse
+                $script:result.Contains('UseTransaction') | Should -BeFalse
             }
         }
     }
