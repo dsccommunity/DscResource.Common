@@ -1,12 +1,19 @@
 <#
     .SYNOPSIS
-        Tests of an object has a property
+        Tests if an object has a property.
+
+    .DESCRIPTION
+        Tests if the specified object has the specified property and return
+        $true or $false.
 
     .PARAMETER Object
-        The object to test
+        Specifies the object to test for the specified property.
 
     .PARAMETER PropertyName
-        The property name
+        Specifies the property name to test for.
+
+    .EXAMPLE
+        Test-DscObjectHasProperty -Object 'AnyString' -PropertyName 'Length'
 #>
 function Test-DscObjectHasProperty
 {
