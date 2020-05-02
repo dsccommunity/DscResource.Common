@@ -129,6 +129,13 @@
         localized message is displayed.
 
         For more information, see about_Script_Internationalization.
+
+    .EXAMPLE
+        $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+
+        This is an example that can be used in DSC resources to import the
+        localized strings and if the current UI culture localized folder does
+        not exist the UI culture 'en-US' is returned.
 #>
 function Get-LocalizedData
 {

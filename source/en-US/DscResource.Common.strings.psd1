@@ -1,0 +1,25 @@
+# Localized English (en-US) strings.
+
+ConvertFrom-StringData @'
+    TestIsNanoServerOperatingSystemSku = OperatingSystemSKU {0} was returned by Win32_OperatingSystem when detecting if operating system is Nano Server. (DRC0008)
+    ModuleNotFound = Please ensure that the PowerShell module '{0}' is installed. (DRC0009)
+    ParameterUsageWrong = None of the parameter(s) '{0}' may be used at the same time as any of the parameter(s) '{1}'. (DRC0010)
+    AddressFormatError = Address '{0}' is not in the correct format. Please correct the Address parameter in the configuration and try again. (DRC0011)
+    AddressIPv4MismatchError = Address '{0}' is in IPv4 format, which does not match server address family {1}. Please correct either of them in the configuration and try again. (DRC0012)
+    AddressIPv6MismatchError = Address '{0}' is in IPv6 format, which does not match server address family {1}. Please correct either of them in the configuration and try again. (DRC0013)
+    InvalidDesiredValuesError = Property 'DesiredValues' in Test-DscParameterState must be either a Hashtable or CimInstance. Type detected was '{0}'. (DRC0014)
+    InvalidCurrentValuesError = Property 'CurrentValues' in Test-DscParameterState must be either a Hashtable, CimInstance, or CimIntance[]. Type detected was '{0}'. (DRC0015)
+    InvalidValuesToCheckError = If 'DesiredValues' is a CimInstance then property 'ValuesToCheck' must contain a value. (DRC0016)
+    MatchPsCredentialUsernameMessage = MATCH: PSCredential username match. Current state is '{0}' and desired state is '{1}'. (DRC0017)
+    NoMatchPsCredentialUsernameMessage = NOTMATCH: PSCredential username mismatch. Current state is '{0}' and desired state is '{1}'. (DRC0018)
+    NoMatchTypeMismatchMessage = NOTMATCH: Type mismatch for property '{0}' Current state type is '{1}' and desired type is '{2}'. (DRC0019)
+    MatchValueMessage = MATCH: Value (type '{0}') for property '{1}' does match. Current state is '{2}' and desired state is '{3}'. (DRC0020)
+    NoMatchValueMessage = NOTMATCH: Value (type '{0}') for property '{1}' does not match. Current state is '{2}' and desired state is '{3}'. (DRC0021)
+    NoMatchValueDifferentCountMessage = NOTMATCH: Value (type '{0}') for property '{1}' does have a different count. Current state count is '{2}' and desired state count is '{3}'. (DRC0022)
+    NoMatchElementTypeMismatchMessage = NOTMATCH: Type mismatch for property '{0}' Current state type of element [{1}] is '{2}' and desired type is '{3}'. (DRC0023)
+    NoMatchElementValueMismatchMessage = NOTMATCH: Value [{0}] (type '{1}') for property '{2}' does match. Current state is '{3}' and desired state is '{4}'. (DRC0024)
+    MatchElementValueMessage = MATCH: Value [{0}] (type '{1}') for property '{2}' does match. Current state is '{3}' and desired state is '{4}'. (DRC0025)
+    TestDscParameterResultMessage = Test-DscParameter result is '{0}'. (DRC0026)
+    StartingReverseCheck = Starting with a reverse check. (DRC0027)
+    TestDscParameterCompareMessage = Comparing values in property '{0}'. (DRC0028)
+'@

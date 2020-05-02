@@ -25,7 +25,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ## How to implement
 
-See the article [DscResource.Common functions in a DSC module](/blog/use-dscresource-common-functions-in-module/)
+See the article [DscResource.Common functions in a DSC module](https://dsccommunity.org/blog/use-dscresource-common-functions-in-module/)
 describing how to convert a DSC resource module to use DscResource.Common.
 
 ## Cmdlets
@@ -74,6 +74,45 @@ Assert-BoundParameter @assertBoundParameterParameters
 This example throws an exception if `$PSBoundParameters` contains both
 the parameters `Parameter1` and `Parameter2`.
 
+### `Assert-IPAddress`
+
+Asserts if the IP Address is valid and optionally validates
+the IP Address against an Address Family
+
+### Syntax
+
+```plaintext
+Assert-IPAddress [-Address] <string> [[-AddressFamily] <string>] [<CommonParameters>]
+```
+
+#### Outputs
+
+None.
+
+#### Example
+
+```powershell
+Assert-IPAddress -Address '127.0.0.1'
+```
+
+This will assert that the supplied address is a valid IPv4 address.
+If it is not an exception will be thrown.
+
+```powershell
+Assert-IPAddress -Address 'fe80:ab04:30F5:002b::1'
+```
+
+This will assert that the supplied address is a valid IPv6 address.
+If it is not an exception will be thrown.
+
+```powershell
+Assert-IPAddress -Address 'fe80:ab04:30F5:002b::1' -AddressFamily 'IPv6'
+```
+
+This will assert that address is valid and that it matches the
+supplied address family. If the supplied address family does not match
+the address an exception will be thrown.
+
 ### `Assert-Module`
 
 Assert if the specific module is available to be imported and optionally
@@ -106,36 +145,77 @@ This will assert that the module DhcpServer is available and that it has
 been imported into the session. If the module is not available an exception
 will be thrown.
 
-### `Assert-IPAddress`
-Asserts if the IP Address is valid and optionally validates
-the IP Address against an Address Family
+### `ConvertTo-CimInstance`
 
-### Syntax
+This function is used to convert a hashtable into MSFT_KeyValuePair objects.
+These are stored as an CimInstance array. DSC cannot handle hashtables but
+CimInstances arrays storing MSFT_KeyValuePair.
+
+#### Syntax
 
 ```plaintext
-Assert-IPAddress [-Address] <string> [[-AddressFamily] <string>] [<CommonParameters>]
+ConvertTo-CimInstance -Hashtable <hashtable> [<CommonParameters>]
 ```
 
-#### Outputs
+### Outputs
 
-None.
+**System.Object[]**
 
-#### Example
+### Example
 
 ```powershell
-Assert-IPAddress -Address '127.0.0.1'
+ConvertTo-CimInstance -Hashtable @{
+    String = 'a string'
+    Bool   = $true
+    Int    = 99
+    Array  = 'a, b, c'
+}
 ```
 
-This will assert that the supplied address is a valid IPv4 or IPv6 address.
-If it is not an exception will be thrown.
+This example returns an CimInstance with the provided hashtable values.
+
+### `ConvertTo-HashTable`
+
+This function is used to convert a CimInstance array containing
+MSFT_KeyValuePair objects into a hashtable.
+
+#### Syntax
+
+```plaintext
+ConvertTo-HashTable -CimInstance <Microsoft.Management.Infrastructure.CimInstance[]>
+ [<CommonParameters>]
+```
+
+### Outputs
+
+**System.Collections.Hashtable**
+
+### Example
 
 ```powershell
-Assert-Module -Address 'fe80:ab04:30F5:002b::1' AddressFamily  = 'IPv6'
+$newInstanceParameters = @{
+    ClassName = 'MSFT_KeyValuePair'
+    Namespace = 'root/microsoft/Windows/DesiredStateConfiguration'
+    ClientOnly = $true
+}
+
+$cimInstance = [Microsoft.Management.Infrastructure.CimInstance[]] (
+    (New-CimInstance @newInstanceParameters -Property @{
+        Key   = 'FirstName'
+        Value = 'John'
+    }),
+
+    (New-CimInstance @newInstanceParameters -Property @{
+        Key   = 'LastName'
+        Value = 'Smith'
+    })
+)
+
+ConvertTo-HashTable -CimInstance $cimInstance
 ```
 
-This will assert that address is valid and that it matches the
-supplied address family. If the supplied address family does not match
-the address an exception will be thrown.
+This creates a array om CimInstances of the class name MSFT_KeyValuePair
+and passes it to ConvertTo-HashTable which returns a hashtable.
 
 ### `Get-LocalizedData`
 
@@ -355,8 +435,30 @@ catch
     $errorMessage = $script:localizedData.PathNotFoundMessage -f $path
     New-ObjectNotFoundException -Message $errorMessage -ErrorRecord $_
 }
-
 ```
+
+### `Remove-CommonParameter`
+
+This function serves the purpose of removing common parameters and option
+common parameters from a parameter hashtable.
+
+#### Syntax
+
+```plaintext
+Remove-CommonParameter [-Hashtable] <hashtable> [<CommonParameters>]
+```
+
+### Outputs
+
+**System.Collections.Hashtable**
+
+### Example
+
+```powershell
+Remove-CommonParameter -Hashtable $PSBoundParameters
+```
+
+Returns a new hashtable without the common and optional common parameters.
 
 ### `Test-DscParameterState`
 
@@ -367,8 +469,9 @@ the desired values for any DSC resource.
 
 <!-- markdownlint-disable MD013 - Line length -->
 ```plaintext
-Test-DscParameterState [-CurrentValues] <Hashtable> [-DesiredValues] <Object> [[-ValuesToCheck] <Array>]
- [<CommonParameters>]
+Test-DscParameterState [-CurrentValues] <Object> [-DesiredValues] <Object>
+  [[-ValuesToCheck] <string[]>] [-TurnOffTypeChecking] [-ReverseCheck]
+  [-SortArrayValues] [<CommonParameters>]
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
@@ -388,9 +491,9 @@ $returnValue = Test-DscParameterState -CurrentValues $currentState -DesiredValue
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
-`Get-TargetResource` is called first using all bound parameters to get
-the values in the current state. The result is then compared to the desired
-state by calling `Test-DscParameterState`.
+The function `Get-TargetResource` is called first using all bound parameters
+to get the values in the current state. The result is then compared to the
+desired state by calling `Test-DscParameterState`.
 
 ##### Example 2
 
@@ -411,8 +514,8 @@ $returnValue = Test-DscParameterState `
 ```
 
 This compares the values in the current state against the desires state.
-`Get-TargetResource` is called using just the required parameters to get
-the values in the current state.
+The function `Get-TargetResource` is called using just the required parameters
+to get the values in the current state.
 
 ### `Test-IsNanoServer`
 

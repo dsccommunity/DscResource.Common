@@ -2,6 +2,9 @@
     .SYNOPSIS
         Assert if the specific module is available to be imported.
 
+    .DESCRIPTION
+        Assert if the specific module is available to be imported.
+
     .PARAMETER ModuleName
         Specifies the name of the module to assert.
 

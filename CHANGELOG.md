@@ -8,16 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
- - Added the cmdlet `Assert-IPAddress`
+
+- Added the cmdlet `Assert-IPAddress`
+- Added the cmdlet `ConvertTo-CimInstance`. _This cmdlet comes from NetworkingDsc._
+- Added the cmdlet `ConvertTo-Hashtable`. _This cmdlet comes from NetworkingDsc._
 
 ### Changed
 
 - Update the README.md with new cmdlet documentation format.
-
-### Fixed
-
-- The code in the unit tests for `Test-DscParameterState` is now closer
-  following the style guideline.
+- Update to use HQRM tests from the DscResource.Test module.
+- Update the repository to use the latest version of ModuleBuilder.
+- Update to use the latest pipeline files.
+- BREAKING CHANGE: Updated the cmdlet `Test-DscParameterState` to match
+  the one in the module NetworkingDsc which have been extended with for
+  example checking credentials and types. This might be a breaking change
+  in certain scenarios, for example the type checking if on by default.
+  _This change is required to be able to move the module NetworkingDsc_
+  _to use this module._
 
 ## [0.6.0] - 2020-04-23
 

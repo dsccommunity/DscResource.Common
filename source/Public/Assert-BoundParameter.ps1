@@ -3,6 +3,10 @@
         Throws an error if there is a bound parameter that exists in both the
         mutually exclusive lists.
 
+    .DESCRIPTION
+        Throws an error if there is a bound parameter that exists in both the
+        mutually exclusive lists.
+
     .PARAMETER BoundParameterList
         The parameters that should be evaluated against the mutually exclusive
         lists MutuallyExclusiveList1 and MutuallyExclusiveList2. This parameter is
@@ -15,6 +19,22 @@
     .PARAMETER MutuallyExclusiveList2
         An array of parameter names that are not allowed to be bound at the
         same time as those in MutuallyExclusiveList1.
+
+    .EXAMPLE
+        $assertBoundParameterParameters = @{
+            BoundParameterList = $PSBoundParameters
+            MutuallyExclusiveList1 = @(
+                'Parameter1'
+            )
+            MutuallyExclusiveList2 = @(
+                'Parameter2'
+            )
+        }
+
+        Assert-BoundParameter @assertBoundParameterParameters
+
+        This example throws an exception if `$PSBoundParameters` contains both
+        the parameters `Parameter1` and `Parameter2`.
 #>
 function Assert-BoundParameter
 {
