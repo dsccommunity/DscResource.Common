@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added a default value of `en-US` to the `DefaultUICulture` parameter of the `Get-LocalizedData` function
+  [Issue #33](https://github.com/dsccommunity/DscResource.Common/issues/33).
+
 ## [0.7.1] - 2020-05-02
 
 ### Fixed
