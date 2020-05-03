@@ -139,7 +139,7 @@
 #>
 function Get-LocalizedData
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'DefaultUICulture')]
     param
     (
         [Parameter(Position = 0)]
@@ -166,7 +166,7 @@ function Get-LocalizedData
 
         [Parameter(Position = 1, ParameterSetName = 'DefaultUICulture')]
         [System.String]
-        $DefaultUICulture
+        $DefaultUICulture = 'en-US'
     )
 
     begin
