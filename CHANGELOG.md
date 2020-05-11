@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added a default value of `en-US` to the `DefaultUICulture` parameter of the `Get-LocalizedData` function
   [Issue #33](https://github.com/dsccommunity/DscResource.Common/issues/33).
+- Fixing a problem with the latest ModuleBuild 1.7.0 that breaks the CI pipeline.
 
 ## [0.7.1] - 2020-05-02
 

@@ -2,7 +2,7 @@
 ####################################################
 #          ModuleBuilder Configuration             #
 ####################################################
-CopyDirectories:
+CopyPaths:
   - en-US
 prefix: prefix.ps1
 suffix: suffix.ps1
