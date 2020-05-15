@@ -19,6 +19,11 @@
 #>
 function Set-PSModulePath
 {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSUseShouldProcessForStateChangingFunctions',
+        '',
+        Justification = 'ShouldProcess is not supported in DSC resources.'
+    )]
     [CmdletBinding()]
     param
     (
