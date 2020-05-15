@@ -1,8 +1,11 @@
 
 <#
     .SYNOPSIS
-        The is a wrapper to set $env:PSModulePath both in current session and
-        machine wide.
+        Set environment variable PSModulePath in current session or machine wide.
+
+    .DESCRIPTION
+        The is a wrapper to set environment variable PSModulePath in current
+        session or machine wide.
 
     .PARAMETER Path
         A string with all the paths separated by semi-colons.
