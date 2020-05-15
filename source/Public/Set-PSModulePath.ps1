@@ -4,7 +4,7 @@
         Set environment variable PSModulePath in current session or machine wide.
 
     .DESCRIPTION
-        The is a wrapper to set environment variable PSModulePath in current
+        This is a wrapper to set environment variable PSModulePath in current
         session or machine wide.
 
     .PARAMETER Path

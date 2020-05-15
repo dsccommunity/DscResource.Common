@@ -462,8 +462,8 @@ Returns a new hashtable without the common and optional common parameters.
 
 ### `Set-PSModulePath`
 
-The is a wrapper to set $env:PSModulePath both in current session and
-machine wide.
+This is a wrapper to set environment variable PSModulePath in current
+session or machine wide.
 
 #### Syntax
 
