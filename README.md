@@ -462,8 +462,8 @@ Returns a new hashtable without the common and optional common parameters.
 
 ### `Set-PSModulePath`
 
-This function serves the purpose of removing common parameters and option
-common parameters from a parameter hashtable.
+The is a wrapper to set $env:PSModulePath both in current session and
+machine wide.
 
 #### Syntax
 

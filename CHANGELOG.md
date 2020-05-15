@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added cmdlet `Set-PSModulePath`
+
 ## [0.8.0] - 2020-05-11
 
 - Added a default value of `en-US` to the `DefaultUICulture` parameter of the `Get-LocalizedData` function
