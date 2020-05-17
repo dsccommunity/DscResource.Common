@@ -61,7 +61,7 @@ Describe 'Set-PSModulePath' -Tag 'SetPSModulePath' {
         }
     }
 
-    Context 'When the tests has run for Set-PSModulePath' {
+    Context 'When the tests have run for Set-PSModulePath' {
         It 'Should have returned the session PSModulePath to the original value' {
             $env:PSModulePath | Should -Be $currentPSModulePath
         }

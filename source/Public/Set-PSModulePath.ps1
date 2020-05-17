@@ -1,7 +1,8 @@
 
 <#
     .SYNOPSIS
-        Set environment variable PSModulePath in current session or machine wide.
+        Set environment variable PSModulePath in the current session or machine
+        wide.
 
     .DESCRIPTION
         This is a wrapper to set environment variable PSModulePath in current
