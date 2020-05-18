@@ -460,6 +460,37 @@ Remove-CommonParameter -Hashtable $PSBoundParameters
 
 Returns a new hashtable without the common and optional common parameters.
 
+### `Set-PSModulePath`
+
+This is a wrapper to set environment variable PSModulePath in the current
+session or machine wide.
+
+#### Syntax
+
+```plaintext
+Set-PSModulePath [-Path] <String> [-Machine] [<CommonParameters>]
+```
+
+### Outputs
+
+None.
+
+### Example
+
+```powershell
+Set-PSModulePath -Path '<Path 1>;<Path 2>'
+```
+
+Sets the session environment variable `PSModulePath` to the specified path
+or paths (separated with semi-colons).
+
+```powershell
+Set-PSModulePath -Path '<Path 1>;<Path 2>' -Machine
+```
+
+Sets the machine environment variable `PSModulePath` to the specified path
+or paths (separated with semi-colons).
+
 ### `Test-DscParameterState`
 
 This function is used to compare the values in the current state against

@@ -49,6 +49,7 @@ Pester:
   Script:
     - tests/QA
     - tests/Unit
+    - tests/Integration
   ExcludeTag:
   Tag:
   CodeCoverageThreshold: 50
