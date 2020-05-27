@@ -1,17 +1,22 @@
-$ProjectPath = "$PSScriptRoot\..\..\.." | Convert-Path
-$ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
-        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-        $(try { Test-ModuleManifest $_.FullName -ErrorAction Stop } catch { $false } )
-    }).BaseName
+BeforeAll {
+    $script:moduleName = 'DscResource.Common'
 
-Import-Module $ProjectName -Force
+    #region HEADER
+    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
+
+    Get-Module -Name $script:moduleName -ListAvailable |
+        Select-Object -First 1 |
+        Import-Module -Force -ErrorAction 'Stop'
+    #endregion HEADER
+}
 
 Describe 'New-NotImplementedException' {
     Context 'When called with Message parameter only' {
         It 'Should throw the correct error' {
             $mockErrorMessage = 'Mocked error'
+            $mockExpectedErrorMessage = 'System.NotImplementedException: Mocked error'
 
-            { New-NotImplementedException -Message $mockErrorMessage } | Should -Throw $mockErrorMessage
+            { New-NotImplementedException -Message $mockErrorMessage } | Should -Throw $mockExpectedErrorMessage
         }
     }
 
@@ -31,6 +36,4 @@ Describe 'New-NotImplementedException' {
                         $mockErrorMessage, $mockExceptionErrorMessage)
         }
     }
-
-    Assert-VerifiableMock
 }

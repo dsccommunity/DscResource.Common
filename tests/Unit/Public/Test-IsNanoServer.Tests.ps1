@@ -1,37 +1,38 @@
-$ProjectPath = "$PSScriptRoot\..\..\.." | Convert-Path
-$ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
-        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-        $(try
-            {
-                Test-ModuleManifest $_.FullName -ErrorAction Stop
-            }
-            catch
-            {
-                $false
-            } )
-    }).BaseName
+BeforeAll {
+    $script:moduleName = 'DscResource.Common'
 
-Import-Module $ProjectName -Force
+    #region HEADER
+    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
-Describe 'Test-IsNanoServer' -Tag TestIsNanoServer {
-    function Get-CimInstance
-    {
-        param
-        (
-            [Parameter()]
-            [System.String]
-            $ClassName
-        )
+    Get-Module -Name $script:moduleName -ListAvailable |
+        Select-Object -First 1 |
+        Import-Module -Force -ErrorAction 'Stop'
+    #endregion HEADER
+}
+
+Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
+    BeforeAll {
+        function Get-CimInstance
+        {
+            param
+            (
+                [Parameter()]
+                [System.String]
+                $ClassName
+            )
+        }
     }
 
     Context 'When the current computer is a Datacenter Nano server' {
-        Mock -CommandName Get-CimInstance `
+        BeforeAll {
+            Mock -CommandName Get-CimInstance `
             -ModuleName $ProjectName `
             -MockWith {
                 [PSCustomObject] @{
                     OperatingSystemSKU = 143
                 }
             }
+        }
 
         It 'Should retrun true' {
             Test-IsNanoServer -Verbose | Should -BeTrue
@@ -39,13 +40,15 @@ Describe 'Test-IsNanoServer' -Tag TestIsNanoServer {
     }
 
     Context 'When the current computer is a Standard Nano server' {
-        Mock -CommandName Get-CimInstance `
-            -ModuleName $ProjectName `
-            -MockWith {
-                [PSCustomObject] @{
-                    OperatingSystemSKU = 144
+        BeforeAll {
+            Mock -CommandName Get-CimInstance `
+                -ModuleName $ProjectName `
+                -MockWith {
+                    [PSCustomObject] @{
+                        OperatingSystemSKU = 144
+                    }
                 }
-            }
+        }
 
         It 'Should retrun true' {
             Test-IsNanoServer -Verbose | Should -BeTrue
@@ -53,13 +56,15 @@ Describe 'Test-IsNanoServer' -Tag TestIsNanoServer {
     }
 
     Context 'When the current computer is not a Nano server' {
-        Mock -CommandName Get-CimInstance `
+        BeforeAll {
+            Mock -CommandName Get-CimInstance `
             -ModuleName $ProjectName `
             -MockWith {
                 [PSCustomObject] @{
                     OperatingSystemSKU = 1
                 }
             }
+        }
 
         It 'Should retrun false' {
             Test-IsNanoServer -Verbose | Should -BeFalse
