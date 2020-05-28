@@ -106,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Unit tests are not running using Pester 5 ([issue #40](https://github.com/dsccommunity/DscResource.Common/issues/40)).
+- Unit tests are now running using Pester 5 ([issue #40](https://github.com/dsccommunity/DscResource.Common/issues/40)).
 
 ## [0.8.0] - 2020-05-11
 
