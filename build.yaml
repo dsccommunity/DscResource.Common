@@ -46,12 +46,13 @@ BuildWorkflow:
 Pester:
   OutputFormat: NUnitXML
   ExcludeFromCodeCoverage:
-  Script:
+  Path:
     - tests/QA
     - tests/Unit
     - tests/Integration
   ExcludeTag:
   Tag:
+  Output: Detailed
   CodeCoverageThreshold: 50
   CodeCoverageOutputFile: JaCoCo_coverage.xml
   CodeCoverageOutputFileEncoding: ascii
@@ -64,6 +65,7 @@ DscTest:
     - output
   ExcludeModuleFile:
   MainGitBranch: main
+  Output: Detailed
 
 Resolve-Dependency:
   Gallery: 'PSGallery'
