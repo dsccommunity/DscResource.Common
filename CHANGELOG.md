@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DscResource.Common
   - Renamed default branch to `main` - fixes [issue #62](https://github.com/dsccommunity/DscResource.Common/issues/62).
   - Changed to use the new GitHub deploy tasks.
+  - Unit tests are now running using Pester 5 ([issue #40](https://github.com/dsccommunity/DscResource.Common/issues/40)).
 - `Assert-Module`
   - Now it possible to forcibly import a module using `-ImportModule -Force`
   - It no longer outputs verbose messages that is normally generated when
@@ -103,10 +104,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added cmdlet `Set-PSModulePath`.
-
-### Changed
-
-- Unit tests are now running using Pester 5 ([issue #40](https://github.com/dsccommunity/DscResource.Common/issues/40)).
 
 ## [0.8.0] - 2020-05-11
 
