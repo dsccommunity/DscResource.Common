@@ -9,11 +9,7 @@ Get-Module -Name $script:moduleName -ListAvailable |
 #endregion HEADER
 
 Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
-    BeforeAll {
-        $script:moduleName = 'DscResource.Common'
-    }
-
-    InModuleScope $script:moduleName {
+    InModuleScope 'DscResource.Common' {
         BeforeAll {
             function Get-CimInstance
             {
@@ -30,7 +26,7 @@ Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
     Context 'When the current computer is a Datacenter Nano server' {
         BeforeAll {
             Mock -CommandName Get-CimInstance `
-                -ModuleName $script:moduleName `
+                -ModuleName 'DscResource.Common' `
                 -MockWith {
                     [PSCustomObject] @{
                         OperatingSystemSKU = 143
@@ -46,7 +42,7 @@ Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
     Context 'When the current computer is a Standard Nano server' {
         BeforeAll {
             Mock -CommandName Get-CimInstance `
-                -ModuleName $script:moduleName `
+                -ModuleName 'DscResource.Common' `
                 -MockWith {
                     [PSCustomObject] @{
                         OperatingSystemSKU = 144
@@ -62,7 +58,7 @@ Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
     Context 'When the current computer is not a Nano server' {
         BeforeAll {
             Mock -CommandName Get-CimInstance `
-                -ModuleName $script:moduleName `
+                -ModuleName 'DscResource.Common' `
                 -MockWith {
                     [PSCustomObject] @{
                         OperatingSystemSKU = 1
