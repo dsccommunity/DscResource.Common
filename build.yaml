@@ -44,7 +44,6 @@ BuildWorkflow:
 ####################################################
 
 Pester:
-  OutputFormat: NUnitXML
   ExcludeFromCodeCoverage:
   Path:
     - tests/QA
