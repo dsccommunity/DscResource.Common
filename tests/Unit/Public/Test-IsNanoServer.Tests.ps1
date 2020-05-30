@@ -30,6 +30,11 @@ BeforeAll {
 
 Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
     BeforeAll {
+        <#
+            Must set this again as the variable from the initialization
+            BeforeAll-block because we can't assume that it is passed into
+            the Run-step (scope that runs the tests).
+        #>
         $moduleName = 'DscResource.Common'
     }
 
