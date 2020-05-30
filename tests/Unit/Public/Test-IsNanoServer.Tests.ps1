@@ -1,28 +1,29 @@
-$script:moduleName = 'DscResource.Common'
+BeforeAll {
+    $script:moduleName = 'DscResource.Common'
 
-#region HEADER
-Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
+    #region HEADER
+    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
-Get-Module -Name $script:moduleName -ListAvailable |
-    Select-Object -First 1 |
-        Import-Module -Force -ErrorAction 'Stop'
-#endregion HEADER
+    Get-Module -Name $script:moduleName -ListAvailable |
+        Select-Object -First 1 |
+            Import-Module -Force -ErrorAction 'Stop'
+    #endregion HEADER
+
+    Remove-Module -Name 'DscResource.Common.Stubs' -Force -ErrorAction 'SilentlyContinue'
+    New-Module -Name 'DscResource.Common.Stubs' -ScriptBlock {
+        function Get-CimInstance
+        {
+            param
+            (
+                [Parameter()]
+                [System.String]
+                $ClassName
+            )
+        }
+    } | Import-Module
+}
 
 Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
-    InModuleScope 'DscResource.Common' {
-        BeforeAll {
-            function Get-CimInstance
-            {
-                param
-                (
-                    [Parameter()]
-                    [System.String]
-                    $ClassName
-                )
-            }
-        }
-    }
-
     Context 'When the current computer is a Datacenter Nano server' {
         BeforeAll {
             Mock -CommandName Get-CimInstance `
