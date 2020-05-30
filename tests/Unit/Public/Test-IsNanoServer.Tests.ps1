@@ -24,6 +24,10 @@ BeforeAll {
 }
 
 Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
+    AfterAll {
+        Remove-Module -Name 'DscResource.Common.Stubs' -Force -ErrorAction 'SilentlyContinue'
+    }
+
     Context 'When the current computer is a Datacenter Nano server' {
         BeforeAll {
             Mock -CommandName Get-CimInstance `
