@@ -1,16 +1,21 @@
 BeforeAll {
-    $script:moduleName = 'DscResource.Common'
+    $moduleName = 'DscResource.Common'
+    $stubModuleName = 'DscResource.Common.Stubs'
 
     #region HEADER
-    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
+    Remove-Module -Name $moduleName -Force -ErrorAction 'SilentlyContinue'
 
-    Get-Module -Name $script:moduleName -ListAvailable |
+    Get-Module -Name $moduleName -ListAvailable |
         Select-Object -First 1 |
             Import-Module -Force -ErrorAction 'Stop'
     #endregion HEADER
 
-    Remove-Module -Name 'DscResource.Common.Stubs' -Force -ErrorAction 'SilentlyContinue'
-    New-Module -Name 'DscResource.Common.Stubs' -ScriptBlock {
+    <#
+        This mocks the Get-CimInstance on platforms where the cmdlet does not
+        exist, like Linux anc macOS.
+    #>
+    Remove-Module -Name $stubModuleName -Force -ErrorAction 'SilentlyContinue'
+    New-Module -Name $stubModuleName -ScriptBlock {
         function Get-CimInstance
         {
             param
@@ -24,14 +29,22 @@ BeforeAll {
 }
 
 Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
+    BeforeAll {
+        $moduleName = 'DscResource.Common'
+    }
+
     AfterAll {
+        <#
+            This removes the stub module that was imported in the
+            initialization BeforeAll-block.
+        #>
         Remove-Module -Name 'DscResource.Common.Stubs' -Force -ErrorAction 'SilentlyContinue'
     }
 
     Context 'When the current computer is a Datacenter Nano server' {
         BeforeAll {
             Mock -CommandName Get-CimInstance `
-                -ModuleName 'DscResource.Common' `
+                -ModuleName $moduleName `
                 -MockWith {
                     [PSCustomObject] @{
                         OperatingSystemSKU = 143
@@ -47,7 +60,7 @@ Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
     Context 'When the current computer is a Standard Nano server' {
         BeforeAll {
             Mock -CommandName Get-CimInstance `
-                -ModuleName 'DscResource.Common' `
+                -ModuleName $moduleName `
                 -MockWith {
                     [PSCustomObject] @{
                         OperatingSystemSKU = 144
@@ -63,7 +76,7 @@ Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
     Context 'When the current computer is not a Nano server' {
         BeforeAll {
             Mock -CommandName Get-CimInstance `
-                -ModuleName 'DscResource.Common' `
+                -ModuleName $moduleName `
                 -MockWith {
                     [PSCustomObject] @{
                         OperatingSystemSKU = 1
