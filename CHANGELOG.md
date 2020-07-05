@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+
+- Added cmdlet `New-InvalidDataException` - fixes [Issue #42](https://github.com/dsccommunity/DscResource.Common/issues/42).
+- Added cmdlet `Set-DscMachineRebootRequired` - fixes [Issue #43](https://github.com/dsccommunity/DscResource.Common/issues/43).
+
 ## [0.9.0] - 2020-05-18
 
 ### Added

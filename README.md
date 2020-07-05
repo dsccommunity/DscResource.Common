@@ -322,6 +322,31 @@ if ( -not $resultOfEvaluation )
 }
 ```
 
+### `New-InvalidDataException`
+
+Creates and throws an invalid data exception.
+
+#### Syntax
+
+```plaintext
+New-InvalidDataException [-ErrorId] <string> [-ErrorMessage] <string> [<CommonParameters>]
+```
+
+### Outputs
+
+None.
+
+### Example
+
+```powershell
+if ( -not $resultOfEvaluation )
+{
+    $errorMessage = $script:localizedData.InvalidData -f $Action
+
+    New-InvalidDataException -ErrorId 'InvalidDataError' -ErrorMessage $errorMessage
+}
+```
+
 ### `New-InvalidOperationException`
 
 Creates and throws an invalid operation exception.
@@ -459,6 +484,30 @@ Remove-CommonParameter -Hashtable $PSBoundParameters
 ```
 
 Returns a new hashtable without the common and optional common parameters.
+
+### `Set-DscMachineRebootRequired`
+
+Sets the global DSCMachineStatus variable to a value of 1 to
+indicate to the LCM that a reboot of the node is required by
+this resource.
+
+#### Syntax
+
+```plaintext
+Set-DscMachineRebootRequired [<CommonParameters>]
+```
+
+### Outputs
+
+None.
+
+### Example
+
+```powershell
+Set-DscMachineRebootRequired
+```
+
+Sets the $global:DSCMachineStatus variable to 1.
 
 ### `Set-PSModulePath`
 
