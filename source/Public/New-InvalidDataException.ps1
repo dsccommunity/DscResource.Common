@@ -2,6 +2,9 @@
     .SYNOPSIS
         Creates and throws an invalid data exception.
 
+    .DESCRIPTION
+        Creates and throws an invalid data exception.
+
     .PARAMETER ErrorId
         The error Id to assign to the exception.
 
@@ -18,6 +21,7 @@
 #>
 function New-InvalidDataException
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     param
     (

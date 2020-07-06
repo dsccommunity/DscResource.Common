@@ -487,9 +487,7 @@ Returns a new hashtable without the common and optional common parameters.
 
 ### `Set-DscMachineRebootRequired`
 
-Sets the global DSCMachineStatus variable to a value of 1 to
-indicate to the LCM that a reboot of the node is required by
-this resource.
+Set the DSC reboot required status variable.
 
 #### Syntax
 

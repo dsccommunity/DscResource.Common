@@ -1,11 +1,16 @@
 <#
     .SYNOPSIS
-        Sets the global DSCMachineStatus variable to a value of 1 to
-        indicate to the LCM that a reboot of the node is required by
-        this resource.
+        Set the DSC reboot required status variable.
+
+    .DESCRIPTION
+        Sets the global DSCMachineStatus variable to a value of 1.
+        This function is used to set the global variable that indicates
+        to the LCM that a reboot of the node is required.
 
     .EXAMPLE
-        Set-DscMachineRebootRequired
+        PS C:\> Set-DscMachineRebootRequired
+
+        Sets the $global:DSCMachineStatus variable to 1.
 
     .NOTES
         This function is implemented so that individual resource modules
@@ -15,6 +20,7 @@
 #>
 function Set-DscMachineRebootRequired
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     # Suppressing this rule because $global:DSCMachineStatus is used to trigger a reboot.
     [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]
     <#
