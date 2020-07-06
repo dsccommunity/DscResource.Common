@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added cmdlet `New-InvalidDataException` - fixes [Issue #42](https://github.com/dsccommunity/DscResource.Common/issues/42).
 - Added cmdlet `Set-DscMachineRebootRequired` - fixes [Issue #43](https://github.com/dsccommunity/DscResource.Common/issues/43).
+- Pinned `Pester` module version to `4.10.1` to enable build until
+  `v5.x` is ready for use.
 
 ## [0.9.0] - 2020-05-18
 
