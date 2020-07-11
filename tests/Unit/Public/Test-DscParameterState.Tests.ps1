@@ -28,6 +28,7 @@ InModuleScope $ProjectName {
                     k2 = 123
                     k3 = 'v1', 'v2', 'v3'
                 }
+                ScriptBlock = { Get-Date }
             }
 
             Context 'When all values match' {
@@ -41,6 +42,7 @@ InModuleScope $ProjectName {
                         k2 = 123
                         k3 = 'v1', 'v2', 'v3'
                     }
+                    ScriptBlock = { Get-Date }
                 }
 
                 It 'Should not throw exception' {
@@ -130,6 +132,57 @@ InModuleScope $ProjectName {
                 }
             }
 
+            Context 'When an scriptblock is mismatched' {
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 1
+                    Array     = 'a', 'b', 'c'
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                    ScriptBlock = { Get-Process }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Test-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false' {
+                    $script:result | Should -BeFalse
+                }
+            }
+
+            Context 'When an int is mismatched' {
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 1
+                    Array     = 'a', 'b', 'c'
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Test-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false' {
+                    $script:result | Should -BeFalse
+                }
+            }
+
             Context 'When a type is mismatched' {
                 $desiredValues = [PSObject] @{
                     String = 'a string'
@@ -171,15 +224,21 @@ InModuleScope $ProjectName {
                 }
             }
 
-            Context 'When a value is mismatched but valuesToCheck is used to exclude them' {
-                $desiredValues = [PSObject] @{
-                    String = 'a string'
-                    Bool   = $false
-                    Int    = 1
-                    Array  = @( 'a', 'b' )
+            Context 'When a value is mismatched but ExcludeProperties is used to exclude then' {
+                $desiredValues = @{
+                    String    = 'some other string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = 'a', 'b', 'c'
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                    ScriptBlock = { Get-Date }
                 }
 
-                $valuesToCheck = @(
+                $excludeProperties = @(
                     'String'
                 )
 
@@ -187,7 +246,7 @@ InModuleScope $ProjectName {
                     { $script:result = Test-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
-                            -ValuesToCheck $valuesToCheck `
+                            -ExcludeProperties $excludeProperties `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
@@ -679,6 +738,7 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Throw
                 }
             }
+
         }
 
         # macOS and Linux does not support CimInstance.

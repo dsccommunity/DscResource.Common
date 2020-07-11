@@ -548,7 +548,7 @@ the desired values for any DSC resource.
 <!-- markdownlint-disable MD013 - Line length -->
 ```plaintext
 Test-DscParameterState [-CurrentValues] <Object> [-DesiredValues] <Object>
-  [[-ValuesToCheck] <string[]>] [-TurnOffTypeChecking] [-ReverseCheck]
+  [[-ExcludeProperties] <string[]>] [-TurnOffTypeChecking] [-ReverseCheck]
   [-SortArrayValues] [<CommonParameters>]
 ```
 <!-- markdownlint-enable MD013 - Line length -->
@@ -585,7 +585,7 @@ $getTargetResourceParameters = @{
 $returnValue = Test-DscParameterState `
     -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
     -DesiredValues $PSBoundParameters `
-    -ValuesToCheck @(
+    -ExcludeProperties @(
         'FailsafeOperator'
         'NotificationMethod'
     )

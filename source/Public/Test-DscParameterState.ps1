@@ -14,7 +14,11 @@
         The hashtable of desired values. For example $PSBoundParameters with the
         desired values.
 
-    .PARAMETER ValuesToCheck
+    .PARAMETER Properties
+        This is a list of properties in the desired values list should be checked.
+        If this is empty then all values in DesiredValues are checked.
+
+    .PARAMETER ExcludeProperties
         This is a list of which properties in the desired values list should be checked.
         If this is empty then all values in DesiredValues are checked.
 
@@ -48,7 +52,7 @@
         $returnValue = Test-DscParameterState `
             -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
             -DesiredValues $PSBoundParameters `
-            -ValuesToCheck @(
+            -ExcludeProperties @(
                 'FailsafeOperator'
                 'NotificationMethod'
             )
@@ -72,18 +76,23 @@ function Test-DscParameterState
 
         [Parameter()]
         [System.String[]]
-        $ValuesToCheck,
+        [Alias('ValuesToCheck')]
+        $Properties,
 
         [Parameter()]
-        [System.Management.Automation.SwitchParameter]
+        [System.String[]]
+        $ExcludeProperties,
+
+        [Parameter()]
+        [switch]
         $TurnOffTypeChecking,
 
         [Parameter()]
-        [System.Management.Automation.SwitchParameter]
+        [switch]
         $ReverseCheck,
 
         [Parameter()]
-        [System.Management.Automation.SwitchParameter]
+        [switch]
         $SortArrayValues
     )
 
@@ -117,22 +126,26 @@ function Test-DscParameterState
             -ArgumentName 'CurrentValues'
     }
 
-    if ($DesiredValues -is [Microsoft.Management.Infrastructure.CimInstance] -and -not $ValuesToCheck)
+    if ($DesiredValues -is [Microsoft.Management.Infrastructure.CimInstance] -and -not $Properties)
     {
         New-InvalidArgumentException `
-            -Message $script:localizedData.InvalidValuesToCheckError `
-            -ArgumentName 'ValuesToCheck'
+            -Message $script:localizedData.InvalidExcludePropertiesError `
+            -ArgumentName 'ExcludeProperties'
     }
 
     $desiredValuesClean = Remove-CommonParameter -Hashtable $DesiredValues
 
-    if (-not $ValuesToCheck)
+    if (-not $Properties)
     {
         $keyList = $desiredValuesClean.Keys
     }
     else
     {
-        $keyList = $ValuesToCheck
+        $keyList = $Properties
+    }
+    if ($ExcludeProperties)
+    {
+        $keyList = $keyList | Where-Object { $_ -notin $ExcludeProperties }
     }
 
     foreach ($key in $keyList)
@@ -151,7 +164,7 @@ function Test-DscParameterState
             $currentValue = ConvertTo-HashTable -CimInstance $currentValue
         }
 
-        if ($null -ne $desiredValue)
+        if ($desiredValue)
         {
             $desiredType = $desiredValue.GetType()
         }
@@ -162,7 +175,7 @@ function Test-DscParameterState
             }
         }
 
-        if ($null -ne $currentValue)
+        if ($currentValue)
         {
             $currentType = $currentValue.GetType()
         }
@@ -260,13 +273,13 @@ function Test-DscParameterState
 
                 if ($SortArrayValues)
                 {
-                    $desiredArrayValues = $desiredArrayValues | Sort-Object
-                    $currentArrayValues = $currentArrayValues | Sort-Object
+                    $desiredArrayValues = @($desiredArrayValues | Sort-Object)
+                    $currentArrayValues = @($currentArrayValues | Sort-Object)
                 }
 
                 for ($i = 0; $i -lt $desiredArrayValues.Count; $i++)
                 {
-                    if ($null -ne $desiredArrayValues[$i])
+                    if ($desiredArrayValues[$i])
                     {
                         $desiredType = $desiredArrayValues[$i].GetType()
                     }
@@ -277,7 +290,7 @@ function Test-DscParameterState
                         }
                     }
 
-                    if ($null -ne $currentArrayValues[$i])
+                    if ($currentArrayValues[$i])
                     {
                         $currentType = $currentArrayValues[$i].GetType()
                     }
@@ -297,6 +310,50 @@ function Test-DscParameterState
                             $returnValue = $false
                             continue
                         }
+                    }
+
+                    #Convert a scriptblock into a string as scriptblocks are not comparable
+                    $wasCurrentArrayValuesConverted = $false
+                    if ($currentArrayValues[$i] -is [scriptblock])
+                    {
+                        $currentArrayValues[$i] = if ($desiredArrayValues[$i] -is [string])
+                        {
+                            $currentArrayValues[$i] = $currentArrayValues[$i].Invoke()
+                        }
+                        else
+                        {
+                            $currentArrayValues[$i].ToString()
+                        }
+                        $wasCurrentArrayValuesConverted = $true
+                    }
+                    if ($desiredArrayValues[$i] -is [scriptblock])
+                    {
+                        $desiredArrayValues[$i] = if ($currentArrayValues[$i] -is [string] -and -not $wasCurrentArrayValuesConverted)
+                        {
+                            $desiredArrayValues[$i].Invoke()
+                        }
+                        else
+                        {
+                            $desiredArrayValues[$i].ToString()
+                        }
+                    }
+
+                    if ($desiredType -eq [System.Collections.Hashtable] -and $currentType -eq [System.Collections.Hashtable])
+                    {
+                        $param = $PSBoundParameters
+                        $param.CurrentValues = $currentArrayValues[$i]
+                        $param.DesiredValues = $desiredArrayValues[$i]
+                        $null = $param.Remove('ExcludeProperties')
+
+                        if ($returnValue)
+                        {
+                            $returnValue = Test-DscParameterState @param
+                        }
+                        else
+                        {
+                            Test-DscParameterState @param | Out-Null
+                        }
+                        continue
                     }
 
                     if ($desiredArrayValues[$i] -ne $currentArrayValues[$i])
@@ -319,7 +376,7 @@ function Test-DscParameterState
             $param = $PSBoundParameters
             $param.CurrentValues = $currentValue
             $param.DesiredValues = $desiredValue
-            $null = $param.Remove('ValuesToCheck')
+            $null = $param.Remove('ExcludeProperties')
 
             if ($returnValue)
             {
@@ -333,6 +390,32 @@ function Test-DscParameterState
         }
         else
         {
+            #Convert a scriptblock into a string as scriptblocks are not comparable
+            $wasCurrentValue = $false
+            if ($currentValue -is [scriptblock])
+            {
+                $currentValue = if ($desiredValue -is [string])
+                {
+                    $currentValue = $currentValue.Invoke()
+                }
+                else
+                {
+                    $currentValue.ToString()
+                }
+                $wasCurrentValue = $true
+            }
+            if ($desiredValue -is [scriptblock])
+            {
+                $desiredValue = if ($currentValue -is [string] -and -not $wasCurrentValue)
+                {
+                    $desiredValue.Invoke()
+                }
+                else
+                {
+                    $desiredValue.ToString()
+                }
+            }
+
             if ($desiredValue -ne $currentValue)
             {
                 Write-Verbose -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
@@ -360,6 +443,5 @@ function Test-DscParameterState
     }
 
     Write-Verbose -Message ($script:localizedData.TestDscParameterResultMessage -f $returnValue)
-
     return $returnValue
 }
