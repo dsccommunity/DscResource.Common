@@ -254,6 +254,61 @@ InModuleScope $ProjectName {
                     $script:result | Should -BeTrue
                 }
             }
+
+            Context 'When a value is mismatched but it is not in Properties then' {
+                $desiredValues = @{
+                    String    = 'some other string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = 'a', 'b', 'c'
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                    ScriptBlock = { Get-Date }
+                }
+
+                $properties = @(
+                    'Bool'
+                    'Int'
+                    'Array'
+                    'Hashtable'
+                    'ScriptBlock'
+                )
+
+                It 'Should not throw exception' {
+                    { $script:result = Test-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -Properties $properties `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $true' {
+                    $script:result | Should -BeTrue
+                }
+
+                $properties = @(
+                    'String'
+                    'Bool'
+                    'Int'
+                    'Array'
+                    'Hashtable'
+                )
+
+                It 'Should not throw exception' {
+                    { $script:result = Test-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -Properties $properties `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false' {
+                    $script:result | Should -BeFalse
+                }
+            }
         }
 
         Context 'When testing array values' {
