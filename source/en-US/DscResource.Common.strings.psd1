@@ -9,7 +9,7 @@ ConvertFrom-StringData @'
     AddressIPv6MismatchError = Address '{0}' is in IPv6 format, which does not match server address family {1}. Please correct either of them in the configuration and try again. (DRC0013)
     InvalidDesiredValuesError = Property 'DesiredValues' in Test-DscParameterState must be either a Hashtable or CimInstance. Type detected was '{0}'. (DRC0014)
     InvalidCurrentValuesError = Property 'CurrentValues' in Test-DscParameterState must be either a Hashtable, CimInstance, or CimIntance[]. Type detected was '{0}'. (DRC0015)
-    InvalidExcludePropertiesError = If 'DesiredValues' is a CimInstance then property 'ExcludeProperties' must contain a value. (DRC0016)
+    InvalidPropertiesError = If 'DesiredValues' is a CimInstance then property 'Properties' must contain a value. (DRC0016)
     MatchPsCredentialUsernameMessage = MATCH: PSCredential username match. Current state is '{0}' and desired state is '{1}'. (DRC0017)
     NoMatchPsCredentialUsernameMessage = NOTMATCH: PSCredential username mismatch. Current state is '{0}' and desired state is '{1}'. (DRC0018)
     NoMatchTypeMismatchMessage = NOTMATCH: Type mismatch for property '{0}' Current state type is '{1}' and desired type is '{2}'. (DRC0019)

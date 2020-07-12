@@ -84,15 +84,15 @@ function Test-DscParameterState
         $ExcludeProperties,
 
         [Parameter()]
-        [switch]
+        [System.Management.Automation.SwitchParameter]
         $TurnOffTypeChecking,
 
         [Parameter()]
-        [switch]
+        [System.Management.Automation.SwitchParameter]
         $ReverseCheck,
 
         [Parameter()]
-        [switch]
+        [System.Management.Automation.SwitchParameter]
         $SortArrayValues
     )
 
@@ -129,7 +129,7 @@ function Test-DscParameterState
     if ($DesiredValues -is [Microsoft.Management.Infrastructure.CimInstance] -and -not $Properties)
     {
         New-InvalidArgumentException `
-            -Message $script:localizedData.InvalidExcludePropertiesError `
+            -Message $script:localizedData.InvalidPropertiesError `
             -ArgumentName 'ExcludeProperties'
     }
 
@@ -145,7 +145,7 @@ function Test-DscParameterState
     }
     if ($ExcludeProperties)
     {
-        $keyList = $keyList | Where-Object { $_ -notin $ExcludeProperties }
+        $keyList = $keyList | Where-Object -FilterScript { $_ -notin $ExcludeProperties }
     }
 
     foreach ($key in $keyList)

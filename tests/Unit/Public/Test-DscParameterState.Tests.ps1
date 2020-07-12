@@ -738,7 +738,6 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Throw
                 }
             }
-
         }
 
         # macOS and Linux does not support CimInstance.
