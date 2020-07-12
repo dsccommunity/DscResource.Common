@@ -145,6 +145,109 @@ This will assert that the module DhcpServer is available and that it has
 been imported into the session. If the module is not available an exception
 will be thrown.
 
+### `Compare-ResourcePropertyState`
+
+Compare current and desired property state for any DSC resource and return
+a hashtable with the metadata from the comparison.
+
+This introduces a new design pattern how to evaluate current and desired
+state in a DSC resource. This cmdlet is meant to be used in a DSC resource
+from both the _Test_ and _Set_. The evaluation is made in _Set_ to make sure
+to only change the properties that was not in desired state. Properties that
+was in desired state should not be changed again. This design pattern also
+handles when the cmdlet `Invoke-DscResource` is called with the method
+`Set` which with this design pattern will evaluate the properties correctly.
+
+See the other design pattern that uses the cmdlet [`Test-DscParameterState`](#test-dscparameterstate)
+
+#### Syntax
+
+```plaintext
+Compare-ResourcePropertyState [-CurrentValues] <hashtable> [-DesiredValues] <hashtable>
+ [[-Properties] <string[]>] [[-IgnoreProperties] <string[]>]
+ [[-CimInstanceKeyProperties] <hashtable>] [<CommonParameters>]
+```
+
+#### Outputs
+
+Returns an array containing a hashtable with metadata for each property
+that was evaluated.
+
+Metadata Name | Type | Description
+--- | --- | ---
+ParameterName | `[System.String]` | The name of the property that was evaluated
+Expected | The type of the property | The desired value for the property
+Actual | The type of the property | The actual current value for the property
+InDesiredState | `[System.Boolean]` | Returns `$true` if the expected and actual value was equal.
+
+#### Example
+
+```powershell
+$compareTargetResourceStateParameters = @{
+    CurrentValues = (Get-TargetResource $PSBoundParameters)
+    DesiredValues = $PSBoundParameters
+}
+
+$propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+```
+
+This examples call Compare-ResourcePropertyState with the current state
+and the desired state and returns a hashtable array of all the properties
+that was evaluated based on the properties pass in the parameter DesiredValues.
+
+```powershell
+$compareTargetResourceStateParameters = @{
+    CurrentValues = (Get-TargetResource $PSBoundParameters)
+    DesiredValues = $PSBoundParameters
+    Properties    = @(
+        'Property1'
+    )
+}
+
+$propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+```
+
+This examples call Compare-ResourcePropertyState with the current state
+and the desired state and returns a hashtable array with just the property
+`Property1` as that was the only property that was to be evaluated.
+
+```powershell
+$compareTargetResourceStateParameters = @{
+    CurrentValues    = (Get-TargetResource $PSBoundParameters)
+    DesiredValues    = $PSBoundParameters
+    IgnoreProperties = @(
+        'Property1'
+    )
+}
+
+$propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+```
+
+This examples call Compare-ResourcePropertyState with the current state
+and the desired state and returns a hashtable array of all the properties
+except the property `Property1`.
+
+```powershell
+$compareTargetResourceStateParameters = @{
+    CurrentValues    = (Get-TargetResource $PSBoundParameters)
+    DesiredValues    = $PSBoundParameters
+    CimInstanceKeyProperties = @{
+        ResourceProperty1 = @(
+            'CimProperty1'
+        )
+    }
+}
+
+$propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+```
+
+This examples call Compare-ResourcePropertyState with the current state
+and the desired state and have a property `ResourceProperty1` who's value
+is an  array of embedded CIM instances. The key property for the CIM instances
+are `CimProperty1`. The CIM instance key property `CimProperty1` is used
+to get the unique CIM instance object to compare against from both the current
+state and the desired state.
+
 ### `ConvertTo-CimInstance`
 
 This function is used to convert a hashtable into MSFT_KeyValuePair objects.
@@ -542,6 +645,13 @@ or paths (separated with semi-colons).
 
 This function is used to compare the values in the current state against
 the desired values for any DSC resource.
+
+This cmdlet was designed to be used in a DSC resource from only _Test_.
+The design pattern that uses the cmdlet `Test-DscParameterState` assumes that
+LCM is used which always calls _Test_ before _Set_, or that there never
+is a need to evaluate the state in _Set_.
+
+A new design pattern was introduces that uses the cmdlet [`Compare-ResourcePropertyState`](#compare-resourcepropertystate)
 
 #### Syntax
 
