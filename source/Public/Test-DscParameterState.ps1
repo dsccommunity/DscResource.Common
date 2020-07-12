@@ -343,7 +343,6 @@ function Test-DscParameterState
                         $param = $PSBoundParameters
                         $param.CurrentValues = $currentArrayValues[$i]
                         $param.DesiredValues = $desiredArrayValues[$i]
-                        $null = $param.Remove('ExcludeProperties')
 
                         if ($returnValue)
                         {
@@ -376,7 +375,6 @@ function Test-DscParameterState
             $param = $PSBoundParameters
             $param.CurrentValues = $currentValue
             $param.DesiredValues = $desiredValue
-            $null = $param.Remove('ExcludeProperties')
 
             if ($returnValue)
             {
