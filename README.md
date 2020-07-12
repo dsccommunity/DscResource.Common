@@ -182,6 +182,8 @@ InDesiredState | `[System.Boolean]` | Returns `$true` if the expected and actual
 
 #### Example
 
+##### Example 1
+
 ```powershell
 $compareTargetResourceStateParameters = @{
     CurrentValues = (Get-TargetResource $PSBoundParameters)
@@ -194,6 +196,8 @@ $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParame
 This examples call Compare-ResourcePropertyState with the current state
 and the desired state and returns a hashtable array of all the properties
 that was evaluated based on the properties pass in the parameter DesiredValues.
+
+##### Example 2
 
 ```powershell
 $compareTargetResourceStateParameters = @{
@@ -211,6 +215,8 @@ This examples call Compare-ResourcePropertyState with the current state
 and the desired state and returns a hashtable array with just the property
 `Property1` as that was the only property that was to be evaluated.
 
+##### Example 3
+
 ```powershell
 $compareTargetResourceStateParameters = @{
     CurrentValues    = (Get-TargetResource $PSBoundParameters)
@@ -226,6 +232,8 @@ $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParame
 This examples call Compare-ResourcePropertyState with the current state
 and the desired state and returns a hashtable array of all the properties
 except the property `Property1`.
+
+##### Example 4
 
 ```powershell
 $compareTargetResourceStateParameters = @{
