@@ -191,11 +191,15 @@ $compareTargetResourceStateParameters = @{
 }
 
 $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+
+$propertiesNotInDesiredState = $propertyState.Where({ -not $_.InDesiredState })
 ```
 
 This examples call Compare-ResourcePropertyState with the current state
 and the desired state and returns a hashtable array of all the properties
 that was evaluated based on the properties pass in the parameter DesiredValues.
+Finally it sets a parameter `$propertiesNotInDesiredState` that contain
+an array with all properties not in desired state.
 
 ##### Example 2
 
@@ -209,11 +213,14 @@ $compareTargetResourceStateParameters = @{
 }
 
 $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+
+$false -in $propertyState.InDesiredState
 ```
 
 This examples call Compare-ResourcePropertyState with the current state
 and the desired state and returns a hashtable array with just the property
 `Property1` as that was the only property that was to be evaluated.
+Finally it checks if `$false` is present in the array property `InDesiredState`.
 
 ##### Example 3
 
