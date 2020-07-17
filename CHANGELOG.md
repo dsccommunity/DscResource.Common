@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 
-- Added cmdlet `Compare-ResourcePropertyState` and also introduces a new
-  design pattern how to evaluate properties in both _Test_ and _Set_ - fixes
+- Added cmdlet `Compare-ResourcePropertyState` that also introduces a new
+  design pattern to evaluate properties in both _Test_ and _Set_ - fixes
   [issue #47](https://github.com/dsccommunity/DscResource.Common/issues/47).
 
 ## [0.9.1] - 2020-07-08

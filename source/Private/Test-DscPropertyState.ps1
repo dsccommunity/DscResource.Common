@@ -66,13 +66,15 @@ function Test-DscPropertyState
         #>
         foreach ($desiredCimInstance in $Values.DesiredValue)
         {
+            $currentCimInstance = $Values.CurrentValue
+
             <#
                 Use the CIM instance Key properties to filter out the current
                 values if the exist.
             #>
             foreach ($keyProperty in $Values.KeyProperties)
             {
-                $currentCimInstance = $Values.CurrentValue |
+                $currentCimInstance = $currentCimInstance |
                     Where-Object -Property $keyProperty -EQ -Value $desiredCimInstance.$keyProperty
             }
 

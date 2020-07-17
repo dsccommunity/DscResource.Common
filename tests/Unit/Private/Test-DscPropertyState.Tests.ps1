@@ -914,6 +914,136 @@ InModuleScope $ProjectName {
                         Test-DscPropertyState -Values $mockValues | Should -BeFalse
                     }
                 }
+
+                Context 'When the CIM instance are using two key properties' {
+                    It 'Should return true when evaluating properties of one CIM instance that matches the key properties' {
+                        $currentCimInstanceParameters1 = @{
+                            ClassName  = $mockClassName
+                            Namespace  = $mockNamespace
+                            Property   = @{
+                                State      = 'Grant'
+                                Ensure     = 'Present'
+                                Permission = @('Delete', 'Select')
+                            }
+                            ClientOnly = $true
+                        }
+
+                        $currentCimInstanceParameters2 = @{
+                            ClassName  = $mockClassName
+                            Namespace  = $mockNamespace
+                            Property   = @{
+                                State      = 'Grant'
+                                Ensure     = 'Absent'
+                                Permission = @('Drop')
+                            }
+                            ClientOnly = $true
+                        }
+
+                        $desiredCimInstanceParameters1 = @{
+                            ClassName  = $mockClassName
+                            Namespace  = $mockNamespace
+                            Property   = @{
+                                State      = 'Grant'
+                                Ensure     = 'Present'
+                                Permission = @('Delete', 'Select')
+                            }
+                            ClientOnly = $true
+                        }
+
+                        $desiredCimInstanceParameters2 = @{
+                            ClassName  = $mockClassName
+                            Namespace  = $mockNamespace
+                            Property   = @{
+                                State      = 'Grant'
+                                Ensure     = 'Absent'
+                                Permission = @('Drop')
+                            }
+                            ClientOnly = $true
+                        }
+
+                        $currentCimInstancePermissionCollection += New-CimInstance @currentCimInstanceParameters1
+                        $currentCimInstancePermissionCollection += New-CimInstance @currentCimInstanceParameters2
+
+                        $desiredCimInstancePermissionCollection += New-CimInstance @desiredCimInstanceParameters1
+                        $desiredCimInstancePermissionCollection += New-CimInstance @desiredCimInstanceParameters2
+
+                        $mockValues = @{
+                            CurrentValue  = $currentCimInstancePermissionCollection
+                            DesiredValue  = $desiredCimInstancePermissionCollection
+                            KeyProperties = @(
+                                'State'
+                                'Ensure'
+                            )
+                        }
+
+                        Test-DscPropertyState -Values $mockValues | Should -BeTrue
+                    }
+                }
+
+                Context 'When the CIM instance are using two key properties, and one CIM instance is not in desired state' {
+                    It 'Should return false when evaluating properties of one CIM instance that matches the key properties' {
+                        $currentCimInstanceParameters1 = @{
+                            ClassName  = $mockClassName
+                            Namespace  = $mockNamespace
+                            Property   = @{
+                                State      = 'Grant'
+                                Ensure     = 'Present'
+                                Permission = @('Select')
+                            }
+                            ClientOnly = $true
+                        }
+
+                        $currentCimInstanceParameters2 = @{
+                            ClassName  = $mockClassName
+                            Namespace  = $mockNamespace
+                            Property   = @{
+                                State      = 'Grant'
+                                Ensure     = 'Absent'
+                                Permission = @('Drop')
+                            }
+                            ClientOnly = $true
+                        }
+
+                        $desiredCimInstanceParameters1 = @{
+                            ClassName  = $mockClassName
+                            Namespace  = $mockNamespace
+                            Property   = @{
+                                State      = 'Grant'
+                                Ensure     = 'Present'
+                                Permission = @('Select')
+                            }
+                            ClientOnly = $true
+                        }
+
+                        $desiredCimInstanceParameters2 = @{
+                            ClassName  = $mockClassName
+                            Namespace  = $mockNamespace
+                            Property   = @{
+                                State      = 'Grant'
+                                Ensure     = 'Absent'
+                                Permission = @('Delete')
+                            }
+                            ClientOnly = $true
+                        }
+
+                        $currentCimInstancePermissionCollection += New-CimInstance @currentCimInstanceParameters1
+                        $currentCimInstancePermissionCollection += New-CimInstance @currentCimInstanceParameters2
+
+                        $desiredCimInstancePermissionCollection += New-CimInstance @desiredCimInstanceParameters1
+                        $desiredCimInstancePermissionCollection += New-CimInstance @desiredCimInstanceParameters2
+
+                        $mockValues = @{
+                            CurrentValue  = $currentCimInstancePermissionCollection
+                            DesiredValue  = $desiredCimInstancePermissionCollection
+                            KeyProperties = @(
+                                'State'
+                                'Ensure'
+                            )
+                        }
+
+                        Test-DscPropertyState -Values $mockValues | Should -BeFalse
+                    }
+                }
             }
         }
 

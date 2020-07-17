@@ -60,14 +60,17 @@ function Compare-ResourcePropertyState
         $DesiredValues,
 
         [Parameter()]
+        [ValidateNotNullOrEmpty()]
         [System.String[]]
         $Properties,
 
         [Parameter()]
+        [ValidateNotNullOrEmpty()]
         [System.String[]]
         $IgnoreProperties,
 
         [Parameter()]
+        [ValidateNotNull()]
         [System.Collections.Hashtable]
         $CimInstanceKeyProperties = @{}
     )

@@ -150,13 +150,14 @@ will be thrown.
 Compare current and desired property state for any DSC resource and return
 a hashtable with the metadata from the comparison.
 
-This introduces a new design pattern how to evaluate current and desired
-state in a DSC resource. This cmdlet is meant to be used in a DSC resource
-from both the _Test_ and _Set_. The evaluation is made in _Set_ to make sure
-to only change the properties that was not in desired state. Properties that
-was in desired state should not be changed again. This design pattern also
-handles when the cmdlet `Invoke-DscResource` is called with the method
-`Set` which with this design pattern will evaluate the properties correctly.
+This introduces a new design pattern that is used to evaluate current and
+desired state in a DSC resource. This cmdlet is meant to be used in a DSC
+resource from both _Test_ and _Set_. The evaluation is made in _Set_
+to make sure to only change the properties that are not in the desired state.
+Properties that are in the desired state should not be changed again. This
+design pattern also handles when the cmdlet `Invoke-DscResource` is called
+with the method `Set`, which with this design pattern will evaluate the
+properties correctly.
 
 See the other design pattern that uses the cmdlet [`Test-DscParameterState`](#test-dscparameterstate)
 
@@ -195,7 +196,7 @@ $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParame
 $propertiesNotInDesiredState = $propertyState.Where({ -not $_.InDesiredState })
 ```
 
-This examples call Compare-ResourcePropertyState with the current state
+This example calls Compare-ResourcePropertyState with the current state
 and the desired state and returns a hashtable array of all the properties
 that was evaluated based on the properties pass in the parameter DesiredValues.
 Finally it sets a parameter `$propertiesNotInDesiredState` that contain
@@ -217,7 +218,7 @@ $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParame
 $false -in $propertyState.InDesiredState
 ```
 
-This examples call Compare-ResourcePropertyState with the current state
+This example calls Compare-ResourcePropertyState with the current state
 and the desired state and returns a hashtable array with just the property
 `Property1` as that was the only property that was to be evaluated.
 Finally it checks if `$false` is present in the array property `InDesiredState`.
@@ -236,7 +237,7 @@ $compareTargetResourceStateParameters = @{
 $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
 ```
 
-This examples call Compare-ResourcePropertyState with the current state
+This example calls Compare-ResourcePropertyState with the current state
 and the desired state and returns a hashtable array of all the properties
 except the property `Property1`.
 
@@ -256,7 +257,7 @@ $compareTargetResourceStateParameters = @{
 $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
 ```
 
-This examples call Compare-ResourcePropertyState with the current state
+This example calls Compare-ResourcePropertyState with the current state
 and the desired state and have a property `ResourceProperty1` who's value
 is an  array of embedded CIM instances. The key property for the CIM instances
 are `CimProperty1`. The CIM instance key property `CimProperty1` is used
