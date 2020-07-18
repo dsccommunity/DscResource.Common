@@ -19,11 +19,11 @@ InModuleScope $ProjectName {
 
         Context 'When testing single values' {
             $currentValues = @{
-                String    = 'a string'
-                Bool      = $true
-                Int       = 99
-                Array     = 'a', 'b', 'c'
-                Hashtable = @{
+                String      = 'a string'
+                Bool        = $true
+                Int         = 99
+                Array       = 'a', 'b', 'c'
+                Hashtable   = @{
                     k1 = 'Test'
                     k2 = 123
                     k3 = 'v1', 'v2', 'v3'
@@ -33,11 +33,11 @@ InModuleScope $ProjectName {
 
             Context 'When all values match' {
                 $desiredValues = [PSObject] @{
-                    String    = 'a string'
-                    Bool      = $true
-                    Int       = 99
-                    Array     = 'a', 'b', 'c'
-                    Hashtable = @{
+                    String      = 'a string'
+                    Bool        = $true
+                    Int         = 99
+                    Array       = 'a', 'b', 'c'
+                    Hashtable   = @{
                         k1 = 'Test'
                         k2 = 123
                         k3 = 'v1', 'v2', 'v3'
@@ -134,11 +134,11 @@ InModuleScope $ProjectName {
 
             Context 'When an scriptblock is mismatched' {
                 $desiredValues = [PSObject] @{
-                    String    = 'a string'
-                    Bool      = $true
-                    Int       = 1
-                    Array     = 'a', 'b', 'c'
-                    Hashtable = @{
+                    String      = 'a string'
+                    Bool        = $true
+                    Int         = 1
+                    Array       = 'a', 'b', 'c'
+                    Hashtable   = @{
                         k1 = 'Test'
                         k2 = 123
                         k3 = 'v1', 'v2', 'v3'
@@ -226,11 +226,11 @@ InModuleScope $ProjectName {
 
             Context 'When a value is mismatched but ExcludeProperties is used to exclude then' {
                 $desiredValues = @{
-                    String    = 'some other string'
-                    Bool      = $true
-                    Int       = 99
-                    Array     = 'a', 'b', 'c'
-                    Hashtable = @{
+                    String      = 'some other string'
+                    Bool        = $true
+                    Int         = 99
+                    Array       = 'a', 'b', 'c'
+                    Hashtable   = @{
                         k1 = 'Test'
                         k2 = 123
                         k3 = 'v1', 'v2', 'v3'
@@ -257,11 +257,11 @@ InModuleScope $ProjectName {
 
             Context 'When a value is mismatched but it is not in Properties then' {
                 $desiredValues = @{
-                    String    = 'some other string'
-                    Bool      = $true
-                    Int       = 99
-                    Array     = 'a', 'b', 'c'
-                    Hashtable = @{
+                    String      = 'some other string'
+                    Bool        = $true
+                    Int         = 99
+                    Array       = 'a', 'b', 'c'
+                    Hashtable   = @{
                         k1 = 'Test'
                         k2 = 123
                         k3 = 'v1', 'v2', 'v3'
@@ -276,6 +276,19 @@ InModuleScope $ProjectName {
                     'Hashtable'
                     'ScriptBlock'
                 )
+
+                Context 'When using the alias ValuesToCheck' {
+                    It 'Should not throw exception' {
+                        { $script:result = Test-DscParameterState `
+                                -CurrentValues $currentValues `
+                                -DesiredValues $desiredValues `
+                                -ValuesToCheck $properties `
+                                -Verbose:$verbose } | Should -Not -Throw
+                    }
+                    It 'Should return $false' {
+                        $script:result | Should -BeFalse
+                    }
+                }
 
                 It 'Should not throw exception' {
                     { $script:result = Test-DscParameterState `

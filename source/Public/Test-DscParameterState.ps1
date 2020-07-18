@@ -59,7 +59,26 @@
 
         This compares the values in the current state against the desires state.
         The function Get-TargetResource is called using just the required parameters
-        to get the values in the current state.
+        to get the values in the current state. The parameter 'ExcludeProperties'
+        is used to exclude the properties 'FailsafeOperator' and
+        'NotificationMethod' from the comparison.
+
+    .EXAMPLE
+        $getTargetResourceParameters = @{
+            ServerName     = $ServerName
+            InstanceName   = $InstanceName
+            Name           = $Name
+        }
+
+        $returnValue = Test-DscParameterState `
+            -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
+            -DesiredValues $PSBoundParameters `
+            -Properties ServerName, Name
+
+        This compares the values in the current state against the desires state.
+        The function Get-TargetResource is called using just the required parameters
+        to get the values in the current state. The 'Properties' parameter  is used
+        to to only compare the properties 'ServerName' and 'Name'.
 #>
 function Test-DscParameterState
 {
@@ -130,7 +149,7 @@ function Test-DscParameterState
     {
         New-InvalidArgumentException `
             -Message $script:localizedData.InvalidPropertiesError `
-            -ArgumentName 'ExcludeProperties'
+            -ArgumentName Properties
     }
 
     $desiredValuesClean = Remove-CommonParameter -Hashtable $DesiredValues
