@@ -212,6 +212,23 @@ function Get-LocalizedData
             #>
             $currentCulture = Get-UICulture
 
+            <#
+                If the LCID is 127 then use default UI culture instead.
+
+                See more information in issue https://github.com/dsccommunity/DscResource.Common/issues/11.
+            #>
+            if ($currentCulture.LCID -eq 127)
+            {
+                $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($DefaultUICulture)
+                $PSBoundParameters['UICulture'] = $DefaultUICulture
+
+                $evaluateDefaultCulture = $false
+            }
+            else
+            {
+                $evaluateDefaultCulture = $true
+            }
+
             $languageFile = $null
 
             $localizedFileNames = @(
@@ -219,11 +236,11 @@ function Get-LocalizedData
                 $FileName + '.strings.psd1'
             )
 
-            while ($null -ne $currentCulture -and $currentCulture.Name -and !$languageFile)
+            while ($null -ne $currentCulture -and $currentCulture.Name -and -not $languageFile)
             {
                 foreach ($fullFileName in $localizedFileNames)
                 {
-                    $filePath = [io.Path]::Combine($callingScriptRoot, $CurrentCulture.Name, $fullFileName)
+                    $filePath = [System.IO.Path]::Combine($callingScriptRoot, $CurrentCulture.Name, $fullFileName)
 
                     if (Test-Path -Path $filePath)
                     {
@@ -243,14 +260,48 @@ function Get-LocalizedData
                     }
                 }
 
-                $currentCulture = $currentCulture.Parent
+                if (-not $languageFile)
+                {
+                    <#
+                        Evaluate the parent culture if there is one.
+
+                        If the parent culture is LCID 127 then move to the default culture.
+                        See more information in issue https://github.com/dsccommunity/DscResource.Common/issues/11.
+                    #>
+                    if ($currentCulture.Parent -and $currentCulture.Parent.LCID -ne 127)
+                    {
+                        $currentCulture = $currentCulture.Parent
+                    }
+                    else
+                    {
+                        if ($evaluateDefaultCulture)
+                        {
+                            $evaluateDefaultCulture = $false
+
+                            <#
+                                Could not find localized strings file for the the operating
+                                system UI culture. Evaluating the default UI culture (which
+                                defaults to 'en-US' if not specifically set).
+                            #>
+                            $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($DefaultUICulture)
+                            $PSBoundParameters['UICulture'] = $DefaultUICulture
+                        }
+                        else
+                        {
+                            <#
+                                Already evaluated everything we could, exit and let
+                                Import-LocalizedData throw an exception.
+                            #>
+                            break
+                        }
+                    }
+                }
             }
 
-            if (!$languageFile)
-            {
-                $PSBoundParameters.Add('UICulture', $DefaultUICulture)
-            }
-
+            <#
+                Removes the parameter DefaultUICulture so that isn't used when
+                calling Import-LocalizedData.
+            #>
             $null = $PSBoundParameters.Remove('DefaultUICulture')
         }
 
