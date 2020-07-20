@@ -198,7 +198,7 @@ StringKey    = String value
                 }
 
                 It 'Should retrieve the data' {
-                    { Get-LocalizedData -DefaultUICulture 'en-US' -BaseDirectory 'TestDrive:\' -Debug -ErrorAction 'Stop' } | Should -Not -Throw
+                    { Get-LocalizedData -DefaultUICulture 'en-US' -BaseDirectory 'TestDrive:\' -ErrorAction 'Stop' } | Should -Not -Throw
                 }
             }
         }
