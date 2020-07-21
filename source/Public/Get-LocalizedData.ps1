@@ -212,6 +212,8 @@ function Get-LocalizedData
             #>
             $currentCulture = Get-UICulture
 
+            $evaluateDefaultCulture = $true
+
             <#
                 If the LCID is 127 then use default UI culture instead.
 
@@ -223,10 +225,6 @@ function Get-LocalizedData
                 $PSBoundParameters['UICulture'] = $DefaultUICulture
 
                 $evaluateDefaultCulture = $false
-            }
-            else
-            {
-                $evaluateDefaultCulture = $true
             }
 
             $languageFile = $null

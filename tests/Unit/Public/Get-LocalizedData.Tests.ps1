@@ -157,7 +157,7 @@ StringKey    = Sträng värde
                 culture when OS has different culture for which no localized strings
                 exist.
             #>
-            Context "When the operating system UI culture does not exist and the default culture have a '.strings.psd1' file" {
+            Context "When the operating system UI culture does not exist and the default culture has a '.strings.psd1' file" {
                 BeforeAll {
                     New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
 

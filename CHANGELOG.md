@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Fixed
 
 - `Get-LocalizedData`
-  - Now correct evaluates the default UI culture
+  - Now correctly evaluates the default UI culture
     on non-English operating systems ([issue #50](https://github.com/dsccommunity/DscResource.Common/issues/50).
   - If the LCID 127 is found it will be skipped and instead use the default
     UI culture (which is `'en-US'` unless specified) ([issue #11](https://github.com/dsccommunity/DscResource.Common/issues/11).
