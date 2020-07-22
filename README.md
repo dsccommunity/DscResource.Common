@@ -674,8 +674,9 @@ A new design pattern was introduces that uses the cmdlet [`Compare-ResourcePrope
 <!-- markdownlint-disable MD013 - Line length -->
 ```plaintext
 Test-DscParameterState [-CurrentValues] <Object> [-DesiredValues] <Object>
-  [[-ValuesToCheck] <string[]>] [-TurnOffTypeChecking] [-ReverseCheck]
-  [-SortArrayValues] [<CommonParameters>]
+  [-Properties] <string[]> [[-ExcludeProperties] <string[]>]
+  [-TurnOffTypeChecking] [-ReverseCheck] [-SortArrayValues]
+  [<CommonParameters>]
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
@@ -711,10 +712,25 @@ $getTargetResourceParameters = @{
 $returnValue = Test-DscParameterState `
     -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
     -DesiredValues $PSBoundParameters `
-    -ValuesToCheck @(
+    -ExcludeProperties @(
         'FailsafeOperator'
         'NotificationMethod'
     )
+```
+
+##### Example 3
+
+```powershell
+$getTargetResourceParameters = @{
+    ServerName     = $ServerName
+    InstanceName   = $InstanceName
+    Name           = $Name
+}
+
+$returnValue = Test-DscParameterState `
+    -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
+    -DesiredValues $PSBoundParameters `
+    -Properties ServerName, Name
 ```
 
 This compares the values in the current state against the desires state.

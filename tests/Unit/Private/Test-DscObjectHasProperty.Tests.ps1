@@ -8,7 +8,8 @@ $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
 Import-Module $ProjectName
 
 InModuleScope $ProjectName {
-    Describe 'NetworkingDsc.Common\Test-DscObjectHasProperty' {
+    Describe 'Test-DscObjectHasProperty' {
+
         # Use the Get-Verb cmdlet to just get a simple object fast
         $testDscObject = (Get-Verb)[0]
 

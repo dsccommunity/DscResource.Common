@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Added
+### Added
 
+- `Test-DscParameterState` can now handle scriptblocks. The parameter 'ValuesToCheck' was renamed to 'Properties' but an alias
+  was added so it is not a braking change. The parameter 'ExcludeProperties' was added.
+- Added a new test for the alias 'ValuesToCheck' pointing to 'Properties'.
 - Added cmdlet `Compare-ResourcePropertyState` that also introduces a new
   design pattern to evaluate properties in both _Test_ and _Set_ - fixes
   [issue #47](https://github.com/dsccommunity/DscResource.Common/issues/47).
