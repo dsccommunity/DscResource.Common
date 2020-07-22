@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   design pattern to evaluate properties in both _Test_ and _Set_ - fixes
   [issue #47](https://github.com/dsccommunity/DscResource.Common/issues/47).
 
+## Fixed
+
+- `Get-LocalizedData`
+  - Now correctly evaluates the default UI culture
+    on non-English operating systems ([issue #50](https://github.com/dsccommunity/DscResource.Common/issues/50).
+  - If the LCID 127 is found it will be skipped and instead use the default
+    UI culture (which is `'en-US'` unless specified) ([issue #11](https://github.com/dsccommunity/DscResource.Common/issues/11).
+
 ## [0.9.1] - 2020-07-08
 
 ## Added
