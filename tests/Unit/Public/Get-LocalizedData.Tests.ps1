@@ -8,7 +8,7 @@ $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
 Import-Module $ProjectName
 
 InModuleScope $ProjectName {
-    Describe 'Get-LocalizedData' {
+    Describe 'Get-LocalizedData' -Tag 'GetLocalizedData' {
         Context 'When specifying a specific filename' {
             BeforeAll {
                 New-Item -Force -Path 'TestDrive:\ar-SA' -ItemType Directory
@@ -149,6 +149,56 @@ StringKey    = Sträng värde
 
                 It 'Should retrieve the data' {
                     { Import-Module -Name 'TestDrive:\DSC_Resource2.psm1' -ErrorAction 'Stop' } | Should -Not -Throw
+                }
+            }
+
+            <#
+                Regression test for issues loading the *.strings.psd1 from default
+                culture when OS has different culture for which no localized strings
+                exist.
+            #>
+            Context "When the operating system UI culture does not exist and the default culture has a '.strings.psd1' file" {
+                BeforeAll {
+                    New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
+
+                    $null = "
+ConvertFrom-StringData @`'
+# sv-SE strings
+StringKey    = String value
+'@
+                    " | Out-File -Force -FilePath 'TestDrive:\en-US\Get-LocalizedData.Tests.strings.psd1'
+
+                    Mock -CommandName Get-UICulture -MockWith {
+                        return @{
+                            Parent                         = @{
+                                Parent                         = $null
+                                LCID                           = '7'
+                                KeyboardLayoutId               = '7'
+                                Name                           = 'de'
+                                IetfLanguageTag                = 'de'
+                                DisplayName                    = 'German'
+                                NativeName                     = 'Deutsch'
+                                EnglishName                    = 'German'
+                                TwoLetterISOLanguageName       = 'de'
+                                ThreeLetterISOLanguageName     = 'deu'
+                                ThreeLetterWindowsLanguageName = 'DEU'
+                            }
+                            LCID                           = '1031'
+                            KeyboardLayoutId               = '1031'
+                            Name                           = 'de-DE'
+                            IetfLanguageTag                = 'de-DE'
+                            DisplayName                    = 'Deutsch (Deutschland)'
+                            NativeName                     = 'Deutsch (Deutschland)'
+                            EnglishName                    = 'German (Germany)'
+                            TwoLetterISOLanguageName       = 'de'
+                            ThreeLetterISOLanguageName     = 'deu'
+                            ThreeLetterWindowsLanguageName = 'DEU'
+                        }
+                    }
+                }
+
+                It 'Should retrieve the data' {
+                    { Get-LocalizedData -DefaultUICulture 'en-US' -BaseDirectory 'TestDrive:\' -ErrorAction 'Stop' } | Should -Not -Throw
                 }
             }
         }
