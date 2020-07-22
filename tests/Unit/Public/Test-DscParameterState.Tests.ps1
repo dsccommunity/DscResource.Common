@@ -285,8 +285,9 @@ InModuleScope $ProjectName {
                                 -ValuesToCheck $properties `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
-                    It 'Should return $false' {
-                        $script:result | Should -BeFalse
+
+                    It 'Should return $true' {
+                        $script:result | Should -BeTrue
                     }
                 }
 
