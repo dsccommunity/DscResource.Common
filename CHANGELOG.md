@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Fixed
+
+- Correction to `Test-DscParameterState` returning false positive when parameter
+  with an empty array is passed in `DesriedValues` or `CurrentValues` - fixes
+  [issue #53](https://github.com/dsccommunity/DscResource.Common/issues/53).
+
 ## [0.9.2] - 2020-07-22
 
 ### Added

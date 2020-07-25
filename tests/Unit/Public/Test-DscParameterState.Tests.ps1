@@ -524,6 +524,80 @@ InModuleScope $ProjectName {
                     $script:result | Should -BeTrue
                 }
             }
+
+            Context 'When a current value array is empty' {
+                $currentValues = @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = @('a','b','c')
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = @()
+                    }
+                }
+
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = @()
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = @()
+                    }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Test-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false' {
+                    $script:result | Should -BeFalse
+                }
+            }
+
+            Context 'When a desired value array is empty' {
+                $currentValues = @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = @()
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = @()
+                    }
+                }
+
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = @('a','b','c')
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = @()
+                    }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Test-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false' {
+                    $script:result | Should -BeFalse
+                }
+            }
         }
 
         Context 'When testing hashtables' {
