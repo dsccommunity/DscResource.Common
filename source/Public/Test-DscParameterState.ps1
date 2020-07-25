@@ -183,7 +183,7 @@ function Test-DscParameterState
             $currentValue = ConvertTo-HashTable -CimInstance $currentValue
         }
 
-        if ($desiredValue)
+        if ($null -ne $desiredValue)
         {
             $desiredType = $desiredValue.GetType()
         }
@@ -194,7 +194,7 @@ function Test-DscParameterState
             }
         }
 
-        if ($currentValue)
+        if ($null -ne $currentValue)
         {
             $currentType = $currentValue.GetType()
         }
