@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.3] - 2020-07-25
+
 ## Fixed
 
 - Correction to `Test-DscParameterState` returning false positive when parameter
