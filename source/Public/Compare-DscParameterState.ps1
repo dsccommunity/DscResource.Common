@@ -35,53 +35,84 @@
         before doing the comparison.
 
     .EXAMPLE
+        $currentValues = @{
+            String = 'This is a string'
+            Int = 1
+            Bool = $true
+        }
 
+        $desiredValues = @{
+            String = 'This is a string'
+            Int = 99
+        }
 
-        $currentState = Get-TargetResource @PSBoundParameters
+        Compare-DscParameterState -CurrentValues $currentValues -DesiredValues $desiredValues
 
-        $returnValue = Compare-DscParameterState -CurrentValues $currentState -DesiredValues $PSBoundParameters
+        Name                           Value
+        ----                           -----
+        Property                       String
+        Compliance                     True
+        Property                       Int
+        Compliance                     False
 
-        The function Get-TargetResource is called first using all bound parameters
-        to get the values in the current state. The result is then compared to the
-        desired state by calling `Compare-DscParameterState`.
+        The function Compare-DscParameterState compare the value of each hashtable based on the keys
+        present in $desiredValues hashtable. The result indicates that Int property is not in the desired state.
+        No information about Bool property, because it is not in $desiredValues hashtable.
 
     .EXAMPLE
-        $getTargetResourceParameters = @{
-            ServerName     = $ServerName
-            InstanceName   = $InstanceName
-            Name           = $Name
+        $currentValues = @{
+            String = 'This is a string'
+            Int = 1
+            Bool = $true
+        }
+
+        $desiredValues = @{
+            String = 'This is a string'
+            Int = 99
+            Bool = $false
+        }
+
+        $excludeProperties = @('Bool')
+
+        Compare-DscParameterState `
+            -CurrentValues $currentValues `
+            -DesiredValues $desiredValues `
+            -ExcludeProperties $ExcludeProperties
+
+        Name                           Value
+        ----                           -----
+        Property                       String
+        Compliance                     True
+        Property                       Int
+        Compliance                     False
+
+        The function Compare-DscParameterState compare the value of each hashtable based on the keys
+        present in $desiredValues hashtable and without those in $excludeProperties.
+        The result indicates that Int property is not in the desired state.
+        No information about Bool property, because it is in $excludeProperties.
+
+    .EXAMPLE
+
+
+        $serviceParameters = @{
+            Name     = $Name
         }
 
         $returnValue = Compare-DscParameterState `
-            -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
+            -CurrentValues (Get-Service @serviceParameters) `
             -DesiredValues $PSBoundParameters `
-            -ExcludeProperties @(
-                'FailsafeOperator'
-                'NotificationMethod'
+            -Properties @(
+                'Name'
+                'Status'
+                'StartType'
             )
 
         This compares the values in the current state against the desires state.
-        The function Get-TargetResource is called using just the required parameters
-        to get the values in the current state. The parameter 'ExcludeProperties'
-        is used to exclude the properties 'FailsafeOperator' and
-        'NotificationMethod' from the comparison.
+        The command Get-Service is called using just the required parameters
+        to get the values in the current state. The parameter 'Properties'
+        is used to specify the properties 'Name','Status' and
+        'StartType' for the comparison.
 
-    .EXAMPLE
-        $getTargetResourceParameters = @{
-            ServerName     = $ServerName
-            InstanceName   = $InstanceName
-            Name           = $Name
-        }
-
-        $returnValue = Compare-DscParameterState `
-            -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
-            -DesiredValues $PSBoundParameters `
-            -Properties ServerName, Name
-
-        This compares the values in the current state against the desires state.
-        The function Get-TargetResource is called using just the required parameters
-        to get the values in the current state. The 'Properties' parameter  is used
-        to to only compare the properties 'ServerName' and 'Name'.
 #>
 function Compare-DscParameterState
 {
@@ -232,7 +263,7 @@ function Compare-DscParameterState
                 Write-Verbose -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
                 continue # pass to the next key
             }
-            else
+            elseif ($currentType.Name -ne 'string')
             {
                 Write-Verbose -Message ($script:localizedData.NoMatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
                 $complianceTable.Compliance = $false

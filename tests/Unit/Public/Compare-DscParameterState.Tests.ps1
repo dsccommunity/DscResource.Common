@@ -412,6 +412,182 @@ InModuleScope $ProjectName {
             }
         }
 
+        Context 'When testing pscredential' {
+
+            Context 'When currentValue is pscredential type' {
+                BeforeAll {
+                    $currentValues = @{
+                        String      = 'a string'
+                        Bool        = $true
+                        Int         = 99
+                        Array       = 'a', 'b', 'c'
+                        Hashtable   = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                        ScriptBlock = { Get-Date }
+                        PScredential = [pscredential]::new(
+                            'UserName',
+                            $(ConvertTo-SecureString -String 'Pa55w.rd' -AsPlainText -Force)
+                        )
+                    }
+                }
+
+                Context 'When all values match' {
+                    BeforeAll{
+                        $desiredValues = [PSObject] @{
+                            String      = 'a string'
+                            Bool        = $true
+                            Int         = 99
+                            Array       = 'a', 'b', 'c'
+                            Hashtable   = @{
+                                k1 = 'Test'
+                                k2 = 123
+                                k3 = 'v1', 'v2', 'v3'
+                            }
+                            ScriptBlock = { Get-Date }
+                            PScredential = [pscredential]::new(
+                                'UserName',
+                                $(ConvertTo-SecureString -String 'Pa55w.rd' -AsPlainText -Force)
+                            )
+                        }
+                    }
+                    It 'Should not throw exception' {
+                        { $script:result = Compare-DscParameterState `
+                                -CurrentValues $currentValues `
+                                -DesiredValues $desiredValues `
+                                -Verbose:$verbose } | Should -Not -Throw
+                    }
+
+                    It 'Should return all compliance in $true' {
+                        $script:result.Compliance  | Should -Not -Contain $false
+                    }
+                }
+
+                Context 'When an pscredential is mismatched' {
+                    BeforeAll {
+                        $desiredValues = [PSObject] @{
+                            String      = 'a string'
+                            Bool        = $true
+                            Int         = 99
+                            Array       = 'a', 'b', 'c'
+                            Hashtable   = @{
+                                k1 = 'Test'
+                                k2 = 123
+                                k3 = 'v1', 'v2', 'v3'
+                            }
+                            ScriptBlock = { Get-Date }
+                            PScredential = [pscredential]::new(
+                                'SurName',
+                                $(ConvertTo-SecureString -String 'Pa55w.rd' -AsPlainText -Force)
+                            )
+                        }
+                    }
+
+                    It 'Should not throw exception' {
+                        { $script:result = Compare-DscParameterState `
+                                -CurrentValues $currentValues `
+                                -DesiredValues $desiredValues `
+                                -Verbose:$verbose } | Should -Not -Throw
+                    }
+
+                    It 'Should return $false for PScredential compliance' {
+                        $script:result.where({$_.Property -eq 'PScredential'}).Compliance | Should -BeFalse
+                    }
+
+                    It 'Should return all compliance (without PScredential property) in $true' {
+                        $script:result.where({$_.Property -ne 'PScredential'}).Compliance | Should -Not -Contain $false
+                    }
+                }
+            }
+
+            Context 'When currentValue is string type' {
+                BeforeAll {
+                    $currentValues = @{
+                        String      = 'a string'
+                        Bool        = $true
+                        Int         = 99
+                        Array       = 'a', 'b', 'c'
+                        Hashtable   = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                        ScriptBlock = { Get-Date }
+                        PScredential = 'UserName'
+                    }
+                }
+
+                Context 'When all values match' {
+                    BeforeAll{
+                        $desiredValues = [PSObject] @{
+                            String      = 'a string'
+                            Bool        = $true
+                            Int         = 99
+                            Array       = 'a', 'b', 'c'
+                            Hashtable   = @{
+                                k1 = 'Test'
+                                k2 = 123
+                                k3 = 'v1', 'v2', 'v3'
+                            }
+                            ScriptBlock = { Get-Date }
+                            PScredential = [pscredential]::new(
+                                'UserName',
+                                $(ConvertTo-SecureString -String 'Pa55w.rd' -AsPlainText -Force)
+                            )
+                        }
+                    }
+                    It 'Should not throw exception' {
+                        { $script:result = Compare-DscParameterState `
+                                -CurrentValues $currentValues `
+                                -DesiredValues $desiredValues `
+                                -Verbose:$verbose } | Should -Not -Throw
+                    }
+
+                    It 'Should return all compliance in $true' {
+                        $script:result.Compliance  | Should -Not -Contain $false
+                    }
+                }
+
+                Context 'When an pscredential is mismatched' {
+                    BeforeAll {
+                        $desiredValues = [PSObject] @{
+                            String      = 'a string'
+                            Bool        = $true
+                            Int         = 99
+                            Array       = 'a', 'b', 'c'
+                            Hashtable   = @{
+                                k1 = 'Test'
+                                k2 = 123
+                                k3 = 'v1', 'v2', 'v3'
+                            }
+                            ScriptBlock = { Get-Date }
+                            PScredential = [pscredential]::new(
+                                'SurName',
+                                $(ConvertTo-SecureString -String 'Pa55w.rd' -AsPlainText -Force)
+                            )
+                        }
+                    }
+
+                    It 'Should not throw exception' {
+                        { $script:result = Compare-DscParameterState `
+                                -CurrentValues $currentValues `
+                                -DesiredValues $desiredValues `
+                                -Verbose:$verbose } | Should -Not -Throw
+                    }
+
+                    It 'Should return $false for PScredential compliance' {
+                        $script:result.where({$_.Property -eq 'PScredential'}).Compliance | Should -BeFalse
+                    }
+
+                    It 'Should return all compliance (without PScredential property) in $true' {
+                        $script:result.where({$_.Property -ne 'PScredential'}).Compliance | Should -Not -Contain $false
+                    }
+                }
+            }
+        }
+
         Context 'When testing array values' {
             BeforeAll {
                 $currentValues = @{
