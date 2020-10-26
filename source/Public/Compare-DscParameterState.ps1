@@ -1,0 +1,499 @@
+<#
+    .SYNOPSIS
+        This method is used to compare current and desired values for any DSC resource.
+
+    .DESCRIPTION
+        This function compare the parameter status of DSC resource parameters against
+        the current values present on the system, and return a hashtable with the metadata
+        from the comparison.
+
+    .PARAMETER CurrentValues
+        A hashtable with the current values on the system, obtained by e.g.
+        Get-TargetResource.
+
+    .PARAMETER DesiredValues
+        The hashtable of desired values. For example $PSBoundParameters with the
+        desired values.
+
+    .PARAMETER Properties
+        This is a list of properties in the desired values list should be checked.
+        If this is empty then all values in DesiredValues are checked.
+
+    .PARAMETER ExcludeProperties
+        This is a list of which properties in the desired values list should be checked.
+        If this is empty then all values in DesiredValues are checked.
+
+    .PARAMETER TurnOffTypeChecking
+        Indicates that the type of the parameter should not be checked.
+
+    .PARAMETER ReverseCheck
+        Indicates that a reverse check should be done. The current and desired state
+        are swapped for another test.
+
+    .PARAMETER SortArrayValues
+        If the sorting of array values does not matter, values are sorted internally
+        before doing the comparison.
+
+    .EXAMPLE
+
+
+        $currentState = Get-TargetResource @PSBoundParameters
+
+        $returnValue = Compare-DscParameterState -CurrentValues $currentState -DesiredValues $PSBoundParameters
+
+        The function Get-TargetResource is called first using all bound parameters
+        to get the values in the current state. The result is then compared to the
+        desired state by calling `Compare-DscParameterState`.
+
+    .EXAMPLE
+        $getTargetResourceParameters = @{
+            ServerName     = $ServerName
+            InstanceName   = $InstanceName
+            Name           = $Name
+        }
+
+        $returnValue = Compare-DscParameterState `
+            -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
+            -DesiredValues $PSBoundParameters `
+            -ExcludeProperties @(
+                'FailsafeOperator'
+                'NotificationMethod'
+            )
+
+        This compares the values in the current state against the desires state.
+        The function Get-TargetResource is called using just the required parameters
+        to get the values in the current state. The parameter 'ExcludeProperties'
+        is used to exclude the properties 'FailsafeOperator' and
+        'NotificationMethod' from the comparison.
+
+    .EXAMPLE
+        $getTargetResourceParameters = @{
+            ServerName     = $ServerName
+            InstanceName   = $InstanceName
+            Name           = $Name
+        }
+
+        $returnValue = Compare-DscParameterState `
+            -CurrentValues (Get-TargetResource @getTargetResourceParameters) `
+            -DesiredValues $PSBoundParameters `
+            -Properties ServerName, Name
+
+        This compares the values in the current state against the desires state.
+        The function Get-TargetResource is called using just the required parameters
+        to get the values in the current state. The 'Properties' parameter  is used
+        to to only compare the properties 'ServerName' and 'Name'.
+#>
+function Compare-DscParameterState
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [System.Object]
+        $CurrentValues,
+
+        [Parameter(Mandatory = $true)]
+        [System.Object]
+        $DesiredValues,
+
+        [Parameter()]
+        [System.String[]]
+        [Alias('ValuesToCheck')]
+        $Properties,
+
+        [Parameter()]
+        [System.String[]]
+        $ExcludeProperties,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $TurnOffTypeChecking,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $ReverseCheck,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $SortArrayValues
+    )
+
+    $returnValue = @()
+    #region ConvertCIm to Hashtable
+    if ($CurrentValues -is [Microsoft.Management.Infrastructure.CimInstance] -or
+        $CurrentValues -is [Microsoft.Management.Infrastructure.CimInstance[]])
+    {
+        $CurrentValues = ConvertTo-HashTable -CimInstance $CurrentValues
+    }
+
+    if ($DesiredValues -is [Microsoft.Management.Infrastructure.CimInstance] -or
+        $DesiredValues -is [Microsoft.Management.Infrastructure.CimInstance[]])
+    {
+        $DesiredValues = ConvertTo-HashTable -CimInstance $DesiredValues
+    }
+    #endregion Endofconverion
+    #region CheckType of object
+    $types = 'System.Management.Automation.PSBoundParametersDictionary',
+        'System.Collections.Hashtable',
+        'Microsoft.Management.Infrastructure.CimInstance' # but why if you convert it before ?
+
+    if ($DesiredValues.GetType().FullName -notin $types)
+    {
+        New-InvalidArgumentException `
+            -Message ($script:localizedData.InvalidDesiredValuesError -f $DesiredValues.GetType().FullName) `
+            -ArgumentName 'DesiredValues'
+    }
+
+    if ($CurrentValues.GetType().FullName -notin $types)
+    {
+        New-InvalidArgumentException `
+            -Message ($script:localizedData.InvalidCurrentValuesError -f $CurrentValues.GetType().FullName) `
+            -ArgumentName 'CurrentValues'
+    }
+    #endregion checktype
+    #region check if CimInstance and not have properties in parameters invoke exception
+    if ($DesiredValues -is [Microsoft.Management.Infrastructure.CimInstance] -and -not $Properties)
+    {
+        New-InvalidArgumentException `
+            -Message $script:localizedData.InvalidPropertiesError `
+            -ArgumentName Properties
+    }
+    #endregion check cim and properties
+    #Clean value if there are a common parameters provide from Test/Get-TargetResource parameter
+    $desiredValuesClean = Remove-CommonParameter -Hashtable $DesiredValues
+    #region generate keyList based on $Properties and $excludeProperties value
+    if (-not $Properties)
+    {
+        $keyList = $desiredValuesClean.Keys
+    }
+    else
+    {
+        $keyList = $Properties
+    }
+    if ($ExcludeProperties)
+    {
+        $keyList = $keyList | Where-Object -FilterScript { $_ -notin $ExcludeProperties }
+    }
+    #endregion
+    #region enumerate of each key in list
+    foreach ($key in $keyList)
+    {
+        #generate default value
+        $complianceTable = @{
+            Property = $key
+            Compliance = $true
+        }
+        $returnValue += $complianceTable
+        #get value of each key
+        $desiredValue = $desiredValuesClean.$key
+        $currentValue = $CurrentValues.$key
+
+        #region convert to hashtable if value of key is CimInstance
+        if ($desiredValue -is [Microsoft.Management.Infrastructure.CimInstance] -or
+            $desiredValue -is [Microsoft.Management.Infrastructure.CimInstance[]])
+        {
+            $desiredValue = ConvertTo-HashTable -CimInstance $desiredValue
+        }
+        if ($currentValue -is [Microsoft.Management.Infrastructure.CimInstance] -or
+            $currentValue -is [Microsoft.Management.Infrastructure.CimInstance[]])
+        {
+            $currentValue = ConvertTo-HashTable -CimInstance $currentValue
+        }
+        #endregion converttohashtable
+        #region gettype of value to check if they are the same.
+        if ($null -ne $desiredValue)
+        {
+            $desiredType = $desiredValue.GetType()
+        }
+        else
+        {
+            $desiredType = @{
+                Name = 'Unknown'
+            }
+        }
+
+        if ($null -ne $currentValue)
+        {
+            $currentType = $currentValue.GetType()
+        }
+        else
+        {
+            $currentType = @{
+                Name = 'Unknown'
+            }
+        }
+        #endregion
+        #region check if the desiredtype if a credential object. Only if the current type isn't unknown.
+        if ($currentType.Name -ne 'Unknown' -and $desiredType.Name -eq 'PSCredential')
+        {
+            # This is a credential object. Compare only the user name
+            if ($currentType.Name -eq 'PSCredential' -and $currentValue.UserName -eq $desiredValue.UserName)
+            {
+                Write-Verbose -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
+                continue # pass to the next key
+            }
+            else
+            {
+                Write-Verbose -Message ($script:localizedData.NoMatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
+                $complianceTable.Compliance = $false
+            }
+
+            # Assume the string is our username when the matching desired value is actually a credential
+            if ($currentType.Name -eq 'string' -and $currentValue -eq $desiredValue.UserName)
+            {
+                Write-Verbose -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue, $desiredValue.UserName)
+                continue # pass to the next key
+            }
+            else
+            {
+                Write-Verbose -Message ($script:localizedData.NoMatchPsCredentialUsernameMessage -f $currentValue, $desiredValue.UserName)
+                $complianceTable.Compliance = $false
+            }
+        }
+        #endregion test credential
+        #region Test type of object. And if they're not compliance, generate en exception
+        if (-not $TurnOffTypeChecking)
+        {
+            if (($desiredType.Name -ne 'Unknown' -and $currentType.Name -ne 'Unknown') -and
+                $desiredType.FullName -ne $currentType.FullName)
+            {
+                Write-Verbose -Message ($script:localizedData.NoMatchTypeMismatchMessage -f $key, $currentType.FullName, $desiredType.FullName)
+                $complianceTable.Compliance = $false
+                continue # pass to the next key
+            }
+        }
+        #endregion TestType
+        #region Check if the value of Current and desired state is the same but only if they are not an array
+        if ($currentValue -eq $desiredValue -and -not $desiredType.IsArray)
+        {
+            Write-Verbose -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+            continue # pass to the next key
+        }
+        #endregion check same value
+        #region Check if the DesiredValuesClean has the key and if it don't have, it's not necessary to check his value
+        if ($desiredValuesClean.GetType().Name -in 'HashTable', 'PSBoundParametersDictionary')
+        {
+            $checkDesiredValue = $desiredValuesClean.ContainsKey($key)
+        }
+        else
+        {
+            $checkDesiredValue = Test-DscObjectHasProperty -Object $desiredValuesClean -PropertyName $key
+        }
+        # if there no key, don't need to check
+        if (-not $checkDesiredValue)
+        {
+            Write-Verbose -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+            continue # pass to the next key
+        }
+        #endregion
+        #region Check if desired type is array, ifno Hashtable and currenttype hashtable to
+        if ($desiredType.IsArray)
+        {
+            Write-Verbose -Message ($script:localizedData.TestDscParameterCompareMessage -f $key, $desiredType.FullName)
+            # Check if the currentValues and desiredValue are empty array.
+            if (-not $currentValue -and -not $desiredValue)
+            {
+                Write-Verbose -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, 'empty array', 'empty array')
+                continue
+            }
+            elseif (-not $currentValue)
+            {
+                #If only currentvalue is empty, the configuration isn't compliant.
+                Write-Verbose -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+                $complianceTable.Compliance = $false
+                continue
+            }
+            elseif ($currentValue.Count -ne $desiredValue.Count)
+            {
+                #If there is a difference between the number of objects in arrays, this isn't compliant.
+                Write-Verbose -Message ($script:localizedData.NoMatchValueDifferentCountMessage -f $desiredType.FullName, $key, $currentValue.Count, $desiredValue.Count)
+                $complianceTable.Compliance = $false
+                continue
+            }
+            else
+            {
+                $desiredArrayValues = $desiredValue
+                $currentArrayValues = $currentValue
+                # if the sortArrayValues parameter is using, sort value of array
+                if ($SortArrayValues)
+                {
+                    $desiredArrayValues = @($desiredArrayValues | Sort-Object)
+                    $currentArrayValues = @($currentArrayValues | Sort-Object)
+                }
+                <#
+                    for all object in collection, check their type.ConvertoString if they are script block.
+
+                #>
+                for ($i = 0; $i -lt $desiredArrayValues.Count; $i++)
+                {
+                    if ($desiredArrayValues[$i])
+                    {
+                        $desiredType = $desiredArrayValues[$i].GetType()
+                    }
+                    else
+                    {
+                        $desiredType = @{
+                            Name = 'Unknown'
+                        }
+                    }
+
+                    if ($currentArrayValues[$i])
+                    {
+                        $currentType = $currentArrayValues[$i].GetType()
+                    }
+                    else
+                    {
+                        $currentType = @{
+                            Name = 'Unknown'
+                        }
+                    }
+
+                    if (-not $TurnOffTypeChecking)
+                    {
+                        if (($desiredType.Name -ne 'Unknown' -and $currentType.Name -ne 'Unknown') -and
+                            $desiredType.FullName -ne $currentType.FullName)
+                        {
+                            Write-Verbose -Message ($script:localizedData.NoMatchElementTypeMismatchMessage -f $key, $i, $currentType.FullName, $desiredType.FullName)
+                            $complianceTable.Compliance = $false
+                            continue
+                        }
+                    }
+
+                    <#
+                        Convert a scriptblock into a string as scriptblocks are not comparable
+                        if currentvalue is scriptblock and if desired value is string,
+                        we invoke the result of script block. Ifno, we convert to string.
+                        if Desired value
+                    #>
+
+                    $wasCurrentArrayValuesConverted = $false
+                    if ($currentArrayValues[$i] -is [scriptblock])
+                    {
+                        $currentArrayValues[$i] = if ($desiredArrayValues[$i] -is [string])
+                        {
+                            $currentArrayValues[$i] = $currentArrayValues[$i].Invoke()
+                        }
+                        else
+                        {
+                            $currentArrayValues[$i].ToString()
+                        }
+                        $wasCurrentArrayValuesConverted = $true
+                    }
+                    if ($desiredArrayValues[$i] -is [scriptblock])
+                    {
+                        $desiredArrayValues[$i] = if ($currentArrayValues[$i] -is [string] -and -not $wasCurrentArrayValuesConverted)
+                        {
+                            $desiredArrayValues[$i].Invoke()
+                        }
+                        else
+                        {
+                            $desiredArrayValues[$i].ToString()
+                        }
+                    }
+
+                    if ($desiredType -eq [System.Collections.Hashtable] -and $currentType -eq [System.Collections.Hashtable])
+                    {
+                        $param = $PSBoundParameters
+                        $param.CurrentValues = $currentArrayValues[$i]
+                        $param.DesiredValues = $desiredArrayValues[$i]
+
+                        if ($complianceTable.Compliance)
+                        {
+                            $complianceTable.Compliance = Test-DscParameterState @param
+                        }
+                        else
+                        {
+                            Test-DscParameterState @param | Out-Null
+                        }
+                        continue
+                    }
+
+                    if ($desiredArrayValues[$i] -ne $currentArrayValues[$i])
+                    {
+                        Write-Verbose -Message ($script:localizedData.NoMatchElementValueMismatchMessage -f $i, $desiredType.FullName, $key, $currentArrayValues[$i], $desiredArrayValues[$i])
+                        $complianceTable.Compliance = $false
+                        continue
+                    }
+                    else
+                    {
+                        Write-Verbose -Message ($script:localizedData.MatchElementValueMessage -f $i, $desiredType.FullName, $key, $currentArrayValues[$i], $desiredArrayValues[$i])
+                        continue
+                    }
+                }
+
+            }
+        }
+        elseif ($desiredType -eq [System.Collections.Hashtable] -and $currentType -eq [System.Collections.Hashtable])
+        {
+            $param = $PSBoundParameters
+            $param.CurrentValues = $currentValue
+            $param.DesiredValues = $desiredValue
+
+            if ($complianceTable.Compliance)
+            {
+                $complianceTable.Compliance = Test-DscParameterState @param
+            }
+            else
+            {
+                Test-DscParameterState @param | Out-Null
+            }
+            continue
+        }
+        else
+        {
+            #Convert a scriptblock into a string as scriptblocks are not comparable
+            $wasCurrentValue = $false
+            if ($currentValue -is [scriptblock])
+            {
+                $currentValue = if ($desiredValue -is [string])
+                {
+                    $currentValue = $currentValue.Invoke()
+                }
+                else
+                {
+                    $currentValue.ToString()
+                }
+                $wasCurrentValue = $true
+            }
+            if ($desiredValue -is [scriptblock])
+            {
+                $desiredValue = if ($currentValue -is [string] -and -not $wasCurrentValue)
+                {
+                    $desiredValue.Invoke()
+                }
+                else
+                {
+                    $desiredValue.ToString()
+                }
+            }
+
+            if ($desiredValue -ne $currentValue)
+            {
+                Write-Verbose -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+                $complianceTable.Compliance = $false
+            }
+        }
+        #endregion check type
+    }
+    #endregion end of enumeration
+    if ($ReverseCheck)
+    {
+        Write-Verbose -Message $script:localizedData.StartingReverseCheck
+        $reverseCheckParameters = $PSBoundParameters
+        $reverseCheckParameters.CurrentValues = $DesiredValues
+        $reverseCheckParameters.DesiredValues = $CurrentValues
+        $null = $reverseCheckParameters.Remove('ReverseCheck')
+
+        if ($returnValue)
+        {
+            $returnValue = Compare-DscParameterState @reverseCheckParameters
+        }
+        else
+        {
+            $null = Compare-DscParameterState @reverseCheckParameters
+        }
+    }
+
+    Write-Verbose -Message ($script:localizedData.TestDscParameterResultMessage -f $returnValue)
+    return $returnValue
+}
