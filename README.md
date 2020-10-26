@@ -145,6 +145,121 @@ This will assert that the module DhcpServer is available and that it has
 been imported into the session. If the module is not available an exception
 will be thrown.
 
+### `Compare-DscParameterState`
+
+Compare current against desired property state for any DSC resource and return
+a hashtable with the metadata from the comparison.
+
+The content of the function `Test-DscParameterState` has been extracted and now
+`Test-DscParameterState` is just calling `Compare-DscParameterState`.
+This function can be used in a DSC resource from the _Get_ function/method.
+
+#### Syntax
+
+```plaintext
+Compare-DscParameterState [-CurrentValues] <Object> [-DesiredValues] <Object>
+[[-Properties]  <string[]>] [[-ExcludeProperties] <string[]>] [-TurnOffTypeChecking]
+ [-ReverseCheck] [-SortArrayValues] [<CommonParameters>]
+```
+
+#### Outputs
+
+Returns an array containing a hashtable with metadata for each property
+that was evaluated.
+
+Metadata Name | Type | Description
+--- | --- | ---
+Property | `[System.String]` | The name of the property that was evaluated
+Compliance | `[System.Boolean]` | Returns `$true` if the expected and actual value was equal.
+
+#### Example
+
+##### Example 1
+```powershell
+$currentValues = @{
+    String = 'This is a string'
+    Int = 1
+    Bool = $true
+}
+
+$desiredValues = @{
+    String = 'This is a string'
+    Int = 99
+}
+
+Compare-DscParameterState -CurrentValues $currentValues -DesiredValues $desiredValues
+#result
+Name                           Value
+----                           -----
+Property                       String
+Compliance                     True
+Property                       Int
+Compliance                     False
+```
+
+The function Compare-DscParameterState compare the value of each hashtable based
+on the keys present in $desiredValues hashtable. The result indicates that Int
+property is not in the desired state.
+No information about Bool property, because it is not in $desiredValues hashtable.
+
+##### Example 2
+
+```powershell
+$currentValues = @{
+    String = 'This is a string'
+    Int = 1
+    Bool = $true
+}
+
+$desiredValues = @{
+    String = 'This is a string'
+    Int = 99
+    Bool = $false
+}
+
+$excludeProperties = @('Bool')
+
+Compare-DscParameterState `
+    -CurrentValues $currentValues `
+    -DesiredValues $desiredValues `
+    -ExcludeProperties $ExcludeProperties
+#result
+Name                           Value
+----                           -----
+Property                       String
+Compliance                     True
+Property                       Int
+Compliance                     False
+```
+
+The function Compare-DscParameterState compare the value of each hashtable based
+on the keys present in $desiredValues hashtable and without those in $excludeProperties.
+The result indicates that Int property is not in the desired state.
+No information about Bool property, because it is in $excludeProperties.
+
+##### Example 3
+
+```powershell
+$serviceParameters = @{
+    Name     = $Name
+}
+
+$returnValue = Compare-DscParameterState `
+    -CurrentValues (Get-Service @serviceParameters) `
+    -DesiredValues $PSBoundParameters `
+    -Properties @(
+        'Name'
+        'Status'
+        'StartType'
+    )
+```
+
+This compares the values in the current state against the desires state.
+The command Get-Service is called using just the required parameters
+to get the values in the current state. The parameter 'Properties'
+is used to specify the properties 'Name','Status' and
+'StartType' for the comparison.
+
 ### `Compare-ResourcePropertyState`
 
 Compare current and desired property state for any DSC resource and return
