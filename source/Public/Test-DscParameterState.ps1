@@ -120,7 +120,8 @@ function Test-DscParameterState
 
     $resultCompare = Compare-DscParameterState @PSBoundParameters
 
-    if ($resultCompare.Compliance -contains $false){
+    if ($resultCompare.Compliance -contains $false)
+    {
         $returnValue = $false
     }
 
