@@ -13,11 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Get-TargetResource function or Get() method in Class based Resources.
   It is based on the code of Test-DscParameterState function to get compliance
   between current and desired state of resources.
-- Added pester test to test the pscredential object with `Compare-DscParameterState`
+- Added pester test to test the pscredential object with `Compare-DscParameterState`.
 
 ### Changed
 
 - Cmdlet Test-DscResourceState is now a wrapper of Compare-DscParameterState. Possible breaking change.
+
+### Fix
+
+- Fix git diff command in QA tests on Linux and MacOS.
 
 ## [0.9.3] - 2020-07-25
 
