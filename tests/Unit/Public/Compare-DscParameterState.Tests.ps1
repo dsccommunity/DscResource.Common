@@ -56,8 +56,8 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return all compliance in $true' {
-                    $script:result.Compliance  | Should -Not -Contain $false
+                It 'Should return null' {
+                    $script:result | Should -BeNullOrEmpty
                 }
             }
 
@@ -82,12 +82,16 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for String compliance' {
-                    $script:result.where({$_.Property -eq 'String'}).Compliance | Should -BeFalse
+                It 'Should return $false for String InDesiredState' {
+                    $script:result.where({$_.Property -eq 'String'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without String property) in $true' {
-                    $script:result.where({$_.Property -ne 'String'}).Compliance | Should -Not -Contain $false
+                It 'Should return same type in values' {
+                    $script:result.where({$_.Property -eq 'String'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'String'}).ExpectedType
+                }
+
+                It 'Should not return other property by default' {
+                    $script:result.where({$_.Property -ne 'String'}).InDesiredState | Should -BeNullOrEmpty
                 }
             }
 
@@ -113,12 +117,16 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Bool compliance' {
-                    $script:result.where({$_.Property -eq 'Bool'}).Compliance | Should -BeFalse
+                It 'Should return $false for Bool InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Bool'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Bool property) in $true' {
-                    $script:result.where({$_.Property -ne 'Bool'}).Compliance | Should -Not -Contain $false
+                It 'Should return same type in values' {
+                    $script:result.where({$_.Property -eq 'Bool'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'Bool'}).ExpectedType
+                }
+
+                It 'Should not return other property by default' {
+                    $script:result.where({$_.Property -ne 'Bool'}).InDesiredState | Should -BeNullOrEmpty
                 }
             }
 
@@ -143,12 +151,16 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Int compliance' {
-                    $script:result.where({$_.Property -eq 'Int'}).Compliance | Should -BeFalse
+                It 'Should return $false for Int InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Int property) in $true' {
-                    $script:result.where({$_.Property -ne 'Int'}).Compliance | Should -Not -Contain $false
+                It 'Should return same type in values' {
+                    $script:result.where({$_.Property -eq 'Int'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'Int'}).ExpectedType
+                }
+
+                It 'Should not return other property by default' {
+                    $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -BeNullOrEmpty
                 }
             }
 
@@ -175,12 +187,16 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for ScriptBlock compliance' {
-                    $script:result.where({$_.Property -eq 'ScriptBlock'}).Compliance | Should -BeFalse
+                It 'Should return $false for ScriptBlock InDesiredState' {
+                    $script:result.where({$_.Property -eq 'ScriptBlock'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without ScriptBlock property) in $true' {
-                    $script:result.where({$_.Property -ne 'ScriptBlock'}).Compliance | Should -Not -Contain $false
+                It 'Should return same type in values' {
+                    $script:result.where({$_.Property -eq 'ScriptBlock'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'ScriptBlock'}).ExpectedType
+                }
+
+                It 'Should not return other property by default' {
+                    $script:result.where({$_.Property -ne 'ScriptBlock'}).InDesiredState | Should -BeNullOrEmpty
                 }
             }
 
@@ -206,16 +222,16 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Int compliance' {
-                    $script:result.where({$_.Property -eq 'Int'}).Compliance | Should -BeFalse
+                It 'Should return $false for Int InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Int property) in $true' {
-                    $script:result.where({$_.Property -ne 'Int'}).Compliance | Should -Not -Contain $false
+                It 'Should return same type in values' {
+                    $script:result.where({$_.Property -eq 'Int'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'Int'}).ExpectedType
                 }
 
-                It 'Should not return property with ScriptBlock in value' {
-                    $script:result.where({$_.Property -eq 'ScriptBlock'}) | Should -BeNullOrEmpty
+                It 'Should not return other property by default' {
+                    $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -BeNullOrEmpty
                 }
             }
 
@@ -236,12 +252,16 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Int compliance' {
-                    $script:result.where({$_.Property -eq 'Int'}).Compliance | Should -BeFalse
+                It 'Should return $false for Int InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Int property) in $true' {
-                    $script:result.where({$_.Property -ne 'Int'}).Compliance | Should -Not -Contain $false
+                It 'Should not return same type in values' {
+                    $script:result.where({$_.Property -eq 'Int'}).ActualType | Should -Not -Be $script:result.where({$_.Property -eq 'Int'}).ExpectedType
+                }
+
+                It 'Should not return other property by default' {
+                    $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -BeNullOrEmpty
                 }
             }
 
@@ -263,12 +283,8 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $true for Int compliance' {
-                    $script:result.where({$_.Property -eq 'Int'}).Compliance | Should -BeTrue
-                }
-
-                It 'Should return all compliance in $true' {
-                    $script:result.Compliance | Should -Not -Contain $false
+                It 'Should return null result' {
+                    $script:result | Should -BeNullOrEmpty
                 }
             }
 
@@ -300,14 +316,11 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return all compliance in $true' {
-                    $script:result.Compliance | Should -Not -Contain $false
-                }
-
-                It 'Should not return property with String in value' {
-                    $script:result.where({$_.Property -eq 'String'}) | Should -BeNullOrEmpty
+                It 'Should return null result' {
+                    $script:result | Should -BeNullOrEmpty
                 }
             }
+
             Context 'When a value is mismatched but it is not in Properties then' {
                 BeforeAll{
                     $desiredValues = @{
@@ -341,15 +354,8 @@ InModuleScope $ProjectName {
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return all compliance in $true' {
-                        $script:result.Compliance | Should -Not -Contain $false
-                    }
-
-                    It 'Should return all property in $properties' {
-                        $script:result.Property.Count | Should -Be $Properties.Count
-                        foreach ($Property in $Properties){
-                            $property | Should -BeIn $script:result.Property
-                        }
+                    It 'Should return null result' {
+                        $script:result | Should -BeNullOrEmpty
                     }
                 }
 
@@ -361,15 +367,8 @@ InModuleScope $ProjectName {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return all compliance in $true' {
-                    $script:result.Compliance | Should -Not -Contain $false
-                }
-
-                It 'Should return all property in $properties' {
-                    $script:result.Property.Count | Should -Be $Properties.Count
-                    foreach ($Property in $Properties){
-                        $property | Should -BeIn $script:result.Property
-                    }
+                It 'Should return null result' {
+                    $script:result | Should -BeNullOrEmpty
                 }
 
                 Context 'When a value is mismatched but it is in Properties then' {
@@ -390,17 +389,419 @@ InModuleScope $ProjectName {
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return $false for String compliance' {
-                        $script:result.where({$_.Property -eq 'String'}).Compliance | Should -BeFalse
+                    It 'Should return $false for String InDesiredState' {
+                        $script:result.where({$_.Property -eq 'String'}).InDesiredState | Should -BeFalse
                     }
 
-                    It 'Should return all compliance (without String property) in $true' {
-                        $script:result.where({$_.Property -ne 'String'}).Compliance | Should -Not -Contain $false
+                    It 'Should return same type in values' {
+                        $script:result.where({$_.Property -eq 'String'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'String'}).ExpectedType
+                    }
+
+                    It 'Should not return other property by default' {
+                        $script:result.where({$_.Property -ne 'String'}).InDesiredState | Should -BeNullOrEmpty
+                    }
+                }
+            }
+        }
+
+        Context 'When testing single values and use IncludeInDesiredState parameter' {
+            BeforeAll{
+                $currentValues = @{
+                    String      = 'a string'
+                    Bool        = $true
+                    Int         = 99
+                    Array       = 'a', 'b', 'c'
+                    Hashtable   = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                    ScriptBlock = { Get-Date }
+                }
+            }
+            Context 'When all values match' {
+                BeforeAll{
+                    $desiredValues = [PSObject] @{
+                        String      = 'a string'
+                        Bool        = $true
+                        Int         = 99
+                        Array       = 'a', 'b', 'c'
+                        Hashtable   = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                        ScriptBlock = { Get-Date }
+                    }
+                }
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
+                            -Verbose:$verbose  } | Should -Not -Throw
+                }
+
+                It 'Should return all InDesiredState in $true' {
+                    $script:result.InDesiredState  | Should -Not -Contain $false
+                }
+            }
+
+            Context 'When a string is mismatched' {
+                BeforeAll {
+                    $desiredValues = [PSObject] @{
+                        String    = 'different string'
+                        Bool      = $true
+                        Int       = 99
+                        Array     = 'a', 'b', 'c'
+                        Hashtable = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                    }
+                }
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false for String InDesiredState' {
+                    $script:result.where({$_.Property -eq 'String'}).InDesiredState | Should -BeFalse
+                }
+
+                It 'Should return all InDesiredState (without String property) in $true' {
+                    $script:result.where({$_.Property -ne 'String'}).InDesiredState | Should -Not -Contain $false
+                }
+            }
+
+            Context 'When a boolean is mismatched' {
+                BeforeAll{
+                    $desiredValues = [PSObject] @{
+                        String    = 'a string'
+                        Bool      = $false
+                        Int       = 99
+                        Array     = 'a', 'b', 'c'
+                        Hashtable = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                    }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false for Bool InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Bool'}).InDesiredState | Should -BeFalse
+                }
+
+                It 'Should return all InDesiredState (without Bool property) in $true' {
+                    $script:result.where({$_.Property -ne 'Bool'}).InDesiredState | Should -Not -Contain $false
+                }
+            }
+
+            Context 'When an int is mismatched' {
+                BeforeAll {
+                    $desiredValues = [PSObject] @{
+                        String    = 'a string'
+                        Bool      = $true
+                        Int       = 1
+                        Array     = 'a', 'b', 'c'
+                        Hashtable = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                    }
+                }
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false for Int InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
+                }
+
+                It 'Should return all InDesiredState (without Int property) in $true' {
+                    $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -Not -Contain $false
+                }
+            }
+
+            Context 'When an scriptblock is mismatched' {
+                BeforeAll {
+                    $desiredValues = [PSObject] @{
+                        String      = 'a string'
+                        Bool        = $true
+                        Int         = 99
+                        Array       = 'a', 'b', 'c'
+                        Hashtable   = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                        ScriptBlock = { Get-Process }
+                    }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false for ScriptBlock InDesiredState' {
+                    $script:result.where({$_.Property -eq 'ScriptBlock'}).InDesiredState | Should -BeFalse
+                }
+
+                It 'Should return all InDesiredState (without ScriptBlock property) in $true' {
+                    $script:result.where({$_.Property -ne 'ScriptBlock'}).InDesiredState | Should -Not -Contain $false
+                }
+            }
+
+            Context 'When an int is mismatched without ScriptBlock' {
+                BeforeAll {
+                    $desiredValues = [PSObject] @{
+                        String    = 'a string'
+                        Bool      = $true
+                        Int       = 1
+                        Array     = 'a', 'b', 'c'
+                        Hashtable = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                    }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false for Int InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
+                }
+
+                It 'Should return all InDesiredState (without Int property) in $true' {
+                    $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -Not -Contain $false
+                }
+
+                It 'Should not return property with ScriptBlock in value' {
+                    $script:result.where({$_.Property -eq 'ScriptBlock'}) | Should -BeNullOrEmpty
+                }
+            }
+
+            Context 'When a type is mismatched' {
+                BeforeAll{
+                    $desiredValues = [PSObject] @{
+                        String = 'a string'
+                        Bool   = $true
+                        Int    = '99'
+                        Array  = 'a', 'b', 'c'
+                    }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $false for Int InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
+                }
+
+                It 'Should return all InDesiredState (without Int property) in $true' {
+                    $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -Not -Contain $false
+                }
+            }
+
+            Context 'When a type is mismatched but TurnOffTypeChecking is used' {
+                BeforeAll{
+                    $desiredValues = [PSObject] @{
+                        String = 'a string'
+                        Bool   = $true
+                        Int    = '99'
+                        Array  = 'a', 'b', 'c'
+                    }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
+                            -TurnOffTypeChecking `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return $true for Int InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeTrue
+                }
+
+                It 'Should return all InDesiredState in $true' {
+                    $script:result.InDesiredState | Should -Not -Contain $false
+                }
+            }
+
+            Context 'When a value is mismatched but ExcludeProperties is used to exclude then' {
+                BeforeAll{
+                    $desiredValues = @{
+                        String      = 'some other string'
+                        Bool        = $true
+                        Int         = 99
+                        Array       = 'a', 'b', 'c'
+                        Hashtable   = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                        ScriptBlock = { Get-Date }
+                    }
+                }
+
+                $excludeProperties = @(
+                    'String'
+                )
+
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -ExcludeProperties $excludeProperties `
+                            -IncludeInDesiredState `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return all InDesiredState in $true' {
+                    $script:result.InDesiredState | Should -Not -Contain $false
+                }
+
+                It 'Should not return property with String in value' {
+                    $script:result.where({$_.Property -eq 'String'}) | Should -BeNullOrEmpty
+                }
+            }
+
+            Context 'When a value is mismatched but it is not in Properties then' {
+                BeforeAll{
+                    $desiredValues = @{
+                        String      = 'some other string'
+                        Bool        = $true
+                        Int         = 99
+                        Array       = 'a', 'b', 'c'
+                        Hashtable   = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = 'v1', 'v2', 'v3'
+                        }
+                        ScriptBlock = { Get-Date }
+                    }
+
+                    $properties = @(
+                        'Bool'
+                        'Int'
+                        'Array'
+                        'Hashtable'
+                        'ScriptBlock'
+                    )
+                }
+
+                Context 'When using the alias ValuesToCheck' {
+                    It 'Should not throw exception' {
+                        { $script:result = Compare-DscParameterState `
+                                -CurrentValues $currentValues `
+                                -DesiredValues $desiredValues `
+                                -ValuesToCheck $properties `
+                                -IncludeInDesiredState `
+                                -Verbose:$verbose } | Should -Not -Throw
+                    }
+
+                    It 'Should return all InDesiredState in $true' {
+                        $script:result.InDesiredState | Should -Not -Contain $false
                     }
 
                     It 'Should return all property in $properties' {
                         $script:result.Property.Count | Should -Be $Properties.Count
-                        foreach ($Property in $Properties){
+                        foreach ($Property in $Properties)
+                        {
+                            $property | Should -BeIn $script:result.Property
+                        }
+                    }
+                }
+
+                It 'Should not throw exception' {
+                    { $script:result = Compare-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -Properties $properties `
+                            -IncludeInDesiredState `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should return all InDesiredState in $true' {
+                    $script:result.InDesiredState | Should -Not -Contain $false
+                }
+
+                It 'Should return all property in $properties' {
+                    $script:result.Property.Count | Should -Be $Properties.Count
+                    foreach ($Property in $Properties)
+                    {
+                        $property | Should -BeIn $script:result.Property
+                    }
+                }
+
+                Context 'When a value is mismatched but it is in Properties then' {
+                    BeforeAll{
+                        $properties = @(
+                            'String'
+                            'Bool'
+                            'Int'
+                            'Array'
+                            'Hashtable'
+                        )
+                    }
+                    It 'Should not throw exception' {
+                        { $script:result = Compare-DscParameterState `
+                                -CurrentValues $currentValues `
+                                -DesiredValues $desiredValues `
+                                -Properties $properties `
+                                -IncludeInDesiredState `
+                                -Verbose:$verbose } | Should -Not -Throw
+                    }
+
+                    It 'Should return $false for String InDesiredState' {
+                        $script:result.where({$_.Property -eq 'String'}).InDesiredState | Should -BeFalse
+                    }
+
+                    It 'Should return all InDesiredState (without String property) in $true' {
+                        $script:result.where({$_.Property -ne 'String'}).InDesiredState | Should -Not -Contain $false
+                    }
+
+                    It 'Should return all property in $properties' {
+                        $script:result.Property.Count | Should -Be $Properties.Count
+                        foreach ($Property in $Properties)
+                        {
                             $property | Should -BeIn $script:result.Property
                         }
                     }
@@ -457,11 +858,12 @@ InModuleScope $ProjectName {
                         { $script:result = Compare-DscParameterState `
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return all compliance in $true' {
-                        $script:result.Compliance  | Should -Not -Contain $false
+                    It 'Should return all InDesiredState in $true' {
+                        $script:result.InDesiredState  | Should -Not -Contain $false
                     }
                 }
 
@@ -489,15 +891,16 @@ InModuleScope $ProjectName {
                         { $script:result = Compare-DscParameterState `
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return $false for PScredential compliance' {
-                        $script:result.where({$_.Property -eq 'PScredential'}).Compliance | Should -BeFalse
+                    It 'Should return $false for PScredential InDesiredState' {
+                        $script:result.where({$_.Property -eq 'PScredential'}).InDesiredState | Should -BeFalse
                     }
 
-                    It 'Should return all compliance (without PScredential property) in $true' {
-                        $script:result.where({$_.Property -ne 'PScredential'}).Compliance | Should -Not -Contain $false
+                    It 'Should return all InDesiredState (without PScredential property) in $true' {
+                        $script:result.where({$_.Property -ne 'PScredential'}).InDesiredState | Should -Not -Contain $false
                     }
                 }
             }
@@ -542,11 +945,12 @@ InModuleScope $ProjectName {
                         { $script:result = Compare-DscParameterState `
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return all compliance in $true' {
-                        $script:result.Compliance  | Should -Not -Contain $false
+                    It 'Should return all InDesiredState in $true' {
+                        $script:result.InDesiredState  | Should -Not -Contain $false
                     }
                 }
 
@@ -574,15 +978,16 @@ InModuleScope $ProjectName {
                         { $script:result = Compare-DscParameterState `
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return $false for PScredential compliance' {
-                        $script:result.where({$_.Property -eq 'PScredential'}).Compliance | Should -BeFalse
+                    It 'Should return $false for PScredential InDesiredState' {
+                        $script:result.where({$_.Property -eq 'PScredential'}).InDesiredState | Should -BeFalse
                     }
 
-                    It 'Should return all compliance (without PScredential property) in $true' {
-                        $script:result.where({$_.Property -ne 'PScredential'}).Compliance | Should -Not -Contain $false
+                    It 'Should return all InDesiredState (without PScredential property) in $true' {
+                        $script:result.where({$_.Property -ne 'PScredential'}).InDesiredState | Should -Not -Contain $false
                     }
                 }
             }
@@ -622,15 +1027,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeFalse
+                It 'Should return $false for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -648,15 +1054,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeFalse
+                It 'Should return $false for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -674,15 +1081,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeFalse
+                It 'Should return $false for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -700,15 +1108,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeFalse
+                It 'Should return $false for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -727,15 +1136,16 @@ InModuleScope $ProjectName {
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
                             -SortArrayValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $true for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeTrue
+                It 'Should return $true for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeTrue
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -753,15 +1163,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeFalse
+                It 'Should return $false for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -780,15 +1191,16 @@ InModuleScope $ProjectName {
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
                             -TurnOffTypeChecking `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $true for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeTrue
+                It 'Should return $true for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeTrue
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -823,15 +1235,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $true for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeTrue
+                It 'Should return $true for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeTrue
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -866,15 +1279,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeFalse
+                It 'Should return $false for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -909,15 +1323,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Array compliance' {
-                    $script:result.where({$_.Property -eq 'Array'}).Compliance | Should -BeFalse
+                It 'Should return $false for Array InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Array property) in $true' {
-                    $script:result.where({$_.Property -ne 'Array'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Array property) in $true' {
+                    $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
                 }
             }
         }
@@ -956,15 +1371,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Hashtable compliance' {
-                    $script:result.where({$_.Property -eq 'Hashtable'}).Compliance | Should -BeFalse
+                It 'Should return $false for Hashtable InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Hashtable property) in $true' {
-                    $script:result.where({$_.Property -ne 'Hashtable'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Hashtable property) in $true' {
+                    $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -987,15 +1403,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Hashtable compliance' {
-                    $script:result.where({$_.Property -eq 'Hashtable'}).Compliance | Should -BeFalse
+                It 'Should return $false for Hashtable InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Hashtable property) in $true' {
-                    $script:result.where({$_.Property -ne 'Hashtable'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Hashtable property) in $true' {
+                    $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -1018,15 +1435,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Hashtable compliance' {
-                    $script:result.where({$_.Property -eq 'Hashtable'}).Compliance | Should -BeFalse
+                It 'Should return $false for Hashtable InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Hashtable property) in $true' {
-                    $script:result.where({$_.Property -ne 'Hashtable'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Hashtable property) in $true' {
+                    $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -1049,15 +1467,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Hashtable compliance' {
-                    $script:result.where({$_.Property -eq 'Hashtable'}).Compliance | Should -BeFalse
+                It 'Should return $false for Hashtable InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Hashtable property) in $true' {
-                    $script:result.where({$_.Property -ne 'Hashtable'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Hashtable property) in $true' {
+                    $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -1081,15 +1500,16 @@ InModuleScope $ProjectName {
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
                             -SortArrayValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $true for Hashtable compliance' {
-                    $script:result.where({$_.Property -eq 'Hashtable'}).Compliance | Should -BeTrue
+                It 'Should return $true for Hashtable InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeTrue
                 }
 
-                It 'Should return all compliance (without Hashtable property) in $true' {
-                    $script:result.where({$_.Property -ne 'Hashtable'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Hashtable property) in $true' {
+                    $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -1112,15 +1532,16 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for Hashtable compliance' {
-                    $script:result.where({$_.Property -eq 'Hashtable'}).Compliance | Should -BeFalse
+                It 'Should return $false for Hashtable InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Hashtable property) in $true' {
-                    $script:result.where({$_.Property -ne 'Hashtable'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Hashtable property) in $true' {
+                    $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -1144,15 +1565,16 @@ InModuleScope $ProjectName {
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
                             -TurnOffTypeChecking `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $true for Hashtable compliance' {
-                    $script:result.where({$_.Property -eq 'Hashtable'}).Compliance | Should -BeTrue
+                It 'Should return $true for Hashtable InDesiredState' {
+                    $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeTrue
                 }
 
-                It 'Should return all compliance (without Hashtable property) in $true' {
-                    $script:result.where({$_.Property -ne 'Hashtable'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Hashtable property) in $true' {
+                    $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
                 }
             }
         }
@@ -1188,11 +1610,12 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
-                It 'Should return $false for all compliance' {
-                    $script:result.Compliance | Should -Not -Contain $false
+                It 'Should return $false for all InDesiredState' {
+                    $script:result.InDesiredState | Should -Not -Contain $false
                 }
             }
 
@@ -1213,15 +1636,16 @@ InModuleScope $ProjectName {
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
                             -ReverseCheck `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
                 It 'Should return $false for missed property (Bool)' {
-                    $script:result.where({$_.Property -eq 'Bool'}).Compliance | Should -BeFalse
+                    $script:result.where({$_.Property -eq 'Bool'}).InDesiredState | Should -BeFalse
                 }
 
-                It 'Should return all compliance (without Bool property) in $true' {
-                    $script:result.where({$_.Property -ne 'Bool'}).Compliance | Should -Not -Contain $false
+                It 'Should return all InDesiredState (without Bool property) in $true' {
+                    $script:result.where({$_.Property -ne 'Bool'}).InDesiredState | Should -Not -Contain $false
                 }
             }
         }
@@ -1240,6 +1664,7 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Throw
                 }
             }
@@ -1257,6 +1682,7 @@ InModuleScope $ProjectName {
                     { $script:result = Compare-DscParameterState `
                             -CurrentValues $currentValues `
                             -DesiredValues $desiredValues `
+                            -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Throw
                 }
             }
@@ -1317,11 +1743,12 @@ InModuleScope $ProjectName {
                         { $script:result = Compare-DscParameterState `
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return all compliance in $true' {
-                        $script:result.Compliance | Should -Not -Contain $false
+                    It 'Should return all InDesiredState in $true' {
+                        $script:result.InDesiredState | Should -Not -Contain $false
                     }
                 }
 
@@ -1349,11 +1776,12 @@ InModuleScope $ProjectName {
                         { $script:result = Compare-DscParameterState `
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return all compliance in $true' {
-                        $script:result.Compliance | Should -Not -Contain $false
+                    It 'Should return all InDesiredState in $true' {
+                        $script:result.InDesiredState | Should -Not -Contain $false
                     }
                 }
 
@@ -1382,15 +1810,16 @@ InModuleScope $ProjectName {
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
                                 -ReverseCheck `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return $false for CimInstances compliance' {
-                        $script:result.where({$_.Property -eq 'CimInstances'}).Compliance | Should -BeFalse
+                    It 'Should return $false for CimInstances InDesiredState' {
+                        $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeFalse
                     }
 
-                    It 'Should return all compliance (without CimInstances property) in $true' {
-                        $script:result.where({$_.Property -ne 'CimInstances'}).Compliance | Should -Not -Contain $false
+                    It 'Should return all InDesiredState (without CimInstances property) in $true' {
+                        $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
                     }
                 }
 
@@ -1420,15 +1849,16 @@ InModuleScope $ProjectName {
                         { $script:result = Compare-DscParameterState `
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return $false for CimInstances compliance' {
-                        $script:result.where({$_.Property -eq 'CimInstances'}).Compliance | Should -BeFalse
+                    It 'Should return $false for CimInstances InDesiredState' {
+                        $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeFalse
                     }
 
-                    It 'Should return all compliance (without CimInstances property) in $true' {
-                        $script:result.where({$_.Property -ne 'CimInstances'}).Compliance | Should -Not -Contain $false
+                    It 'Should return all InDesiredState (without CimInstances property) in $true' {
+                        $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
                     }
                 }
 
@@ -1457,15 +1887,16 @@ InModuleScope $ProjectName {
                         { $script:result = Compare-DscParameterState `
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return $false for CimInstances compliance' {
-                        $script:result.where({$_.Property -eq 'CimInstances'}).Compliance | Should -BeFalse
+                    It 'Should return $false for CimInstances InDesiredState' {
+                        $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeFalse
                     }
 
-                    It 'Should return all compliance (without CimInstances property) in $true' {
-                        $script:result.where({$_.Property -ne 'CimInstances'}).Compliance | Should -Not -Contain $false
+                    It 'Should return all InDesiredState (without CimInstances property) in $true' {
+                        $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
                     }
                 }
 
@@ -1494,15 +1925,16 @@ InModuleScope $ProjectName {
                         { $script:result = Compare-DscParameterState `
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return $false for CimInstances compliance' {
-                        $script:result.where({$_.Property -eq 'CimInstances'}).Compliance | Should -BeFalse
+                    It 'Should return $false for CimInstances InDesiredState' {
+                        $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeFalse
                     }
 
-                    It 'Should return all compliance (without CimInstances property) in $true' {
-                        $script:result.where({$_.Property -ne 'CimInstances'}).Compliance | Should -Not -Contain $false
+                    It 'Should return all InDesiredState (without CimInstances property) in $true' {
+                        $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
                     }
                 }
 
@@ -1532,15 +1964,16 @@ InModuleScope $ProjectName {
                                 -CurrentValues $currentValues `
                                 -DesiredValues $desiredValues `
                                 -TurnOffTypeChecking `
+                                -IncludeInDesiredState `
                                 -Verbose:$verbose } | Should -Not -Throw
                     }
 
-                    It 'Should return $true for CimInstances compliance' {
-                        $script:result.where({$_.Property -eq 'CimInstances'}).Compliance | Should -BeTrue
+                    It 'Should return $true for CimInstances InDesiredState' {
+                        $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeTrue
                     }
 
-                    It 'Should return all compliance (without CimInstances property) in $true' {
-                        $script:result.where({$_.Property -ne 'CimInstances'}).Compliance | Should -Not -Contain $false
+                    It 'Should return all InDesiredState (without CimInstances property) in $true' {
+                        $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
                     }
                 }
             }

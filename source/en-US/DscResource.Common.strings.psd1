@@ -19,7 +19,7 @@ ConvertFrom-StringData @'
     NoMatchElementTypeMismatchMessage = NOTMATCH: Type mismatch for property '{0}' Current state type of element [{1}] is '{2}' and desired type is '{3}'. (DRC0023)
     NoMatchElementValueMismatchMessage = NOTMATCH: Value [{0}] (type '{1}') for property '{2}' does match. Current state is '{3}' and desired state is '{4}'. (DRC0024)
     MatchElementValueMessage = MATCH: Value [{0}] (type '{1}') for property '{2}' does match. Current state is '{3}' and desired state is '{4}'. (DRC0025)
-    TestDscParameterResultMessage = Test-DscParameter result is '{0}'. (DRC0026)
+    CompareDscParameterResultMessage = Compare-DscParameterState result : Property '{0}' is in desired state '{1}' . (DRC0026)
     StartingReverseCheck = Starting with a reverse check. (DRC0027)
     TestDscParameterCompareMessage = Comparing values in property '{0}'. (DRC0028)
     TooManyCimInstances = More than one CIM instance was returned from the current state. (DRC0029)
