@@ -34,6 +34,13 @@
         If the sorting of array values does not matter, values are sorted internally
         before doing the comparison.
 
+    .PARAMETER IncludeInDesiredState
+        Indicates that result adds the properties in desired state.
+        By default, this command return only the properties in not desired state.
+
+    .PARAMETER IncludeValue
+        Indicates that result contains the ActualValue and ExcpectedValue properties.
+
     .EXAMPLE
         $currentValues = @{
             String = 'This is a string'
@@ -50,13 +57,15 @@
 
         Name                           Value
         ----                           -----
-        Property                       String
-        Compliance                     True
         Property                       Int
-        Compliance                     False
+        InDesiredState                 False
+        ExpectedType                   System.Int32
+        ActualType                     System.Int32
+        ```
 
-        The function Compare-DscParameterState compare the value of each hashtable based on the keys
-        present in $desiredValues hashtable. The result indicates that Int property is not in the desired state.
+        The function Compare-DscParameterState compare the value of each hashtable based
+        on the keys present in $desiredValues hashtable. The result indicates that Int
+        property is not in the desired state.
         No information about Bool property, because it is not in $desiredValues hashtable.
 
     .EXAMPLE
@@ -81,19 +90,18 @@
 
         Name                           Value
         ----                           -----
-        Property                       String
-        Compliance                     True
         Property                       Int
-        Compliance                     False
+        InDesiredState                 False
+        ExpectedType                   System.Int32
+        ActualType                     System.Int32
+        ```
 
-        The function Compare-DscParameterState compare the value of each hashtable based on the keys
-        present in $desiredValues hashtable and without those in $excludeProperties.
+        The function Compare-DscParameterState compare the value of each hashtable based
+        on the keys present in $desiredValues hashtable and without those in $excludeProperties.
         The result indicates that Int property is not in the desired state.
         No information about Bool property, because it is in $excludeProperties.
 
     .EXAMPLE
-
-
         $serviceParameters = @{
             Name     = $Name
         }
@@ -117,6 +125,7 @@
 function Compare-DscParameterState
 {
     [CmdletBinding()]
+    [OutputType([System.Object[]])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -146,7 +155,15 @@ function Compare-DscParameterState
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
-        $SortArrayValues
+        $SortArrayValues,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $IncludeInDesiredState,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $IncludeValue
     )
 
     $returnValue = @()
@@ -166,7 +183,7 @@ function Compare-DscParameterState
     #region CheckType of object
     $types = 'System.Management.Automation.PSBoundParametersDictionary',
         'System.Collections.Hashtable',
-        'Microsoft.Management.Infrastructure.CimInstance' # but why if you convert it before ?
+        'Microsoft.Management.Infrastructure.CimInstance'
 
     if ($DesiredValues.GetType().FullName -notin $types)
     {
@@ -201,6 +218,7 @@ function Compare-DscParameterState
     {
         $keyList = $Properties
     }
+
     if ($ExcludeProperties)
     {
         $keyList = $keyList | Where-Object -FilterScript { $_ -notin $ExcludeProperties }
@@ -210,14 +228,21 @@ function Compare-DscParameterState
     foreach ($key in $keyList)
     {
         #generate default value
-        $complianceTable = @{
-            Property = $key
-            Compliance = $true
+        $InDesiredStateTable = [ordered]@{
+            Property        = $key
+            InDesiredState  = $true
         }
-        $returnValue += $complianceTable
+        $returnValue += $InDesiredStateTable
         #get value of each key
         $desiredValue = $desiredValuesClean.$key
         $currentValue = $CurrentValues.$key
+
+        #Check if IncludeValue parameter is used.
+        if ($IncludeValue)
+        {
+            $InDesiredStateTable['ExpectedValue']   = $desiredValue
+            $InDesiredStateTable['ActualValue']     = $currentValue
+        }
 
         #region convert to hashtable if value of key is CimInstance
         if ($desiredValue -is [Microsoft.Management.Infrastructure.CimInstance] -or
@@ -243,6 +268,8 @@ function Compare-DscParameterState
             }
         }
 
+        $InDesiredStateTable['ExpectedType'] = $desiredType
+
         if ($null -ne $currentValue)
         {
             $currentType = $currentValue.GetType()
@@ -253,6 +280,9 @@ function Compare-DscParameterState
                 Name = 'Unknown'
             }
         }
+
+        $InDesiredStateTable['ActualType'] = $currentType
+
         #endregion
         #region check if the desiredtype if a credential object. Only if the current type isn't unknown.
         if ($currentType.Name -ne 'Unknown' -and $desiredType.Name -eq 'PSCredential')
@@ -266,7 +296,7 @@ function Compare-DscParameterState
             elseif ($currentType.Name -ne 'string')
             {
                 Write-Verbose -Message ($script:localizedData.NoMatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
-                $complianceTable.Compliance = $false
+                $InDesiredStateTable.InDesiredState = $false
             }
 
             # Assume the string is our username when the matching desired value is actually a credential
@@ -278,18 +308,18 @@ function Compare-DscParameterState
             else
             {
                 Write-Verbose -Message ($script:localizedData.NoMatchPsCredentialUsernameMessage -f $currentValue, $desiredValue.UserName)
-                $complianceTable.Compliance = $false
+                $InDesiredStateTable.InDesiredState = $false
             }
         }
         #endregion test credential
-        #region Test type of object. And if they're not compliance, generate en exception
+        #region Test type of object. And if they're not InDesiredState, generate en exception
         if (-not $TurnOffTypeChecking)
         {
             if (($desiredType.Name -ne 'Unknown' -and $currentType.Name -ne 'Unknown') -and
                 $desiredType.FullName -ne $currentType.FullName)
             {
                 Write-Verbose -Message ($script:localizedData.NoMatchTypeMismatchMessage -f $key, $currentType.FullName, $desiredType.FullName)
-                $complianceTable.Compliance = $false
+                $InDesiredStateTable.InDesiredState = $false
                 continue # pass to the next key
             }
         }
@@ -331,14 +361,14 @@ function Compare-DscParameterState
             {
                 #If only currentvalue is empty, the configuration isn't compliant.
                 Write-Verbose -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
-                $complianceTable.Compliance = $false
+                $InDesiredStateTable.InDesiredState = $false
                 continue
             }
             elseif ($currentValue.Count -ne $desiredValue.Count)
             {
                 #If there is a difference between the number of objects in arrays, this isn't compliant.
                 Write-Verbose -Message ($script:localizedData.NoMatchValueDifferentCountMessage -f $desiredType.FullName, $key, $currentValue.Count, $desiredValue.Count)
-                $complianceTable.Compliance = $false
+                $InDesiredStateTable.InDesiredState = $false
                 continue
             }
             else
@@ -385,7 +415,7 @@ function Compare-DscParameterState
                             $desiredType.FullName -ne $currentType.FullName)
                         {
                             Write-Verbose -Message ($script:localizedData.NoMatchElementTypeMismatchMessage -f $key, $i, $currentType.FullName, $desiredType.FullName)
-                            $complianceTable.Compliance = $false
+                            $InDesiredStateTable.InDesiredState = $false
                             continue
                         }
                     }
@@ -410,6 +440,7 @@ function Compare-DscParameterState
                         }
                         $wasCurrentArrayValuesConverted = $true
                     }
+
                     if ($desiredArrayValues[$i] -is [scriptblock])
                     {
                         $desiredArrayValues[$i] = if ($currentArrayValues[$i] -is [string] -and -not $wasCurrentArrayValuesConverted)
@@ -428,9 +459,9 @@ function Compare-DscParameterState
                         $param.CurrentValues = $currentArrayValues[$i]
                         $param.DesiredValues = $desiredArrayValues[$i]
 
-                        if ($complianceTable.Compliance)
+                        if ($InDesiredStateTable.InDesiredState)
                         {
-                            $complianceTable.Compliance = Test-DscParameterState @param
+                            $InDesiredStateTable.InDesiredState = Test-DscParameterState @param
                         }
                         else
                         {
@@ -442,7 +473,7 @@ function Compare-DscParameterState
                     if ($desiredArrayValues[$i] -ne $currentArrayValues[$i])
                     {
                         Write-Verbose -Message ($script:localizedData.NoMatchElementValueMismatchMessage -f $i, $desiredType.FullName, $key, $currentArrayValues[$i], $desiredArrayValues[$i])
-                        $complianceTable.Compliance = $false
+                        $InDesiredStateTable.InDesiredState = $false
                         continue
                     }
                     else
@@ -460,9 +491,9 @@ function Compare-DscParameterState
             $param.CurrentValues = $currentValue
             $param.DesiredValues = $desiredValue
 
-            if ($complianceTable.Compliance)
+            if ($InDesiredStateTable.InDesiredState)
             {
-                $complianceTable.Compliance = Test-DscParameterState @param
+                $InDesiredStateTable.InDesiredState = Test-DscParameterState @param
             }
             else
             {
@@ -501,7 +532,7 @@ function Compare-DscParameterState
             if ($desiredValue -ne $currentValue)
             {
                 Write-Verbose -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
-                $complianceTable.Compliance = $false
+                $InDesiredStateTable.InDesiredState = $false
             }
         }
         #endregion check type
@@ -525,6 +556,34 @@ function Compare-DscParameterState
         }
     }
 
-    Write-Verbose -Message ($script:localizedData.TestDscParameterResultMessage -f $returnValue)
+    # Remove in desired state value if IncludeDesirateState parameter is not use
+    if (-not $IncludeInDesiredState)
+    {
+        [array]$returnValue = $returnValue.where({$_.InDesiredState -eq $false})
+    }
+
+    #change verbose message
+    $returnValue.foreach({
+        Write-Verbose -Message ($script:localizedData.CompareDscParameterResultMessage -f $_.Property,$_.InDesiredState)
+    })
+    <#
+        If Compare-DscParameterState is used in precedent step, don't need to convert it
+        We use .foreach() method as we are sure that $returnValue is an array.
+    #>
+    [Array]$returnValue = @(
+        $returnValue.foreach(
+            {
+                if ($_ -is [System.Collections.Hashtable])
+                {
+                    [pscustomobject]$_
+                }
+                else
+                {
+                    $_
+                }
+            }
+        )
+    )
+
     return $returnValue
 }

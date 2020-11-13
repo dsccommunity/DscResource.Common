@@ -148,7 +148,7 @@ will be thrown.
 ### `Compare-DscParameterState`
 
 Compare current against desired property state for any DSC resource and return
-a hashtable with the metadata from the comparison.
+a collection psobject with the metadata from the comparison.
 
 The content of the function `Test-DscParameterState` has been extracted and now
 `Test-DscParameterState` is just calling `Compare-DscParameterState`.
@@ -159,18 +159,22 @@ This function can be used in a DSC resource from the _Get_ function/method.
 ```plaintext
 Compare-DscParameterState [-CurrentValues] <Object> [-DesiredValues] <Object>
 [[-Properties]  <string[]>] [[-ExcludeProperties] <string[]>] [-TurnOffTypeChecking]
- [-ReverseCheck] [-SortArrayValues] [<CommonParameters>]
+ [-ReverseCheck] [-SortArrayValues] [-IncludeInDesiredState] [-IncludeValue] [<CommonParameters>]
 ```
 
 #### Outputs
 
-Returns an array containing a hashtable with metadata for each property
+Returns an array containing a psobject with metadata for each property
 that was evaluated.
 
 Metadata Name | Type | Description
 --- | --- | ---
 Property | `[System.String]` | The name of the property that was evaluated
-Compliance | `[System.Boolean]` | Returns `$true` if the expected and actual value was equal.
+InDesiredState | `[System.Boolean]` | Returns `$true` if the expected and actual value was equal.
+ExpectedType | `[System.String]` | Return the type of desired object.
+ActualType | `[System.String]` | Return the type of current object.
+ExpectedValue | `[System.PsObject]` | Return the value of expected object.
+ActualValue | `[System.PsObject]` | Return the value of current object.
 
 #### Example
 
@@ -191,10 +195,10 @@ Compare-DscParameterState -CurrentValues $currentValues -DesiredValues $desiredV
 #result
 Name                           Value
 ----                           -----
-Property                       String
-Compliance                     True
 Property                       Int
-Compliance                     False
+InDesiredState                 False
+ExpectedType                   System.Int32
+ActualType                     System.Int32
 ```
 
 The function Compare-DscParameterState compare the value of each hashtable based
@@ -226,10 +230,10 @@ Compare-DscParameterState `
 #result
 Name                           Value
 ----                           -----
-Property                       String
-Compliance                     True
 Property                       Int
-Compliance                     False
+InDesiredState                 False
+ExpectedType                   System.Int32
+ActualType                     System.Int32
 ```
 
 The function Compare-DscParameterState compare the value of each hashtable based

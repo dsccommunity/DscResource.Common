@@ -13,11 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Get-TargetResource function or Get() method in Class based Resources.
   It is based on the code of Test-DscParameterState function to get compliance
   between current and desired state of resources.
+  The OutPut of Compare-DscParameterState is a collection psobject.
+  The properties of psobject are Property,InDesiredState,ExpectedType,ActualType,
+  ExpectedValue and ActualValue. The IncludeInDesiredState parameter must be use to
+  add ExceptedValue and ActualValue.
 - Added pester test to test the pscredential object with `Compare-DscParameterState`.
 
 ### Changed
 
-- Cmdlet Test-DscResourceState is now a wrapper of Compare-DscParameterState. Possible breaking change.
+- Cmdlet Test-DscResourceState is now calling Compare-DscParameterState. Possible breaking change.
 
 ### Fix
 
