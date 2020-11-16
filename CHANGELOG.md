@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The OutPut of Compare-DscParameterState is a collection psobject.
   The properties of psobject are Property,InDesiredState,ExpectedType,ActualType,
   ExpectedValue and ActualValue. The IncludeInDesiredState parameter must be use to
-  add ExceptedValue and ActualValue.
+  add ExeptedValue and ActualValue.
 - Added pester test to test the pscredential object with `Compare-DscParameterState`.
 
 ### Changed
