@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Cmdlet Test-DscResourceState is now calling Compare-DscParameterState. Possible breaking change.
+- IncludeInDesiredState and IncludeValue parameters of Compare-DscParameterState
+  are removed in splatting when Test-DscCompareState is called.
 
 ### Fix
 

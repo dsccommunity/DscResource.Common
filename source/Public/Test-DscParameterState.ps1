@@ -120,15 +120,7 @@ function Test-DscParameterState
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
-        $SortArrayValues,
-
-        [Parameter()]
-        [System.Management.Automation.SwitchParameter]
-        $IncludeInDesiredState,
-
-        [Parameter()]
-        [System.Management.Automation.SwitchParameter]
-        $IncludeValue
+        $SortArrayValues
     )
 
     $returnValue = $true

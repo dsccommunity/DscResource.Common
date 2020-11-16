@@ -35,8 +35,8 @@
         before doing the comparison.
 
     .PARAMETER IncludeInDesiredState
-        Indicates that result adds the properties in desired state.
-        By default, this command return only the properties in not desired state.
+        Indicates that result adds the properties in the desired state.
+        By default, this command returns only the properties not in desired state.
 
     .PARAMETER IncludeValue
         Indicates that result contains the ActualValue and ExcpectedValue properties.
@@ -459,6 +459,13 @@ function Compare-DscParameterState
                         $param.CurrentValues = $currentArrayValues[$i]
                         $param.DesiredValues = $desiredArrayValues[$i]
 
+                        'IncludeInDesiredState','IncludeValue' | ForEach-Object {
+                            if ($param.ContainsKey($_))
+                            {
+                                $null = $param.Remove($_)
+                            }
+                        }
+
                         if ($InDesiredStateTable.InDesiredState)
                         {
                             $InDesiredStateTable.InDesiredState = Test-DscParameterState @param
@@ -490,6 +497,13 @@ function Compare-DscParameterState
             $param = $PSBoundParameters
             $param.CurrentValues = $currentValue
             $param.DesiredValues = $desiredValue
+
+            'IncludeInDesiredState','IncludeValue' | ForEach-Object {
+                if ($param.ContainsKey($_))
+                {
+                    $null = $param.Remove($_)
+                }
+            }
 
             if ($InDesiredStateTable.InDesiredState)
             {
