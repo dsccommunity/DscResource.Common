@@ -33,13 +33,6 @@
         If the sorting of array values does not matter, values are sorted internally
         before doing the comparison.
 
-    .PARAMETER IncludeInDesiredState
-        Indicates that result adds the properties in desired state.
-        By default, this command return only the properties in not desired state.
-
-    .PARAMETER IncludeValue
-        Indicates that result contains the ActualValue and ExcpectedValue properties.
-
     .EXAMPLE
         $currentState = Get-TargetResource @PSBoundParameters
 
@@ -120,15 +113,7 @@ function Test-DscParameterState
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
-        $SortArrayValues,
-
-        [Parameter()]
-        [System.Management.Automation.SwitchParameter]
-        $IncludeInDesiredState,
-
-        [Parameter()]
-        [System.Management.Automation.SwitchParameter]
-        $IncludeValue
+        $SortArrayValues
     )
 
     $returnValue = $true
