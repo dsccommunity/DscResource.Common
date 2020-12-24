@@ -455,6 +455,35 @@ ConvertTo-HashTable -CimInstance $cimInstance
 This creates a array om CimInstances of the class name MSFT_KeyValuePair
 and passes it to ConvertTo-HashTable which returns a hashtable.
 
+### `Get-ComputerName`
+
+Returns the computer name cross-plattform. The variable `$env:COMPUTERNAME`
+does not exist cross-platform which hinders development and testing on
+macOS and Linux. Instead this cmdlet can be used to get the computer name
+cross-plattform.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Get-ComputerName [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+**System.String**
+
+#### Notes
+
+None.
+
+#### Example
+
+```powershell
+$computerName = Get-ComputerName
+```
+
 ### `Get-LocalizedData`
 
 Gets language-specific data into scripts and functions based on the UI culture

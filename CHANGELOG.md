@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added cmdlet `Get-ComputerName` which can be used to returns the computer
+  name cross-plattform. The variable `$env:COMPUTERNAME` does not exist
+  cross-platform which hinders development and testing on macOS and Linux.
+  Instead this cmdlet can be used to get the computer name cross-plattform.
+
 ## [0.10.0] - 2020-11-18
 
 ### Added
