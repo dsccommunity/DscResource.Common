@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The properties of psobject are Property,InDesiredState,ExpectedType,ActualType,
   ExpectedValue and ActualValue. The IncludeInDesiredState parameter must be use to
   add ExeptedValue and ActualValue.
-- Added pester test to test the pscredential object with `Compare-DscParameterState`.
+- Added pester test to test the pscredential object with Ä'`Compare-DscParameterState`.
 
 ### Changed
 

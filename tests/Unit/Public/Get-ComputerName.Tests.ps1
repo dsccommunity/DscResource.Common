@@ -24,16 +24,7 @@ InModuleScope $ProjectName {
             }
             else
             {
-                $previousComputerName = [Environment]::GetEnvironmentVariable('COMPUTERNAME', 'User')
-
-                [Environment]::SetEnvironmentVariable('COMPUTERNAME', $mockComputerName, 'User')
-            }
-        }
-
-        AfterAll {
-            if (-not ($IsLinux -or $IsMacOs))
-            {
-                [Environment]::SetEnvironmentVariable('COMPUTERNAME', $previousComputerName, 'User')
+                $mockComputerName = $env:COMPUTERNAME
             }
         }
 
