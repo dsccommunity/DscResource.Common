@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.1] - 2020-12-25
+
 ### Added
 
 - Added cmdlet `Get-ComputerName` which can be used to returns the computer
