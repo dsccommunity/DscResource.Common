@@ -63,7 +63,8 @@ function Assert-Module
             New-ObjectNotFoundException -Message $errorMessage
         }
 
-        if ($ImportModule)
+        # Only import it here if $Force is not set, otherwise it will be imported below.
+        if ($ImportModule -and -not $Force)
         {
             Import-Module -Name $ModuleName
         }
