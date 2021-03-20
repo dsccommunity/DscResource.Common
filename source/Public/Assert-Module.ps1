@@ -62,19 +62,16 @@ function Assert-Module
             $errorMessage = $script:localizedData.ModuleNotFound -f $ModuleName
             New-ObjectNotFoundException -Message $errorMessage
         }
+
+        if ($ImportModule)
+        {
+            Import-Module -Name $ModuleName
+        }
     }
 
-    if ($ImportModule)
+    # Always import the module even if already in session.
+    if ($ImportModule -and $Force)
     {
-        $importModuleParameters = @{
-            Name = $ModuleName
-        }
-
-        if ($PSBoundParameters.ContainsKey('Force') -and $Force)
-        {
-            $importModuleParameters['Force'] = $true
-        }
-
-        Import-Module @importModuleParameters
+        Import-Module -Name $ModuleName -Force
     }
 }
