@@ -9,12 +9,29 @@
         Specifies the name of the module to assert.
 
     .PARAMETER ImportModule
-        Specfiies to import the module if it is asserted.
+        Specifies to import the module if it is asserted.
+
+    .PARAMETER Force
+        Specifies to forcibly import the module even if it is already in the
+        session. THis parameter is ignored unless parameter `ImportModule` is
+        also used.
 
     .EXAMPLE
         Assert-Module -ModuleName 'DhcpServer'
 
         This asserts that the module DhcpServer is available on the system.
+
+    .EXAMPLE
+        Assert-Module -ModuleName 'DhcpServer' -ImportModule
+
+        This asserts that the module DhcpServer is available on the system and
+        imports it.
+
+    .EXAMPLE
+        Assert-Module -ModuleName 'DhcpServer' -ImportModule -Force
+
+        This asserts that the module DhcpServer is available on the system and
+        forcibly imports it.
 #>
 function Assert-Module
 {
@@ -27,17 +44,37 @@ function Assert-Module
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
-        $ImportModule
+        $ImportModule,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $Force
     )
 
-    if (-not (Get-Module -Name $ModuleName -ListAvailable))
+    <#
+        If the module is already in the session there is no need to use -ListAvailable.
+        This is a fix for issue #66.
+    #>
+    if (-not (Get-Module -Name $ModuleName))
     {
-        $errorMessage = $script:localizedData.ModuleNotFound -f $ModuleName
-        New-ObjectNotFoundException -Message $errorMessage
+        if (-not (Get-Module -Name $ModuleName -ListAvailable))
+        {
+            $errorMessage = $script:localizedData.ModuleNotFound -f $ModuleName
+            New-ObjectNotFoundException -Message $errorMessage
+        }
     }
 
     if ($ImportModule)
     {
-        Import-Module -Name $ModuleName
+        $importModuleParameters = @{
+            Name = $ModuleName
+        }
+
+        if ($PSBoundParameters.ContainsKey('Force') -and $Force)
+        {
+            $importModuleParameters['Force'] = $true
+        }
+
+        Import-Module @importModuleParameters
     }
 }

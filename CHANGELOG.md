@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Renamed default branch to `main` - fixes [issue #62](https://github.com/dsccommunity/DscResource.Common/issues/62).
+- DscResource.Common
+  - Renamed default branch to `main` ([issue #62](https://github.com/dsccommunity/DscResource.Common/issues/62)).
+- `Assert-Module`
+  - Now it possible to forcibly import a module using `-ImportModule -Force`
+  - It no longer outputs verbose messages that is normally generated when
+    using `Get-Module -ListAvailable` if the module that is asserted is
+    already in the session ([issue #66](https://github.com/dsccommunity/DscResource.Common/issues/66)).
 
 ## [0.10.1] - 2020-12-25
 

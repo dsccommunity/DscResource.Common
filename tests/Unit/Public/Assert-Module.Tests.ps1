@@ -38,7 +38,7 @@ InModuleScope $ProjectName {
                 It 'Should not throw an error' {
                     { Assert-Module -ModuleName $testModuleName } | Should -Not -Throw
                 }
-                
+
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Import-Module -Exactly -Times 0
                 }
@@ -48,9 +48,21 @@ InModuleScope $ProjectName {
                 It 'Should not throw an error' {
                     { Assert-Module -ModuleName $testModuleName -ImportModule } | Should -Not -Throw
                 }
-                
+
                 It 'Should call the expected mocks' {
                     Assert-MockCalled -CommandName Import-Module -Exactly -Times 1
+                }
+            }
+
+            Context 'When module should be forcibly imported' {
+                It 'Should not throw an error' {
+                    { Assert-Module -ModuleName $testModuleName -ImportModule -Force } | Should -Not -Throw
+                }
+
+                It 'Should call the expected mocks' {
+                    Assert-MockCalled -CommandName Import-Module -ParameterFilter {
+                        $Force -eq $true
+                    } -Exactly -Times 1
                 }
             }
         }
