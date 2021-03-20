@@ -121,7 +121,7 @@ import the module.
 #### Syntax
 
 ```plaintext
-Assert-Module [-ModuleName] <string> [-ImportModule] [<CommonParameters>]
+Assert-Module [-ModuleName] <string> [-ImportModule] [-Force] [<CommonParameters>]
 ```
 
 #### Outputs
@@ -144,6 +144,14 @@ Assert-Module -ModuleName 'DhcpServer' -ImportModule
 This will assert that the module DhcpServer is available and that it has
 been imported into the session. If the module is not available an exception
 will be thrown.
+
+```powershell
+Assert-Module -ModuleName 'DhcpServer' -ImportModule -Force
+```
+
+This will assert that the module DhcpServer is available and it will be
+forcibly imported into the session (even if it was already in the session).
+If the module is not available an exception will be thrown.
 
 ### `Compare-DscParameterState`
 
