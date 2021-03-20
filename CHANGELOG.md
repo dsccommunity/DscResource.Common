@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - It no longer outputs verbose messages that is normally generated when
     using `Get-Module -ListAvailable` if the module that is asserted is
     already in the session ([issue #66](https://github.com/dsccommunity/DscResource.Common/issues/66)).
+- `Compare-DscParameterState`
+  - Fix verbose message to only show when using parameter `IncludeInDesiredState`.
+    Also made the verbose message more intuitive when the value being compared
+    was a `[System.Boolean]`.
 
 ## [0.10.1] - 2020-12-25
 

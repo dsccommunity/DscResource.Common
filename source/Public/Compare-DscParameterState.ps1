@@ -577,9 +577,21 @@ function Compare-DscParameterState
     }
 
     #change verbose message
-    $returnValue.foreach({
-        Write-Verbose -Message ($script:localizedData.CompareDscParameterResultMessage -f $_.Property,$_.InDesiredState)
-    })
+    if ($IncludeInDesiredState.IsPresent)
+    {
+        $returnValue.ForEach({
+            if ($_.InDesiredState)
+            {
+                $localizedString = $script:localizedData.PropertyInDesiredStateMessage
+            }
+            else
+            {
+                $localizedString = $script:localizedData.PropertyNotInDesiredStateMessage
+            }
+
+            Write-Verbose -Message ($localizedString -f $_.Property)
+        })
+    }
     <#
         If Compare-DscParameterState is used in precedent step, don't need to convert it
         We use .foreach() method as we are sure that $returnValue is an array.
