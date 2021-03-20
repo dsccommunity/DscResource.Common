@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - DscResource.Common
   - Renamed default branch to `main` - fixes [issue #62](https://github.com/dsccommunity/DscResource.Common/issues/62).
+  - Changed to use the new GitHub deploy tasks.
 - `Assert-Module`
   - Now it possible to forcibly import a module using `-ImportModule -Force`
   - It no longer outputs verbose messages that is normally generated when
