@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Renamed default branch to `main` - fixes [issue #62](https://github.com/dsccommunity/DscResource.Common/issues/62).
+- `Compare-DscParameterState`
+  - Fix verbose message to only show when using parameter `IncludeInDesiredState`.
+    Also made the verbose message more intuitive when the value being compared
+    was a `[System.Boolean]`.
 
 ## [0.10.1] - 2020-12-25
 
