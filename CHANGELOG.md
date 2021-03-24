@@ -9,7 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Renamed default branch to `main` - fixes [issue #62](https://github.com/dsccommunity/DscResource.Common/issues/62).
+- DscResource.Common
+  - Renamed default branch to `main` - fixes [issue #62](https://github.com/dsccommunity/DscResource.Common/issues/62).
+  - Changed to use the new GitHub deploy tasks.
+- `Assert-Module`
+  - Now it possible to forcibly import a module using `-ImportModule -Force`
+  - It no longer outputs verbose messages that is normally generated when
+    using `Get-Module -ListAvailable` if the module that is asserted is
+    already in the session ([issue #66](https://github.com/dsccommunity/DscResource.Common/issues/66)).
 - `Compare-DscParameterState`
   - Fix verbose message to only show when using parameter `IncludeInDesiredState`.
     Also made the verbose message more intuitive when the value being compared

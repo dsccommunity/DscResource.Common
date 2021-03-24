@@ -24,33 +24,76 @@ InModuleScope $ProjectName {
             }
         }
 
-        Context 'When module is available' {
-            BeforeAll {
-                Mock -CommandName Import-Module
-                Mock -CommandName Get-Module -MockWith {
-                    return @{
-                        Name = $testModuleName
+        Context 'When module is installed' {
+            Context 'When module is already present in session' {
+                BeforeAll {
+                    Mock -CommandName Import-Module
+                    Mock -CommandName Get-Module -MockWith {
+                        return @{
+                            Name = $testModuleName
+                        }
+                    }
+                }
+
+                Context 'When asserting that module is available' {
+                    It 'Should not throw an error' {
+                        { Assert-Module -ModuleName $testModuleName } | Should -Not -Throw
+                    }
+
+                    It 'Should call the expected mocks' {
+                        Assert-MockCalled -CommandName Import-Module -Exactly -Times 0
+                    }
+                }
+
+                Context 'When using ImportModule but module is already imported' {
+                    It 'Should not throw an error' {
+                        { Assert-Module -ModuleName $testModuleName -ImportModule } | Should -Not -Throw
+                    }
+
+                    It 'Should call the expected mocks' {
+                        Assert-MockCalled -CommandName Import-Module -Exactly -Times 0
+                    }
+                }
+
+                Context 'When module should be forcibly imported' {
+                    It 'Should not throw an error' {
+                        { Assert-Module -ModuleName $testModuleName -ImportModule -Force } | Should -Not -Throw
+                    }
+
+                    It 'Should call the expected mocks' {
+                        Assert-MockCalled -CommandName Import-Module -ParameterFilter {
+                            $Force -eq $true
+                        } -Exactly -Times 1
                     }
                 }
             }
 
-            Context 'When module should not be imported' {
-                It 'Should not throw an error' {
-                    { Assert-Module -ModuleName $testModuleName } | Should -Not -Throw
-                }
-                
-                It 'Should call the expected mocks' {
-                    Assert-MockCalled -CommandName Import-Module -Exactly -Times 0
-                }
-            }
+            Context 'When module is not present in the session' {
+                BeforeAll {
+                    Mock -CommandName Import-Module
+                    Mock -CommandName Get-Module -MockWith {
+                        return $null
+                    } -ParameterFilter {
+                        $ListAvailable -eq $false
+                    }
 
-            Context 'When module should be imported' {
-                It 'Should not throw an error' {
-                    { Assert-Module -ModuleName $testModuleName -ImportModule } | Should -Not -Throw
+                    Mock -CommandName Get-Module -MockWith {
+                        return @{
+                            Name = $testModuleName
+                        }
+                    } -ParameterFilter {
+                        $ListAvailable -eq $true
+                    }
                 }
-                
-                It 'Should call the expected mocks' {
-                    Assert-MockCalled -CommandName Import-Module -Exactly -Times 1
+
+                Context 'When module should be imported' {
+                    It 'Should not throw an error' {
+                        { Assert-Module -ModuleName $testModuleName -ImportModule } | Should -Not -Throw
+                    }
+
+                    It 'Should call the expected mocks' {
+                        Assert-MockCalled -CommandName Import-Module -Exactly -Times 1
+                    }
                 }
             }
         }
