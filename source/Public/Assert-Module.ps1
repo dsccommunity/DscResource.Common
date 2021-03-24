@@ -13,7 +13,7 @@
 
     .PARAMETER Force
         Specifies to forcibly import the module even if it is already in the
-        session. THis parameter is ignored unless parameter `ImportModule` is
+        session. This parameter is ignored unless parameter `ImportModule` is
         also used.
 
     .EXAMPLE
