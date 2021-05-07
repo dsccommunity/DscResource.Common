@@ -75,7 +75,7 @@ InModuleScope $ProjectName {
             }
 
             It "Should return record count of $($psObject.Count)" {
-                ($script:result | Measure-Object).Count | Should -Be $psObject.Count
+                ($script:result | Measure-Object).Count | Should -Be 1
             }
 
             It 'Should return result of type [System.Collections.Hashtable]' {
