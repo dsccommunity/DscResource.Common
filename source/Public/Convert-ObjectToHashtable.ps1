@@ -4,10 +4,10 @@
         Convert any object to hashtable.
 
     .DESCRIPTION
-        This function is used to convert an psobject into a hashtable.
+        This function is used to convert a psobject into a hashtable.
 
     .PARAMETER InputObject
-        The object that should convert to hashtable.
+        The object that should be convert to hashtable.
 
     .OUTPUTS
         Hashtable
@@ -36,9 +36,6 @@
     $ObjectArray | Convert-ObjectToHashtable
 
     This creates pscustomobjects and converts there properties/values to Hashtable Keys/Values through the pipeline.
-
-
-
 #>
 function Convert-ObjectToHashtable
 {
@@ -46,14 +43,10 @@ function Convert-ObjectToHashtable
     [OutputType([Hashtable])]
     param
     (
-        [Parameter(Mandatory = $true,ValueFromPipeline=$true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [PSObject]
         $InputObject
     )
-    begin {
-
-    }
-
     process {
 
         $hashResult = @{}
@@ -66,9 +59,4 @@ function Convert-ObjectToHashtable
             return $hashResult
         }
     }
-
-    end {
-
-    }
-
 }
