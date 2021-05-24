@@ -9,6 +9,10 @@
     .PARAMETER InputObject
         The object that should be convert to hashtable.
 
+    .PARAMETER OutPutFormat
+        Set the format you do want to convert the object. The default value is HashTable.
+        It's the only value accepted at this time.
+
     .OUTPUTS
         Hashtable
 
@@ -19,7 +23,7 @@
         LastName = 'Smith'
     }
 
-    Convert-ObjectToHashtable -InputObject $Object
+    ConvertFrom-DscResourceInstance -InputObject $Object
 
     This creates a pscustomobject and converts its properties/values to Hashtable Key/Value.
 
@@ -33,11 +37,11 @@
         LastName = 'Smith'
     }
 
-    $ObjectArray | Convert-ObjectToHashtable
+    $ObjectArray | ConvertFrom-DscResourceInstance
 
     This creates pscustomobjects and converts there properties/values to Hashtable Keys/Values through the pipeline.
 #>
-function Convert-ObjectToHashtable
+function ConvertFrom-DscResourceInstance
 {
     [CmdletBinding()]
     [OutputType([Hashtable])]
@@ -45,18 +49,30 @@ function Convert-ObjectToHashtable
     (
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [PSObject]
-        $InputObject
+        $InputObject,
+
+        [Parameter()]
+        [ValidateSet('HashTable')]
+        [String]
+        $OutPutFormat = 'HashTable'
+
     )
     process {
 
-        $hashResult = @{}
-        foreach ($obj in $InputObject)
+        switch ($OutPutFormat)
         {
-            $obj.psobject.Properties | Foreach-Object {
-                $hashResult[$_.Name] = $_.Value
+            'HashTable'
+            {
+                $Result = @{}
+                foreach ($obj in $InputObject)
+                {
+                    $obj.psobject.Properties | Foreach-Object {
+                        $Result[$_.Name] = $_.Value
+                    }
+                }
             }
-
-            return $hashResult
         }
+
+        return $Result
     }
 }

@@ -14,7 +14,7 @@ $ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
 Import-Module $ProjectName -Force
 
 InModuleScope $ProjectName {
-    Describe 'Convert-ObjectToHashTable' {
+    Describe 'ConvertFrom-DscResourceInstance' {
         $psObject = [pscustomobject]@{
             k1 = 'v1'
             k2 = 100
@@ -27,7 +27,7 @@ InModuleScope $ProjectName {
 
         Context 'When the array contains the expected record count through the pipeline' {
             It 'Should not throw exception' {
-                { $script:result = $psObject | Convert-ObjectToHashTable } | Should -Not -Throw
+                { $script:result = $psObject | ConvertFrom-DscResourceInstance } | Should -Not -Throw
             }
 
             It "Should return record count of $($psObject.Count)" {
@@ -71,7 +71,7 @@ InModuleScope $ProjectName {
 
         Context 'When the array contains the expected record count' {
             It 'Should not throw exception' {
-                { $script:result = Convert-ObjectToHashTable -InputObject $psObject[0] } | Should -Not -Throw
+                { $script:result = ConvertFrom-DscResourceInstance -InputObject $psObject[0] } | Should -Not -Throw
             }
 
             It "Should return record count of $($psObject.Count)" {
@@ -95,6 +95,12 @@ InModuleScope $ProjectName {
                 It 'Should return value "k3" in the hashtable should be "1,2,3"' {
                     $script:result.k3 -join ',' | Should -Be '1,2,3'
                 }
+            }
+        }
+
+        Context 'When a wrong output format is set' {
+            It 'Should throw exception' {
+                { $script:result = $psObject | ConvertFrom-DscResourceInstance -OutputFormat 'DummyFormat' } | Should -Throw
             }
         }
     }
