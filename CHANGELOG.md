@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added cmdlet `ConvertFrom-DscResourceInstance` wich can be used to convert any
+ object to in another format. It accepts objects from pipeline. [issue #71](https://github.com/dsccommunity/DscResource.Common/issues/71).
+
 ## [0.10.2] - 2021-03-24
 
 ### Changed
