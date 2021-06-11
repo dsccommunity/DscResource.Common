@@ -1,16 +1,4 @@
-BeforeAll {
-    $script:moduleName = 'DscResource.Common'
-
-    #region HEADER
-    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
-
-    Get-Module -Name $script:moduleName -ListAvailable |
-        Select-Object -First 1 |
-        Import-Module -Force -ErrorAction 'Stop'
-    #endregion HEADER
-}
-
-Describe 'Set-PSModulePath' -Tag 'SetPSModulePath' {
+BeforeDiscovery {
     # Determines if we should skip tests.
     if ($isWindows -or $PSEdition -eq 'Desktop')
     {
@@ -22,7 +10,19 @@ Describe 'Set-PSModulePath' -Tag 'SetPSModulePath' {
     {
         $skipTest = $true
     }
+}
 
+BeforeAll {
+    $script:moduleName = 'DscResource.Common'
+
+    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
+
+    Get-Module -Name $script:moduleName -ListAvailable |
+        Select-Object -First 1 |
+        Import-Module -Force -ErrorAction 'Stop'
+}
+
+Describe 'Set-PSModulePath' -Tag 'SetPSModulePath' {
     Context 'When updating the session environment variable PSModulePath' {
         BeforeAll {
             $currentPSModulePath = $env:PSModulePath
@@ -63,4 +63,3 @@ Describe 'Set-PSModulePath' -Tag 'SetPSModulePath' {
         }
     }
 }
-
