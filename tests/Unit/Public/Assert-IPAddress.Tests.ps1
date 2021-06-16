@@ -1,14 +1,19 @@
 BeforeAll {
     $script:moduleName = 'DscResource.Common'
 
-    #region HEADER
     Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
     Get-Module -Name $script:moduleName -ListAvailable |
         Select-Object -First 1 |
         Import-Module -Force -ErrorAction 'Stop'
-    #endregion HEADER
+
+    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
 }
+
+AfterAll {
+    $PSDefaultParameterValues.Remove('InModuleScope:ModuleName')
+}
+
 
 Describe 'Assert-IPAddress' -Tag 'AssertIPAddress' {
     Context 'When invoking with valid IPv4 Address' {
@@ -41,8 +46,15 @@ Describe 'Assert-IPAddress' -Tag 'AssertIPAddress' {
                     AddressFamily  = 'IPv4'
                 }
 
-                { Assert-IPAddress @testIPAddressParameters } | `
-                    Should -Throw ($script:localizedData.AddressFormatError -f $testIPAddressParameters.Address)
+                $errorMessage = InModuleScope -ScriptBlock {
+                    $script:localizedData.AddressFormatError
+                }
+
+                $errorMessage = $errorMessage -f $testIPAddressParameters.Address
+                $errorMessage += " (Parameter 'Address')"
+
+                { Assert-IPAddress @testIPAddressParameters } |
+                    Should -Throw -ExpectedMessage $errorMessage
             }
         }
 
@@ -52,8 +64,15 @@ Describe 'Assert-IPAddress' -Tag 'AssertIPAddress' {
                     Address        = 'NotReal'
                 }
 
-                { Assert-IPAddress @testIPAddressParameters } | `
-                    Should -Throw ($script:localizedData.AddressFormatError -f $testIPAddressParameters.Address)
+                $errorMessage = InModuleScope -ScriptBlock {
+                    $script:localizedData.AddressFormatError
+                }
+
+                $errorMessage = $errorMessage -f $testIPAddressParameters.Address
+                $errorMessage += " (Parameter 'Address')"
+
+                { Assert-IPAddress @testIPAddressParameters } |
+                    Should -Throw -ExpectedMessage $errorMessage
             }
         }
     }
@@ -65,8 +84,15 @@ Describe 'Assert-IPAddress' -Tag 'AssertIPAddress' {
                 AddressFamily  = 'IPv6'
             }
 
+            $errorMessage = InModuleScope -ScriptBlock {
+                $script:localizedData.AddressIPv4MismatchError
+            }
+
+            $errorMessage = $errorMessage -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily
+            $errorMessage += " (Parameter 'AddressFamily')"
+
             { Assert-IPAddress @testIPAddressParameters } | `
-                Should -Throw ($script:localizedData.AddressIPv4MismatchError -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily)
+                Should -Throw -ExpectedMessage $errorMessage
         }
     }
 
@@ -77,8 +103,15 @@ Describe 'Assert-IPAddress' -Tag 'AssertIPAddress' {
                 AddressFamily  = 'IPv4'
             }
 
+            $errorMessage = InModuleScope -ScriptBlock {
+                $script:localizedData.AddressIPv6MismatchError
+            }
+
+            $errorMessage = $errorMessage -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily
+            $errorMessage += " (Parameter 'AddressFamily')"
+
             { Assert-IPAddress @testIPAddressParameters } | `
-                Should -Throw ($script:localizedData.AddressIPv6MismatchError -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily)
+                Should -Throw -ExpectedMessage $errorMessage
         }
     }
 

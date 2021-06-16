@@ -1,13 +1,17 @@
 BeforeAll {
     $script:moduleName = 'DscResource.Common'
 
-    #region HEADER
     Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
     Get-Module -Name $script:moduleName -ListAvailable |
         Select-Object -First 1 |
         Import-Module -Force -ErrorAction 'Stop'
-    #endregion HEADER
+
+    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
+}
+
+AfterAll {
+    $PSDefaultParameterValues.Remove('InModuleScope:ModuleName')
 }
 
 Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
@@ -79,9 +83,12 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
     Context 'When the assert fails' {
         Context 'When using parameters that are mutually exclusive' {
             It 'Should throw an error' {
-                $errorMessage = `
-                    $script:localizedData.ParameterUsageWrong `
-                        -f 'param1', 'param2'
+                $errorMessage = InModuleScope -ScriptBlock {
+                    $script:localizedData.ParameterUsageWrong
+                }
+
+                $errorMessage = $errorMessage -f 'param1', 'param2'
+                $errorMessage += " (Parameter 'Parameters')"
 
                 {
                     $assertBoundParameterParameters = @{
@@ -94,15 +101,18 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                     }
 
                     Assert-BoundParameter @assertBoundParameterParameters
-                } | Should -Throw $errorMessage
+                } | Should -Throw -ExpectedMessage $errorMessage
             }
         }
 
         Context 'When using several parameters that are mutually exclusive' {
             It 'Should throw an error' {
-                $errorMessage = `
-                    $script:localizedData.ParameterUsageWrong `
-                        -f "param1','param2", "param3','param4"
+                $errorMessage = InModuleScope -ScriptBlock {
+                    $script:localizedData.ParameterUsageWrong
+                }
+
+                $errorMessage = $errorMessage -f "param1','param2", "param3','param4"
+                $errorMessage += " (Parameter 'Parameters')"
 
                 {
                     $assertBoundParameterParameters = @{
@@ -117,7 +127,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                     }
 
                     Assert-BoundParameter @assertBoundParameterParameters
-                } | Should -Throw $errorMessage
+                } | Should -Throw -ExpectedMessage $errorMessage
             }
         }
     }

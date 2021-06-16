@@ -6,21 +6,31 @@ BeforeAll {
     Get-Module -Name $script:moduleName -ListAvailable |
         Select-Object -First 1 |
         Import-Module -Force -ErrorAction 'Stop'
+
+    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
+    $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
+    $PSDefaultParameterValues['Should:ModuleName'] = $script:moduleName
+}
+
+AfterAll {
+    $PSDefaultParameterValues.Remove('InModuleScope:ModuleName')
+    $PSDefaultParameterValues.Remove('Mock:ModuleName')
+    $PSDefaultParameterValues.Remove('Should:ModuleName')
 }
 
 Describe 'Assert-Module' {
-    BeforeAll {
-        $testModuleName = 'TestModule'
-    }
-
     Context 'When module is not installed' {
         BeforeAll {
             Mock -CommandName Get-Module
         }
 
         It 'Should throw the correct error' {
-            { Assert-Module -ModuleName $testModuleName -Verbose } | `
-                    Should -Throw ($script:localizedData.RoleNotFound -f $testModuleName)
+            $mockErrorMessage = InModuleScope -ScriptBlock {
+                $script:localizedData.RoleNotFound -f 'TestModule'
+            }
+
+            { Assert-Module -ModuleName 'TestModule' -Verbose } | `
+                    Should -Throw -ExpectedMessage $mockErrorMessage
         }
     }
 
@@ -30,40 +40,40 @@ Describe 'Assert-Module' {
                 Mock -CommandName Import-Module
                 Mock -CommandName Get-Module -MockWith {
                     return @{
-                        Name = $testModuleName
+                        Name = 'TestModule'
                     }
                 }
             }
 
             Context 'When asserting that module is available' {
                 It 'Should not throw an error' {
-                    { Assert-Module -ModuleName $testModuleName } | Should -Not -Throw
+                    { Assert-Module -ModuleName 'TestModule' } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Should -Invoke -CommandName Import-Module -Exactly -Times 0
+                    Should -Invoke -CommandName Import-Module -Exactly -Times 0 -Scope Context
                 }
             }
 
             Context 'When using ImportModule but module is already imported' {
                 It 'Should not throw an error' {
-                    { Assert-Module -ModuleName $testModuleName -ImportModule } | Should -Not -Throw
+                    { Assert-Module -ModuleName 'TestModule' -ImportModule } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Should -Invoke -CommandName Import-Module -Exactly -Times 0
+                    Should -Invoke -CommandName Import-Module -Exactly -Times 0 -Scope Context
                 }
             }
 
             Context 'When module should be forcibly imported' {
                 It 'Should not throw an error' {
-                    { Assert-Module -ModuleName $testModuleName -ImportModule -Force } | Should -Not -Throw
+                    { Assert-Module -ModuleName 'TestModule' -ImportModule -Force } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
                     Should -Invoke -CommandName Import-Module -ParameterFilter {
                         $Force -eq $true
-                    } -Exactly -Times 1
+                    } -Exactly -Times 1 -Scope Context
                 }
             }
         }
@@ -79,7 +89,7 @@ Describe 'Assert-Module' {
 
                 Mock -CommandName Get-Module -MockWith {
                     return @{
-                        Name = $testModuleName
+                        Name = 'TestModule'
                     }
                 } -ParameterFilter {
                     $ListAvailable -eq $true
@@ -88,11 +98,11 @@ Describe 'Assert-Module' {
 
             Context 'When module should be imported' {
                 It 'Should not throw an error' {
-                    { Assert-Module -ModuleName $testModuleName -ImportModule } | Should -Not -Throw
+                    { Assert-Module -ModuleName 'TestModule' -ImportModule } | Should -Not -Throw
                 }
 
                 It 'Should call the expected mocks' {
-                    Should -Invoke -CommandName Import-Module -Exactly -Times 1
+                    Should -Invoke -CommandName Import-Module -Exactly -Times 1 -Scope Context
                 }
             }
         }
