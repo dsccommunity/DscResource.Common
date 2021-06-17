@@ -1,13 +1,11 @@
 BeforeAll {
     $script:moduleName = 'DscResource.Common'
 
-    #region HEADER
     Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
     Get-Module -Name $script:moduleName -ListAvailable |
         Select-Object -First 1 |
         Import-Module -Force -ErrorAction 'Stop'
-    #endregion HEADER
 }
 
 Describe 'Get-LocalizedData' -Tag 'GetLocalizedData' {
@@ -58,7 +56,7 @@ ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be t
                 We need to mock the test using the current OS UI culture so
                 that the tests passes.
             #>
-            $mockCurrentUICulture = Get-UICulture
+            $mockCurrentUICulture = 'en-US'
         }
 
         Context 'When no localized string file is found' {
@@ -195,7 +193,7 @@ StringKey    = String value
                             ThreeLetterISOLanguageName     = 'deu'
                             ThreeLetterWindowsLanguageName = 'DEU'
                         }
-                    }
+                    } -ModuleName 'DscResource.Common'
                 }
 
                 It 'Should retrieve the data' {

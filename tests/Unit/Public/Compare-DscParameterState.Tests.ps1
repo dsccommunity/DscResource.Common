@@ -6,16 +6,6 @@ BeforeAll {
     Get-Module -Name $script:moduleName -ListAvailable |
         Select-Object -First 1 |
         Import-Module -Force -ErrorAction 'Stop'
-
-    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
-    $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
-    $PSDefaultParameterValues['Should:ModuleName'] = $script:moduleName
-}
-
-AfterAll {
-    $PSDefaultParameterValues.Remove('InModuleScope:ModuleName')
-    $PSDefaultParameterValues.Remove('Mock:ModuleName')
-    $PSDefaultParameterValues.Remove('Should:ModuleName')
 }
 
 Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {

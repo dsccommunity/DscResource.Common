@@ -1,13 +1,11 @@
 BeforeAll {
     $script:moduleName = 'DscResource.Common'
 
-    #region HEADER
     Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
     Get-Module -Name $script:moduleName -ListAvailable |
         Select-Object -First 1 |
             Import-Module -Force -ErrorAction 'Stop'
-    #endregion HEADER
 }
 
 Describe 'Test-DscParameterState' {
@@ -153,17 +151,19 @@ Describe 'Test-DscParameterState' {
         }
 
         Context 'When an scriptblock is mismatched' {
-            $desiredValues = [PSObject] @{
-                String      = 'a string'
-                Bool        = $true
-                Int         = 1
-                Array       = 'a', 'b', 'c'
-                Hashtable   = @{
-                    k1 = 'Test'
-                    k2 = 123
-                    k3 = 'v1', 'v2', 'v3'
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String      = 'a string'
+                    Bool        = $true
+                    Int         = 1
+                    Array       = 'a', 'b', 'c'
+                    Hashtable   = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                    ScriptBlock = { Get-Process }
                 }
-                ScriptBlock = { Get-Process }
             }
 
             It 'Should not throw exception' {
@@ -179,15 +179,17 @@ Describe 'Test-DscParameterState' {
         }
 
         Context 'When an int is mismatched' {
-            $desiredValues = [PSObject] @{
-                String    = 'a string'
-                Bool      = $true
-                Int       = 1
-                Array     = 'a', 'b', 'c'
-                Hashtable = @{
-                    k1 = 'Test'
-                    k2 = 123
-                    k3 = 'v1', 'v2', 'v3'
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 1
+                    Array     = 'a', 'b', 'c'
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
                 }
             }
 
@@ -256,22 +258,24 @@ Describe 'Test-DscParameterState' {
         }
 
         Context 'When a value is mismatched but ExcludeProperties is used to exclude then' {
-            $desiredValues = @{
-                String      = 'some other string'
-                Bool        = $true
-                Int         = 99
-                Array       = 'a', 'b', 'c'
-                Hashtable   = @{
-                    k1 = 'Test'
-                    k2 = 123
-                    k3 = 'v1', 'v2', 'v3'
+            BeforeAll {
+                $desiredValues = @{
+                    String      = 'some other string'
+                    Bool        = $true
+                    Int         = 99
+                    Array       = 'a', 'b', 'c'
+                    Hashtable   = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                    ScriptBlock = { Get-Date }
                 }
-                ScriptBlock = { Get-Date }
-            }
 
-            $excludeProperties = @(
-                'String'
-            )
+                $excludeProperties = @(
+                    'String'
+                )
+            }
 
             It 'Should not throw exception' {
                 { $script:result = Test-DscParameterState `
@@ -286,29 +290,33 @@ Describe 'Test-DscParameterState' {
             }
         }
 
-        Context 'When a value is mismatched but it is not in Properties then' {
-            $desiredValues = @{
-                String      = 'some other string'
-                Bool        = $true
-                Int         = 99
-                Array       = 'a', 'b', 'c'
-                Hashtable   = @{
-                    k1 = 'Test'
-                    k2 = 123
-                    k3 = 'v1', 'v2', 'v3'
+        Context 'When a value is mismatched but it is not in Properties' {
+            BeforeAll {
+                $desiredValues = @{
+                    String      = 'some other string'
+                    Bool        = $true
+                    Int         = 99
+                    Array       = 'a', 'b', 'c'
+                    Hashtable   = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                    ScriptBlock = { Get-Date }
                 }
-                ScriptBlock = { Get-Date }
             }
 
-            $properties = @(
-                'Bool'
-                'Int'
-                'Array'
-                'Hashtable'
-                'ScriptBlock'
-            )
+            Context 'When using the parameter alias ValuesToCheck' {
+                BeforeAll {
+                    $properties = @(
+                        'Bool'
+                        'Int'
+                        'Array'
+                        'Hashtable'
+                        'ScriptBlock'
+                    )
+                }
 
-            Context 'When using the alias ValuesToCheck' {
                 It 'Should not throw exception' {
                     { $script:result = Test-DscParameterState `
                             -CurrentValues $currentValues `
@@ -322,36 +330,28 @@ Describe 'Test-DscParameterState' {
                 }
             }
 
-            It 'Should not throw exception' {
-                { $script:result = Test-DscParameterState `
-                        -CurrentValues $currentValues `
-                        -DesiredValues $desiredValues `
-                        -Properties $properties `
-                        -Verbose:$verbose } | Should -Not -Throw
-            }
+            Context 'When using parameter Properties' {
+                BeforeAll {
+                    $properties = @(
+                        'String'
+                        'Bool'
+                        'Int'
+                        'Array'
+                        'Hashtable'
+                    )
+                }
 
-            It 'Should return $true' {
-                $script:result | Should -BeTrue
-            }
+                It 'Should not throw exception' {
+                    { $script:result = Test-DscParameterState `
+                            -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -Properties $properties `
+                            -Verbose:$verbose } | Should -Not -Throw
+                }
 
-            $properties = @(
-                'String'
-                'Bool'
-                'Int'
-                'Array'
-                'Hashtable'
-            )
-
-            It 'Should not throw exception' {
-                { $script:result = Test-DscParameterState `
-                        -CurrentValues $currentValues `
-                        -DesiredValues $desiredValues `
-                        -Properties $properties `
-                        -Verbose:$verbose } | Should -Not -Throw
-            }
-
-            It 'Should return $false' {
-                $script:result | Should -BeFalse
+                It 'Should return $false' {
+                    $script:result | Should -BeFalse
+                }
             }
         }
     }
@@ -598,27 +598,29 @@ Describe 'Test-DscParameterState' {
             }
 
             Context 'When a current value array is empty' {
-                $currentValues = @{
-                    String    = 'a string'
-                    Bool      = $true
-                    Int       = 99
-                    Array     = @('a','b','c')
-                    Hashtable = @{
-                        k1 = 'Test'
-                        k2 = 123
-                        k3 = @()
+                BeforeAll {
+                    $currentValues = @{
+                        String    = 'a string'
+                        Bool      = $true
+                        Int       = 99
+                        Array     = @('a','b','c')
+                        Hashtable = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = @()
+                        }
                     }
-                }
 
-                $desiredValues = [PSObject] @{
-                    String    = 'a string'
-                    Bool      = $true
-                    Int       = 99
-                    Array     = @()
-                    Hashtable = @{
-                        k1 = 'Test'
-                        k2 = 123
-                        k3 = @()
+                    $desiredValues = [PSObject] @{
+                        String    = 'a string'
+                        Bool      = $true
+                        Int       = 99
+                        Array     = @()
+                        Hashtable = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = @()
+                        }
                     }
                 }
 
@@ -635,27 +637,29 @@ Describe 'Test-DscParameterState' {
             }
 
             Context 'When a desired value array is empty' {
-                $currentValues = @{
-                    String    = 'a string'
-                    Bool      = $true
-                    Int       = 99
-                    Array     = @()
-                    Hashtable = @{
-                        k1 = 'Test'
-                        k2 = 123
-                        k3 = @()
+                BeforeAll {
+                    $currentValues = @{
+                        String    = 'a string'
+                        Bool      = $true
+                        Int       = 99
+                        Array     = @()
+                        Hashtable = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = @()
+                        }
                     }
-                }
 
-                $desiredValues = [PSObject] @{
-                    String    = 'a string'
-                    Bool      = $true
-                    Int       = 99
-                    Array     = @('a','b','c')
-                    Hashtable = @{
-                        k1 = 'Test'
-                        k2 = 123
-                        k3 = @()
+                    $desiredValues = [PSObject] @{
+                        String    = 'a string'
+                        Bool      = $true
+                        Int       = 99
+                        Array     = @('a','b','c')
+                        Hashtable = @{
+                            k1 = 'Test'
+                            k2 = 123
+                            k3 = @()
+                        }
                     }
                 }
 
@@ -1013,11 +1017,33 @@ Describe 'Test-DscParameterState' {
     }
 
     # macOS and Linux does not support CimInstance.
-    if ($isWindows -or $PSEdition -eq 'Desktop')
-    {
-        Context 'When testing CimInstances / hashtables' {
+    Context 'When testing CimInstances / hashtables' -Skip:(-not ($IsWindows -or $PSEdition -eq 'Desktop')) {
+        BeforeAll {
+            $currentValues = @{
+                String       = 'a string'
+                Bool         = $true
+                Int          = 99
+                Array        = 'a', 'b', 'c'
+                Hashtable    = @{
+                    k1 = 'Test'
+                    k2 = 123
+                    k3 = 'v1', 'v2', 'v3', 99
+                }
+
+                CimInstances = [Microsoft.Management.Infrastructure.CimInstance[]] (
+                    ConvertTo-CimInstance -Hashtable @{
+                        String = 'a string'
+                        Bool   = $true
+                        Int    = 99
+                        Array  = 'a, b, c'
+                    }
+                )
+            }
+        }
+
+        Context 'When everything matches' {
             BeforeAll {
-                $currentValues = @{
+                $desiredValues = [PSObject]@{
                     String       = 'a string'
                     Bool         = $true
                     Int          = 99
@@ -1039,262 +1065,237 @@ Describe 'Test-DscParameterState' {
                 }
             }
 
-            Context 'When everything matches' {
-                BeforeAll {
-                    $desiredValues = [PSObject]@{
-                        String       = 'a string'
-                        Bool         = $true
-                        Int          = 99
-                        Array        = 'a', 'b', 'c'
-                        Hashtable    = @{
-                            k1 = 'Test'
-                            k2 = 123
-                            k3 = 'v1', 'v2', 'v3', 99
-                        }
-
-                        CimInstances = [Microsoft.Management.Infrastructure.CimInstance[]] (
-                            ConvertTo-CimInstance -Hashtable @{
-                                String = 'a string'
-                                Bool   = $true
-                                Int    = 99
-                                Array  = 'a, b, c'
-                            }
-                        )
-                    }
-                }
-
-                It 'Should not throw exception' {
-                    { Test-DscParameterState `
-                            -CurrentValues $currentValues `
-                            -DesiredValues $desiredValues `
-                            -Verbose:$verbose } | Should -Not -Throw
-                }
-
-                It 'Should return $true' {
-                    Test-DscParameterState `
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
-                        -Verbose:$verbose | Should -BeTrue
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $true' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -Verbose:$verbose | Should -BeTrue
+            }
+        }
+
+        Context 'When CimInstances missing a value in the desired state (not recognized)' {
+            BeforeAll {
+                $desiredValues = [PSObject]@{
+                    String       = 'a string'
+                    Bool         = $true
+                    Int          = 99
+                    Array        = 'a', 'b', 'c'
+                    Hashtable    = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3', 99
+                    }
+                    CimInstances = @{
+                        String = 'a string'
+                        Bool   = $true
+                        Array  = 'a, b, c'
+                    }
                 }
             }
 
-            Context 'When CimInstances missing a value in the desired state (not recognized)' {
-                BeforeAll {
-                    $desiredValues = [PSObject]@{
-                        String       = 'a string'
-                        Bool         = $true
-                        Int          = 99
-                        Array        = 'a', 'b', 'c'
-                        Hashtable    = @{
-                            k1 = 'Test'
-                            k2 = 123
-                            k3 = 'v1', 'v2', 'v3', 99
-                        }
-                        CimInstances = @{
-                            String = 'a string'
-                            Bool   = $true
-                            Array  = 'a, b, c'
-                        }
-                    }
-                }
-
-                It 'Should not throw exception' {
-                    { Test-DscParameterState `
-                            -CurrentValues $currentValues `
-                            -DesiredValues $desiredValues `
-                            -Verbose:$verbose } | Should -Not -Throw
-                }
-
-                It 'Should return $true' {
-                    Test-DscParameterState `
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
-                        -Verbose:$verbose | Should -BeTrue
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $true' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -Verbose:$verbose | Should -BeTrue
+            }
+        }
+
+        Context 'When CimInstances missing a value in the desired state (recognized using ReverseCheck)' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String       = 'a string'
+                    Bool         = $true
+                    Int          = 99
+                    Array        = 'a', 'b', 'c'
+                    Hashtable    = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3', 99
+                    }
+                    CimInstances = @{
+                        String = 'a string'
+                        Bool   = $true
+                        Array  = 'a, b, c'
+                    }
                 }
             }
 
-            Context 'When CimInstances missing a value in the desired state (recognized using ReverseCheck)' {
-                BeforeAll {
-                    $desiredValues = [PSObject] @{
-                        String       = 'a string'
-                        Bool         = $true
-                        Int          = 99
-                        Array        = 'a', 'b', 'c'
-                        Hashtable    = @{
-                            k1 = 'Test'
-                            k2 = 123
-                            k3 = 'v1', 'v2', 'v3', 99
-                        }
-                        CimInstances = @{
-                            String = 'a string'
-                            Bool   = $true
-                            Array  = 'a, b, c'
-                        }
-                    }
-                }
-
-                It 'Should not throw exception' {
-                    { Test-DscParameterState `
-                            -CurrentValues $currentValues `
-                            -DesiredValues $desiredValues `
-                            -ReverseCheck `
-                            -Verbose:$verbose } | Should -Not -Throw
-                }
-
-                It 'Should return $false' {
-                    Test-DscParameterState `
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
                         -ReverseCheck `
-                        -Verbose:$verbose | Should -BeFalse
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $false' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -ReverseCheck `
+                    -Verbose:$verbose | Should -BeFalse
+            }
+        }
+
+        Context 'When CimInstances have an additional value' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String       = 'a string'
+                    Bool         = $true
+                    Int          = 99
+                    Array        = 'a', 'b', 'c'
+                    Hashtable    = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3', 99
+                    }
+                    CimInstances = @{
+                        String = 'a string'
+                        Bool   = $true
+                        Int    = 99
+                        Array  = 'a, b, c'
+                        Test   = 'Some string'
+                    }
                 }
             }
 
-            Context 'When CimInstances have an additional value' {
-                BeforeAll {
-                    $desiredValues = [PSObject] @{
-                        String       = 'a string'
-                        Bool         = $true
-                        Int          = 99
-                        Array        = 'a', 'b', 'c'
-                        Hashtable    = @{
-                            k1 = 'Test'
-                            k2 = 123
-                            k3 = 'v1', 'v2', 'v3', 99
-                        }
-                        CimInstances = @{
-                            String = 'a string'
-                            Bool   = $true
-                            Int    = 99
-                            Array  = 'a, b, c'
-                            Test   = 'Some string'
-                        }
-                    }
-                }
-
-                It 'Should not throw exception' {
-                    { Test-DscParameterState `
-                            -CurrentValues $currentValues `
-                            -DesiredValues $desiredValues `
-                            -Verbose:$verbose } | Should -Not -Throw
-                }
-
-                It 'Should return $false' {
-                    Test-DscParameterState `
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
-                        -Verbose:$verbose | Should -BeFalse
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $false' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -Verbose:$verbose | Should -BeFalse
+            }
+        }
+
+        Context 'When CimInstances have a different value' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String       = 'a string'
+                    Bool         = $true
+                    Int          = 99
+                    Array        = 'a', 'b', 'c'
+                    Hashtable    = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3', 99
+                    }
+                    CimInstances = @{
+                        String = 'some other string'
+                        Bool   = $true
+                        Int    = 99
+                        Array  = 'a, b, c'
+                    }
                 }
             }
 
-            Context 'When CimInstances have a different value' {
-                BeforeAll {
-                    $desiredValues = [PSObject] @{
-                        String       = 'a string'
-                        Bool         = $true
-                        Int          = 99
-                        Array        = 'a', 'b', 'c'
-                        Hashtable    = @{
-                            k1 = 'Test'
-                            k2 = 123
-                            k3 = 'v1', 'v2', 'v3', 99
-                        }
-                        CimInstances = @{
-                            String = 'some other string'
-                            Bool   = $true
-                            Int    = 99
-                            Array  = 'a, b, c'
-                        }
-                    }
-                }
-
-                It 'Should not throw exception' {
-                    { Test-DscParameterState `
-                            -CurrentValues $currentValues `
-                            -DesiredValues $desiredValues `
-                            -Verbose:$verbose } | Should -Not -Throw
-                }
-
-                It 'Should return $false' {
-                    Test-DscParameterState `
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
-                        -Verbose:$verbose | Should -BeFalse
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $false' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -Verbose:$verbose | Should -BeFalse
+            }
+        }
+
+        Context 'When CimInstances have a value with a different type' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String       = 'a string'
+                    Bool         = $true
+                    Int          = 99
+                    Array        = 'a', 'b', 'c'
+                    Hashtable    = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3', 99
+                    }
+                    CimInstances = @{
+                        String = 'a string'
+                        Bool   = $true
+                        Int    = '99'
+                        Array  = 'a, b, c'
+                    }
                 }
             }
 
-            Context 'When CimInstances have a value with a different type' {
-                BeforeAll {
-                    $desiredValues = [PSObject] @{
-                        String       = 'a string'
-                        Bool         = $true
-                        Int          = 99
-                        Array        = 'a', 'b', 'c'
-                        Hashtable    = @{
-                            k1 = 'Test'
-                            k2 = 123
-                            k3 = 'v1', 'v2', 'v3', 99
-                        }
-                        CimInstances = @{
-                            String = 'a string'
-                            Bool   = $true
-                            Int    = '99'
-                            Array  = 'a, b, c'
-                        }
-                    }
-                }
-
-                It 'Should not throw exception' {
-                    { Test-DscParameterState `
-                            -CurrentValues $currentValues `
-                            -DesiredValues $desiredValues `
-                            -Verbose:$verbose } | Should -Not -Throw
-                }
-
-                It 'Should return $false' {
-                    Test-DscParameterState `
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
-                        -Verbose:$verbose | Should -BeFalse
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $false' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -Verbose:$verbose | Should -BeFalse
+            }
+        }
+
+        Context 'When CimInstances have a value with a different type but TurnOffTypeChecking is used' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String       = 'a string'
+                    Bool         = $true
+                    Int          = 99
+                    Array        = 'a', 'b', 'c'
+                    Hashtable    = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3', 99
+                    }
+                    CimInstances = @{
+                        String = 'a string'
+                        Bool   = $true
+                        Int    = '99'
+                        Array  = 'a, b, c'
+                    }
                 }
             }
 
-            Context 'When CimInstances have a value with a different type but TurnOffTypeChecking is used' {
-                BeforeAll {
-                    $desiredValues = [PSObject] @{
-                        String       = 'a string'
-                        Bool         = $true
-                        Int          = 99
-                        Array        = 'a', 'b', 'c'
-                        Hashtable    = @{
-                            k1 = 'Test'
-                            k2 = 123
-                            k3 = 'v1', 'v2', 'v3', 99
-                        }
-                        CimInstances = @{
-                            String = 'a string'
-                            Bool   = $true
-                            Int    = '99'
-                            Array  = 'a, b, c'
-                        }
-                    }
-                }
-
-                It 'Should not throw exception' {
-                    { Test-DscParameterState `
-                            -CurrentValues $currentValues `
-                            -DesiredValues $desiredValues `
-                            -TurnOffTypeChecking `
-                            -Verbose:$verbose } | Should -Not -Throw
-                }
-
-                It 'Should return $true' {
-                    Test-DscParameterState `
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
                         -TurnOffTypeChecking `
-                        -Verbose:$verbose | Should -BeTrue
-                }
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $true' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -TurnOffTypeChecking `
+                    -Verbose:$verbose | Should -BeTrue
             }
         }
     }

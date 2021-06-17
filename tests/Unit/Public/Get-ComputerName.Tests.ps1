@@ -1,37 +1,36 @@
-$ProjectPath = "$PSScriptRoot\..\..\.." | Convert-Path
-$ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
-        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-    $(try { Test-ModuleManifest -Path $_.FullName -ErrorAction Stop } catch { $false } )
-    }).BaseName
+BeforeAll {
+    $script:moduleName = 'DscResource.Common'
 
+    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
-Import-Module $ProjectName
+    Get-Module -Name $script:moduleName -ListAvailable |
+        Select-Object -First 1 |
+        Import-Module -Force -ErrorAction 'Stop'
+}
 
-InModuleScope $ProjectName {
-    Describe 'Get-ComputerName' {
-        BeforeAll {
-            $mockComputerName = 'MyComputer'
+Describe 'Get-ComputerName' {
+    BeforeAll {
+        $mockComputerName = 'MyComputer'
 
-            if ($IsLinux -or $IsMacOs)
+        if ($IsLinux -or $IsMacOs)
+        {
+            function hostname
             {
-                function hostname
-                {
-                }
+            }
 
-                Mock -CommandName 'hostname' -MockWith {
-                    return $mockComputerName
-                }
-            }
-            else
-            {
-                $mockComputerName = $env:COMPUTERNAME
-            }
+            Mock -CommandName 'hostname' -MockWith {
+                return $mockComputerName
+            } -ModuleName 'DscResource.Common'
         }
+        else
+        {
+            $mockComputerName = $env:COMPUTERNAME
+        }
+    }
 
-        Context 'When getting computer name' {
-            It 'Should return the correct computer name' {
-                Get-ComputerName | Should -Be $mockComputerName
-            }
+    Context 'When getting computer name' {
+        It 'Should return the correct computer name' {
+            Get-ComputerName | Should -Be $mockComputerName
         }
     }
 }

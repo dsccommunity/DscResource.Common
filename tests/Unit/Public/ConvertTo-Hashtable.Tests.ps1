@@ -1,22 +1,15 @@
-# macOS and Linux does not support CimInstance.
-if (-not ($isWindows -or $PSEdition -eq 'Desktop'))
-{
-    return
-}
-
 BeforeAll {
     $script:moduleName = 'DscResource.Common'
 
-    #region HEADER
     Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
     Get-Module -Name $script:moduleName -ListAvailable |
         Select-Object -First 1 |
         Import-Module -Force -ErrorAction 'Stop'
-    #endregion HEADER
 }
 
-Describe 'ConvertTo-HashTable' {
+# macOS and Linux does not support CimInstance.
+Describe 'ConvertTo-HashTable' -Skip:(-not ($IsWindows -or $PSEdition -eq 'Desktop')) {
     BeforeAll {
         [Microsoft.Management.Infrastructure.CimInstance[]] $cimInstances = ConvertTo-CimInstance -Hashtable @{
             k1 = 'v1'

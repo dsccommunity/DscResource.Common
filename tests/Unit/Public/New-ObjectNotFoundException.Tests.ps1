@@ -1,13 +1,11 @@
 BeforeAll {
     $script:moduleName = 'DscResource.Common'
 
-    #region HEADER
     Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
     Get-Module -Name $script:moduleName -ListAvailable |
         Select-Object -First 1 |
         Import-Module -Force -ErrorAction 'Stop'
-    #endregion HEADER
 }
 
 Describe 'New-ObjectNotFoundException' {
@@ -30,7 +28,7 @@ Describe 'New-ObjectNotFoundException' {
                 -ArgumentList $mockException, $null, 'InvalidResult', $null
 
             { New-ObjectNotFoundException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord } |
-                Should -Throw -Passthru | Select-Object -ExpandProperty Exception |
+                Should -Throw -PassThru | Select-Object -ExpandProperty Exception |
                     Should -BeLike ('System.Exception: System.Exception: {0}*System.Exception: {1}*' -f
                         $mockErrorMessage, $mockExceptionErrorMessage)
         }
