@@ -51,10 +51,9 @@ Describe 'Assert-IPAddress' -Tag 'AssertIPAddress' {
                 }
 
                 $errorMessage = $errorMessage -f $testIPAddressParameters.Address
-                $errorMessage += " (Parameter 'Address')"
 
                 { Assert-IPAddress @testIPAddressParameters } |
-                    Should -Throw -ExpectedMessage $errorMessage
+                    Should -Throw -ExpectedMessage "$errorMessage*"
             }
         }
 
@@ -69,10 +68,9 @@ Describe 'Assert-IPAddress' -Tag 'AssertIPAddress' {
                 }
 
                 $errorMessage = $errorMessage -f $testIPAddressParameters.Address
-                $errorMessage += " (Parameter 'Address')"
 
                 { Assert-IPAddress @testIPAddressParameters } |
-                    Should -Throw -ExpectedMessage $errorMessage
+                    Should -Throw -ExpectedMessage "$errorMessage*"
             }
         }
     }
@@ -89,10 +87,9 @@ Describe 'Assert-IPAddress' -Tag 'AssertIPAddress' {
             }
 
             $errorMessage = $errorMessage -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily
-            $errorMessage += " (Parameter 'AddressFamily')"
 
             { Assert-IPAddress @testIPAddressParameters } | `
-                Should -Throw -ExpectedMessage $errorMessage
+                Should -Throw -ExpectedMessage "$errorMessage*"
         }
     }
 
@@ -108,10 +105,9 @@ Describe 'Assert-IPAddress' -Tag 'AssertIPAddress' {
             }
 
             $errorMessage = $errorMessage -f $testIPAddressParameters.Address, $testIPAddressParameters.AddressFamily
-            $errorMessage += " (Parameter 'AddressFamily')"
 
             { Assert-IPAddress @testIPAddressParameters } | `
-                Should -Throw -ExpectedMessage $errorMessage
+                Should -Throw -ExpectedMessage "$errorMessage*"
         }
     }
 

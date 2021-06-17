@@ -88,7 +88,6 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 }
 
                 $errorMessage = $errorMessage -f 'param1', 'param2'
-                $errorMessage += " (Parameter 'Parameters')"
 
                 {
                     $assertBoundParameterParameters = @{
@@ -101,7 +100,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                     }
 
                     Assert-BoundParameter @assertBoundParameterParameters
-                } | Should -Throw -ExpectedMessage $errorMessage
+                } | Should -Throw -ExpectedMessage "$errorMessage*"
             }
         }
 
@@ -112,7 +111,6 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 }
 
                 $errorMessage = $errorMessage -f "param1','param2", "param3','param4"
-                $errorMessage += " (Parameter 'Parameters')"
 
                 {
                     $assertBoundParameterParameters = @{
@@ -127,7 +125,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                     }
 
                     Assert-BoundParameter @assertBoundParameterParameters
-                } | Should -Throw -ExpectedMessage $errorMessage
+                } | Should -Throw -ExpectedMessage "$errorMessage*"
             }
         }
     }
