@@ -75,6 +75,7 @@ DscTest:
   Script:
     ExcludeSourceFile:
       - output
+      - DscResource.Common
     ExcludeModuleFile:
     MainGitBranch: main
 
