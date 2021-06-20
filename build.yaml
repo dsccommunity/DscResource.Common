@@ -51,11 +51,11 @@ Pester:
         - tests/QA
         - tests/Unit
         - tests/Integration
+    CodeCoverage:
       CoveragePercentTarget: 50
       OutputPath: JaCoCo_coverage.xml
       OutputEncoding: ascii
   ExcludeFromCodeCoverage:
-  CodeCoverageThreshold: 50
 
 DscTest:
   Pester:

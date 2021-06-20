@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added cmdlet `ConvertFrom-DscResourceInstance` which can be used to convert any
   object to in another format. It accepts objects from pipeline. [issue #71](https://github.com/dsccommunity/DscResource.Common/issues/71).
+- Now code coverage is uploaded to codecov.io.
 
 ### Changed
 
