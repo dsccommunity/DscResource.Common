@@ -14,9 +14,21 @@ BeforeAll {
     # Convert-path required for PS7 or Join-Path fails
     $projectPath = "$($PSScriptRoot)\..\.." | Convert-Path
 
-    $sourcePath = (Get-ChildItem $projectPath\*\*.psd1 | Where-Object {
-        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-        $(try { Test-ModuleManifest $_.FullName -ErrorAction Stop }catch { $false }) }
+    $sourcePath = (
+        Get-ChildItem -Path $projectPath\*\*.psd1 |
+            Where-Object -FilterScript {
+                ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) `
+                -and $(
+                    try
+                    {
+                        Test-ModuleManifest -Path $_.FullName -ErrorAction 'Stop'
+                    }
+                    catch
+                    {
+                        $false
+                    }
+                )
+            }
     ).Directory.FullName
 }
 
@@ -36,7 +48,7 @@ Describe 'General module control' -Tags 'FunctionalQuality' {
 
 BeforeDiscovery {
     # Must use the imported module to build test cases.
-    $allModuleFunctions = & $mut {Get-Command -Module $args[0] -CommandType Function } $script:moduleName
+    $allModuleFunctions = & $mut { Get-Command -Module $args[0] -CommandType Function } $script:moduleName
 
     # Build test cases.
     $testCases = @()
@@ -46,11 +58,10 @@ BeforeDiscovery {
         $testCases += @{
             Name = $function.Name
         }
-
     }
 }
 
-Describe "Quality for module" -Tags 'TestQuality' {
+Describe 'Quality for module' -Tags 'TestQuality' {
     BeforeDiscovery {
         if (Get-Command -Name Invoke-ScriptAnalyzer -ErrorAction SilentlyContinue)
         {
@@ -60,20 +71,20 @@ Describe "Quality for module" -Tags 'TestQuality' {
         {
             if ($ErrorActionPreference -ne 'Stop')
             {
-                Write-Warning -Message "ScriptAnalyzer not found!"
+                Write-Warning -Message 'ScriptAnalyzer not found!'
             }
             else
             {
-                throw "ScriptAnalyzer not found!"
+                throw 'ScriptAnalyzer not found!'
             }
         }
     }
 
-    It "<Name> has a unit test" -TestCases $testCases {
-        Get-ChildItem "tests\" -Recurse -Include "$Name.Tests.ps1" | Should -Not -BeNullOrEmpty
+    It '<Name> has a unit test' -TestCases $testCases {
+        Get-ChildItem 'tests\' -Recurse -Include "$Name.Tests.ps1" | Should -Not -BeNullOrEmpty
     }
 
-    It "Script Analyzer for <Name>" -TestCases $testCases -Skip:(-not $scriptAnalyzerRules) {
+    It 'Script Analyzer for <Name>' -TestCases $testCases -Skip:(-not $scriptAnalyzerRules) {
         $functionFile = Get-ChildItem -path $sourcePath -Recurse -Include "$Name.ps1"
 
         $pssaResult = (Invoke-ScriptAnalyzer -Path $functionFile.FullName)
@@ -83,16 +94,20 @@ Describe "Quality for module" -Tags 'TestQuality' {
     }
 }
 
-Describe "Help for module" -Tags 'helpQuality' {
+Describe 'Help for module' -Tags 'helpQuality' {
     It '<Name> has a SYNOPSIS' -TestCases $testCases {
         $functionFile = Get-ChildItem -Path $sourcePath -Recurse -Include "$Name.ps1"
 
-        $AbstractSyntaxTree = [System.Management.Automation.Language.Parser]::
-        ParseInput((Get-Content -Raw $functionFile.FullName), [ref] $null, [ref] $null)
+        $scriptFileRawContent = Get-Content -Raw -Path $functionFile.FullName
+
+        $abstractSyntaxTree = [System.Management.Automation.Language.Parser]::ParseInput($scriptFileRawContent, [ref] $null, [ref] $null)
 
         $astSearchDelegate = { $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }
-        $parsedFunction = $AbstractSyntaxTree.FindAll( $astSearchDelegate, $true ) |
-            Where-Object -FilterScript { $_.Name -eq $Name }
+
+        $parsedFunction = $abstractSyntaxTree.FindAll( $astSearchDelegate, $true ) |
+            Where-Object -FilterScript {
+                $_.Name -eq $Name
+            }
 
         $functionHelp = $parsedFunction.GetHelpContent()
 
@@ -102,12 +117,16 @@ Describe "Help for module" -Tags 'helpQuality' {
     It '<Name> has a Description, with length > 40' -TestCases $testCases {
         $functionFile = Get-ChildItem -Path $sourcePath -Recurse -Include "$Name.ps1"
 
-        $AbstractSyntaxTree = [System.Management.Automation.Language.Parser]::
-        ParseInput((Get-Content -Raw $functionFile.FullName), [ref] $null, [ref] $null)
+        $scriptFileRawContent = Get-Content -Raw -Path $functionFile.FullName
+
+        $abstractSyntaxTree = [System.Management.Automation.Language.Parser]::ParseInput($scriptFileRawContent, [ref] $null, [ref] $null)
 
         $astSearchDelegate = { $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }
-        $parsedFunction = $AbstractSyntaxTree.FindAll( $astSearchDelegate, $true ) |
-            Where-Object -FilterScript { $_.Name -eq $Name }
+
+        $parsedFunction = $abstractSyntaxTree.FindAll( $astSearchDelegate, $true ) |
+            Where-Object -FilterScript {
+                $_.Name -eq $Name
+            }
 
         $functionHelp = $parsedFunction.GetHelpContent()
 
@@ -117,12 +136,16 @@ Describe "Help for module" -Tags 'helpQuality' {
     It '<Name> has at least 1 example' -TestCases $testCases {
         $functionFile = Get-ChildItem -Path $sourcePath -Recurse -Include "$Name.ps1"
 
-        $AbstractSyntaxTree = [System.Management.Automation.Language.Parser]::
-        ParseInput((Get-Content -Raw $functionFile.FullName), [ref] $null, [ref] $null)
+        $scriptFileRawContent = Get-Content -Raw -Path $functionFile.FullName
+
+        $abstractSyntaxTree = [System.Management.Automation.Language.Parser]::ParseInput($scriptFileRawContent, [ref] $null, [ref] $null)
 
         $astSearchDelegate = { $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }
-        $parsedFunction = $AbstractSyntaxTree.FindAll( $astSearchDelegate, $true ) |
-            Where-Object -FilterScript { $_.Name -eq $Name }
+
+        $parsedFunction = $abstractSyntaxTree.FindAll( $astSearchDelegate, $true ) |
+            Where-Object -FilterScript {
+                $_.Name -eq $Name
+            }
 
         $functionHelp = $parsedFunction.GetHelpContent()
 
@@ -135,16 +158,20 @@ Describe "Help for module" -Tags 'helpQuality' {
     It '<Name> has described the parameters' -TestCases $testCases {
         $functionFile = Get-ChildItem -Path $sourcePath -Recurse -Include "$Name.ps1"
 
-        $AbstractSyntaxTree = [System.Management.Automation.Language.Parser]::
-        ParseInput((Get-Content -Raw $functionFile.FullName), [ref] $null, [ref] $null)
+        $scriptFileRawContent = Get-Content -Raw -Path $functionFile.FullName
+
+        $abstractSyntaxTree = [System.Management.Automation.Language.Parser]::ParseInput($scriptFileRawContent, [ref] $null, [ref] $null)
 
         $astSearchDelegate = { $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }
-        $parsedFunction = $AbstractSyntaxTree.FindAll( $astSearchDelegate, $true ) |
-            Where-Object -FilterScript { $_.Name -eq $Name }
+        $parsedFunction = $abstractSyntaxTree.FindAll( $astSearchDelegate, $true ) |
+            Where-Object -FilterScript {
+                $_.Name -eq $Name
+            }
 
         $functionHelp = $parsedFunction.GetHelpContent()
 
         $parameters = $parsedFunction.Body.ParamBlock.Parameters.Name.VariablePath.ForEach{ $_.ToString() }
+
         foreach ($parameter in $parameters)
         {
             $functionHelp.Parameters.($parameter.ToUpper()) | Should -Not -BeNullOrEmpty -Because ('the parameter {0} must have a description' -f $parameter)
