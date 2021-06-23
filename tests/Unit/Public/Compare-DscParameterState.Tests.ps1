@@ -14,7 +14,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
     }
 
     Context 'When testing single values' {
-        BeforeAll{
+        BeforeAll {
             $currentValues = @{
                 String      = 'a string'
                 Bool        = $true
@@ -30,7 +30,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When all values match' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = [PSObject] @{
                     String      = 'a string'
                     Bool        = $true
@@ -101,7 +101,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a boolean is mismatched' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = [PSObject] @{
                     String    = 'a string'
                     Bool      = $false
@@ -274,7 +274,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a type is mismatched' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = [PSObject] @{
                     String = 'a string'
                     Bool   = $true
@@ -312,7 +312,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a type is mismatched but TurnOffTypeChecking is used' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = [PSObject] @{
                     String = 'a string'
                     Bool   = $true
@@ -335,7 +335,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a value is mismatched but ExcludeProperties is used to exclude then' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = @{
                     String      = 'some other string'
                     Bool        = $true
@@ -368,7 +368,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a value is mismatched but it is not in Properties then' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = @{
                     String      = 'some other string'
                     Bool        = $true
@@ -418,7 +418,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             Context 'When a value is mismatched but it is in Properties then' {
-                BeforeAll{
+                BeforeAll {
                     $properties = @(
                         'String'
                         'Bool'
@@ -460,7 +460,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
     }
 
     Context 'When testing single values and use IncludeInDesiredState parameter' {
-        BeforeAll{
+        BeforeAll {
             $currentValues = @{
                 String      = 'a string'
                 Bool        = $true
@@ -476,7 +476,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When all values match' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = [PSObject] @{
                     String      = 'a string'
                     Bool        = $true
@@ -541,7 +541,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a boolean is mismatched' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = [PSObject] @{
                     String    = 'a string'
                     Bool      = $false
@@ -692,7 +692,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a type is mismatched' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = [PSObject] @{
                     String = 'a string'
                     Bool   = $true
@@ -723,7 +723,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a type is mismatched but TurnOffTypeChecking is used' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = [PSObject] @{
                     String = 'a string'
                     Bool   = $true
@@ -753,7 +753,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a value is mismatched but ExcludeProperties is used to exclude then' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = @{
                     String      = 'some other string'
                     Bool        = $true
@@ -793,7 +793,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
         }
 
         Context 'When a value is mismatched but it is not in Properties then' {
-            BeforeAll{
+            BeforeAll {
                 $desiredValues = @{
                     String      = 'some other string'
                     Bool        = $true
@@ -862,7 +862,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             Context 'When a value is mismatched but it is in Properties then' {
-                BeforeAll{
+                BeforeAll {
                     $properties = @(
                         'String'
                         'Bool'
@@ -934,7 +934,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             Context 'When all values match' {
-                BeforeAll{
+                BeforeAll {
                     $desiredValues = [PSObject] @{
                         String      = 'a string'
                         Bool        = $true
@@ -1025,7 +1025,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             Context 'When all values match' {
-                BeforeAll{
+                BeforeAll {
                     $desiredValues = [PSObject] @{
                         String      = 'a string'
                         Bool        = $true
