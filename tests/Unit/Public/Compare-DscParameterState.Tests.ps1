@@ -80,15 +80,23 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for String InDesiredState' {
-                $script:result.where({$_.Property -eq 'String'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return same type in values' {
-                $script:result.where({$_.Property -eq 'String'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'String'}).ExpectedType
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }).ActualType | Should -Be $script:result.Where({
+                    $_.Property -eq 'String'
+                }).ExpectedType
             }
 
             It 'Should not return other property by default' {
-                $script:result.where({$_.Property -ne 'String'}).InDesiredState | Should -BeNullOrEmpty
+                $script:result.Where({
+                    $_.Property -ne 'String'
+                }).InDesiredState | Should -BeNullOrEmpty
             }
         }
 
@@ -115,15 +123,23 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Bool InDesiredState' {
-                $script:result.where({$_.Property -eq 'Bool'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return same type in values' {
-                $script:result.where({$_.Property -eq 'Bool'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'Bool'}).ExpectedType
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).ActualType | Should -Be $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).ExpectedType
             }
 
             It 'Should not return other property by default' {
-                $script:result.where({$_.Property -ne 'Bool'}).InDesiredState | Should -BeNullOrEmpty
+                $script:result.Where({
+                    $_.Property -ne 'Bool'
+                }).InDesiredState | Should -BeNullOrEmpty
             }
         }
 
@@ -150,15 +166,23 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Int InDesiredState' {
-                $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return same type in values' {
-                $script:result.where({$_.Property -eq 'Int'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'Int'}).ExpectedType
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).ActualType | Should -Be $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).ExpectedType
             }
 
             It 'Should not return other property by default' {
-                $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -BeNullOrEmpty
+                $script:result.Where({
+                    $_.Property -ne 'Int'
+                }).InDesiredState | Should -BeNullOrEmpty
             }
         }
 
@@ -186,15 +210,23 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for ScriptBlock InDesiredState' {
-                $script:result.where({$_.Property -eq 'ScriptBlock'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'ScriptBlock'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return same type in values' {
-                $script:result.where({$_.Property -eq 'ScriptBlock'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'ScriptBlock'}).ExpectedType
+                $script:result.Where({
+                    $_.Property -eq 'ScriptBlock'
+                }).ActualType | Should -Be $script:result.Where({
+                    $_.Property -eq 'ScriptBlock'
+                }).ExpectedType
             }
 
             It 'Should not return other property by default' {
-                $script:result.where({$_.Property -ne 'ScriptBlock'}).InDesiredState | Should -BeNullOrEmpty
+                $script:result.Where({
+                    $_.Property -ne 'ScriptBlock'
+                }).InDesiredState | Should -BeNullOrEmpty
             }
         }
 
@@ -221,15 +253,23 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Int InDesiredState' {
-                $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return same type in values' {
-                $script:result.where({$_.Property -eq 'Int'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'Int'}).ExpectedType
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).ActualType | Should -Be $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).ExpectedType
             }
 
             It 'Should not return other property by default' {
-                $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -BeNullOrEmpty
+                $script:result.Where({
+                    $_.Property -ne 'Int'
+                }).InDesiredState | Should -BeNullOrEmpty
             }
         }
 
@@ -251,15 +291,23 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Int InDesiredState' {
-                $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should not return same type in values' {
-                $script:result.where({$_.Property -eq 'Int'}).ActualType | Should -Not -Be $script:result.where({$_.Property -eq 'Int'}).ExpectedType
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).ActualType | Should -Not -Be $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).ExpectedType
             }
 
             It 'Should not return other property by default' {
-                $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -BeNullOrEmpty
+                $script:result.Where({
+                    $_.Property -ne 'Int'
+                }).InDesiredState | Should -BeNullOrEmpty
             }
         }
 
@@ -389,15 +437,23 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 }
 
                 It 'Should return $false for String InDesiredState' {
-                    $script:result.where({$_.Property -eq 'String'}).InDesiredState | Should -BeFalse
+                    $script:result.Where({
+                        $_.Property -eq 'String'
+                    }).InDesiredState | Should -BeFalse
                 }
 
                 It 'Should return same type in values' {
-                    $script:result.where({$_.Property -eq 'String'}).ActualType | Should -Be $script:result.where({$_.Property -eq 'String'}).ExpectedType
+                    $script:result.Where({
+                        $_.Property -eq 'String'
+                    }).ActualType | Should -Be $script:result.Where({
+                        $_.Property -eq 'String'
+                    }).ExpectedType
                 }
 
                 It 'Should not return other property by default' {
-                    $script:result.where({$_.Property -ne 'String'}).InDesiredState | Should -BeNullOrEmpty
+                    $script:result.Where({
+                        $_.Property -ne 'String'
+                    }).InDesiredState | Should -BeNullOrEmpty
                 }
             }
         }
@@ -472,11 +528,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for String InDesiredState' {
-                $script:result.where({$_.Property -eq 'String'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without String property) in $true' {
-                $script:result.where({$_.Property -ne 'String'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'String'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -504,11 +564,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Bool InDesiredState' {
-                $script:result.where({$_.Property -eq 'Bool'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Bool property) in $true' {
-                $script:result.where({$_.Property -ne 'Bool'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Bool'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -536,11 +600,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Int InDesiredState' {
-                $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Int property) in $true' {
-                $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Int'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -569,11 +637,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for ScriptBlock InDesiredState' {
-                $script:result.where({$_.Property -eq 'ScriptBlock'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'ScriptBlock'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without ScriptBlock property) in $true' {
-                $script:result.where({$_.Property -ne 'ScriptBlock'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'ScriptBlock'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -601,15 +673,21 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Int InDesiredState' {
-                $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Int property) in $true' {
-                $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Int'
+                }).InDesiredState | Should -Not -Contain $false
             }
 
             It 'Should not return property with ScriptBlock in value' {
-                $script:result.where({$_.Property -eq 'ScriptBlock'}) | Should -BeNullOrEmpty
+                $script:result.Where({
+                    $_.Property -eq 'ScriptBlock'
+                }) | Should -BeNullOrEmpty
             }
         }
 
@@ -632,11 +710,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Int InDesiredState' {
-                $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Int property) in $true' {
-                $script:result.where({$_.Property -ne 'Int'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Int'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -660,7 +742,9 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $true for Int InDesiredState' {
-                $script:result.where({$_.Property -eq 'Int'}).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeTrue
             }
 
             It 'Should return all InDesiredState in $true' {
@@ -702,7 +786,9 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should not return property with String in value' {
-                $script:result.where({$_.Property -eq 'String'}) | Should -BeNullOrEmpty
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }) | Should -BeNullOrEmpty
             }
         }
 
@@ -745,8 +831,8 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 }
 
                 It 'Should return all property in $properties' {
-                    $script:result.Property.Count | Should -Be $Properties.Count
-                    foreach ($Property in $Properties)
+                    $script:result.Property.Count | Should -Be $properties.Count
+                    foreach ($property in $properties)
                     {
                         $property | Should -BeIn $script:result.Property
                     }
@@ -767,8 +853,9 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return all property in $properties' {
-                $script:result.Property.Count | Should -Be $Properties.Count
-                foreach ($Property in $Properties)
+                $script:result.Property.Count | Should -Be $properties.Count
+
+                foreach ($property in $properties)
                 {
                     $property | Should -BeIn $script:result.Property
                 }
@@ -795,23 +882,30 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 }
 
                 It 'Should return $false for String InDesiredState' {
-                    $script:result.where({$_.Property -eq 'String'}).InDesiredState | Should -BeFalse
+                    $script:result.Where({
+                        $_.Property -eq 'String'
+                    }).InDesiredState | Should -BeFalse
                 }
 
                 It 'Should return all InDesiredState (without String property) in $true' {
-                    $script:result.where({$_.Property -ne 'String'}).InDesiredState | Should -Not -Contain $false
+                    $script:result.Where({
+                        $_.Property -ne 'String'
+                    }).InDesiredState | Should -Not -Contain $false
                 }
 
                 It 'Should return all property in $properties' {
-                    $script:result.Property.Count | Should -Be $Properties.Count
-                    foreach ($Property in $Properties)
+                    $script:result.Property.Count | Should -Be $properties.Count
+
+                    foreach ($property in $properties)
                     {
                         $property | Should -BeIn $script:result.Property
                     }
                 }
 
                 It 'Should not return property with ScriptBlock in value' {
-                    $script:result.where({$_.Property -eq 'ScriptBlock'}) | Should -BeNullOrEmpty
+                    $script:result.Where({
+                        $_.Property -eq 'ScriptBlock'
+                    }) | Should -BeNullOrEmpty
                 }
             }
         }
@@ -900,11 +994,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 }
 
                 It 'Should return $false for PSCredential InDesiredState' {
-                    $script:result.where({$_.Property -eq 'PSCredential'}).InDesiredState | Should -BeFalse
+                    $script:result.Where({
+                        $_.Property -eq 'PSCredential'
+                    }).InDesiredState | Should -BeFalse
                 }
 
                 It 'Should return all InDesiredState (without PSCredential property) in $true' {
-                    $script:result.where({$_.Property -ne 'PSCredential'}).InDesiredState | Should -Not -Contain $false
+                    $script:result.Where({
+                        $_.Property -ne 'PSCredential'
+                    }).InDesiredState | Should -Not -Contain $false
                 }
             }
         }
@@ -988,11 +1086,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 }
 
                 It 'Should return $false for PSCredential InDesiredState' {
-                    $script:result.where({$_.Property -eq 'PSCredential'}).InDesiredState | Should -BeFalse
+                    $script:result.Where({
+                        $_.Property -eq 'PSCredential'
+                    }).InDesiredState | Should -BeFalse
                 }
 
                 It 'Should return all InDesiredState (without PSCredential property) in $true' {
-                    $script:result.where({$_.Property -ne 'PSCredential'}).InDesiredState | Should -Not -Contain $false
+                    $script:result.Where({
+                        $_.Property -ne 'PSCredential'
+                    }).InDesiredState | Should -Not -Contain $false
                 }
             }
         }
@@ -1037,11 +1139,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Array'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1064,11 +1170,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Array'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1091,11 +1201,13 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1118,11 +1230,13 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1146,11 +1260,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $true for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeTrue
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Array'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1173,11 +1291,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Array'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1201,11 +1323,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $true for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeTrue
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Array'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1245,11 +1371,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $true for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeTrue
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Array'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1289,11 +1419,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Array'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1333,11 +1467,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Array InDesiredState' {
-                $script:result.where({$_.Property -eq 'Array'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Array property) in $true' {
-                $script:result.where({$_.Property -ne 'Array'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Array'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
     }
@@ -1381,11 +1519,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Hashtable InDesiredState' {
-                $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Hashtable property) in $true' {
-                $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Hashtable'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1413,11 +1555,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Hashtable InDesiredState' {
-                $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Hashtable property) in $true' {
-                $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Hashtable'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1445,11 +1591,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Hashtable InDesiredState' {
-                $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Hashtable property) in $true' {
-                $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Hashtable'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1477,11 +1627,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Hashtable InDesiredState' {
-                $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Hashtable property) in $true' {
-                $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Hashtable'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1510,11 +1664,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $true for Hashtable InDesiredState' {
-                $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeTrue
             }
 
             It 'Should return all InDesiredState (without Hashtable property) in $true' {
-                $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Hashtable'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1542,11 +1700,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for Hashtable InDesiredState' {
-                $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Hashtable property) in $true' {
-                $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Hashtable'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1575,11 +1737,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $true for Hashtable InDesiredState' {
-                $script:result.where({$_.Property -eq 'Hashtable'}).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeTrue
             }
 
             It 'Should return all InDesiredState (without Hashtable property) in $true' {
-                $script:result.where({$_.Property -ne 'Hashtable'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Hashtable'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
     }
@@ -1646,11 +1812,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for missed property (Bool)' {
-                $script:result.where({$_.Property -eq 'Bool'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without Bool property) in $true' {
-                $script:result.where({$_.Property -ne 'Bool'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'Bool'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
     }
@@ -1818,11 +1988,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for CimInstances InDesiredState' {
-                $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'CimInstances'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without CimInstances property) in $true' {
-                $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'CimInstances'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1857,11 +2031,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for CimInstances InDesiredState' {
-                $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'CimInstances'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without CimInstances property) in $true' {
-                $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'CimInstances'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1895,11 +2073,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for CimInstances InDesiredState' {
-                $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'CimInstances'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without CimInstances property) in $true' {
-                $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'CimInstances'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1933,11 +2115,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $false for CimInstances InDesiredState' {
-                $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'CimInstances'
+                }).InDesiredState | Should -BeFalse
             }
 
             It 'Should return all InDesiredState (without CimInstances property) in $true' {
-                $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'CimInstances'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
 
@@ -1972,11 +2158,15 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
 
             It 'Should return $true for CimInstances InDesiredState' {
-                $script:result.where({$_.Property -eq 'CimInstances'}).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'CimInstances'
+                }).InDesiredState | Should -BeTrue
             }
 
             It 'Should return all InDesiredState (without CimInstances property) in $true' {
-                $script:result.where({$_.Property -ne 'CimInstances'}).InDesiredState | Should -Not -Contain $false
+                $script:result.Where({
+                    $_.Property -ne 'CimInstances'
+                }).InDesiredState | Should -Not -Contain $false
             }
         }
     }
