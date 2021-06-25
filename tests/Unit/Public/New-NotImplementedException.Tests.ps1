@@ -1,17 +1,20 @@
-$ProjectPath = "$PSScriptRoot\..\..\.." | Convert-Path
-$ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
-        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-        $(try { Test-ModuleManifest $_.FullName -ErrorAction Stop } catch { $false } )
-    }).BaseName
+BeforeAll {
+    $script:moduleName = 'DscResource.Common'
 
-Import-Module $ProjectName -Force
+    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
+
+    Get-Module -Name $script:moduleName -ListAvailable |
+        Select-Object -First 1 |
+        Import-Module -Force -ErrorAction 'Stop'
+}
 
 Describe 'New-NotImplementedException' {
     Context 'When called with Message parameter only' {
         It 'Should throw the correct error' {
             $mockErrorMessage = 'Mocked error'
+            $mockExpectedErrorMessage = 'System.NotImplementedException: Mocked error'
 
-            { New-NotImplementedException -Message $mockErrorMessage } | Should -Throw $mockErrorMessage
+            { New-NotImplementedException -Message $mockErrorMessage } | Should -Throw $mockExpectedErrorMessage
         }
     }
 
@@ -26,11 +29,9 @@ Describe 'New-NotImplementedException' {
 
             # Wildcard processing needed to handle differing Powershell 5/6/7 exception output
             { New-NotImplementedException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord } |
-                Should -Throw -Passthru | Select-Object -ExpandProperty Exception |
+                Should -Throw -PassThru | Select-Object -ExpandProperty Exception |
                     Should -BeLike ('System.Exception: System.NotImplementedException: {0}*System.Exception: {1}*' -f
                         $mockErrorMessage, $mockExceptionErrorMessage)
         }
     }
-
-    Assert-VerifiableMock
 }

@@ -1,67 +1,84 @@
-$ProjectPath = "$PSScriptRoot\..\..\.." | Convert-Path
-$ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
-        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-        $(try
-            {
-                Test-ModuleManifest $_.FullName -ErrorAction Stop
-            }
-            catch
-            {
-                $false
-            } )
-    }).BaseName
+BeforeAll {
+    $moduleName = 'DscResource.Common'
+    $stubModuleName = 'DscResource.Common.Stubs'
 
-Import-Module $ProjectName -Force
+    Remove-Module -Name $moduleName -Force -ErrorAction 'SilentlyContinue'
 
-Describe 'Test-IsNanoServer' -Tag TestIsNanoServer {
-    function Get-CimInstance
-    {
-        param
-        (
-            [Parameter()]
-            [System.String]
-            $ClassName
-        )
-    }
+    Get-Module -Name $moduleName -ListAvailable |
+        Select-Object -First 1 |
+            Import-Module -Force -ErrorAction 'Stop'
 
+    <#
+        This mocks the Get-CimInstance on platforms where the cmdlet does not
+        exist, like Linux anc macOS.
+    #>
+    Remove-Module -Name $stubModuleName -Force -ErrorAction 'SilentlyContinue'
+    New-Module -Name $stubModuleName -ScriptBlock {
+        function Get-CimInstance
+        {
+            param
+            (
+                [Parameter()]
+                [System.String]
+                $ClassName
+            )
+        }
+    } | Import-Module
+}
+
+AfterAll {
+    <#
+        This removes the stub module that was imported in the
+        BeforeAll-block.
+    #>
+    Remove-Module -Name 'DscResource.Common.Stubs' -Force -ErrorAction 'SilentlyContinue'
+}
+
+Describe 'Test-IsNanoServer' -Tag 'TestIsNanoServer' {
     Context 'When the current computer is a Datacenter Nano server' {
-        Mock -CommandName Get-CimInstance `
-            -ModuleName $ProjectName `
-            -MockWith {
-                [PSCustomObject] @{
-                    OperatingSystemSKU = 143
+        BeforeAll {
+            Mock -CommandName Get-CimInstance `
+                -ModuleName 'DscResource.Common' `
+                -MockWith {
+                    [PSCustomObject] @{
+                        OperatingSystemSKU = 143
+                    }
                 }
-            }
+        }
 
-        It 'Should retrun true' {
+        It 'Should return true' {
             Test-IsNanoServer -Verbose | Should -BeTrue
         }
     }
 
     Context 'When the current computer is a Standard Nano server' {
-        Mock -CommandName Get-CimInstance `
-            -ModuleName $ProjectName `
-            -MockWith {
-                [PSCustomObject] @{
-                    OperatingSystemSKU = 144
+        BeforeAll {
+            Mock -CommandName Get-CimInstance `
+                -ModuleName 'DscResource.Common' `
+                -MockWith {
+                    [PSCustomObject] @{
+                        OperatingSystemSKU = 144
+                    }
                 }
-            }
+        }
 
-        It 'Should retrun true' {
+        It 'Should return true' {
             Test-IsNanoServer -Verbose | Should -BeTrue
         }
     }
 
     Context 'When the current computer is not a Nano server' {
-        Mock -CommandName Get-CimInstance `
-            -ModuleName $ProjectName `
-            -MockWith {
-                [PSCustomObject] @{
-                    OperatingSystemSKU = 1
+        BeforeAll {
+            Mock -CommandName Get-CimInstance `
+                -ModuleName 'DscResource.Common' `
+                -MockWith {
+                    [PSCustomObject] @{
+                        OperatingSystemSKU = 1
+                    }
                 }
-            }
+        }
 
-        It 'Should retrun false' {
+        It 'Should return false' {
             Test-IsNanoServer -Verbose | Should -BeFalse
         }
     }

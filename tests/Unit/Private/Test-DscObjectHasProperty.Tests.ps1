@@ -1,35 +1,62 @@
-$ProjectPath = "$PSScriptRoot\..\..\.." | Convert-Path
-$ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
-        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-    $(try { Test-ModuleManifest -Path $_.FullName -ErrorAction Stop } catch { $false } )
-    }).BaseName
+BeforeAll {
+    $script:moduleName = 'DscResource.Common'
 
+    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
 
-Import-Module $ProjectName
+    Get-Module -Name $script:moduleName -ListAvailable |
+        Select-Object -First 1 |
+        Import-Module -Force -ErrorAction 'Stop'
 
-InModuleScope $ProjectName {
-    Describe 'Test-DscObjectHasProperty' {
+    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
+}
 
-        # Use the Get-Verb cmdlet to just get a simple object fast
-        $testDscObject = (Get-Verb)[0]
+AfterAll {
+    $PSDefaultParameterValues.Remove('InModuleScope:ModuleName')
+}
 
-        Context 'When the object contains the expected property' {
-            It 'Should not throw exception' {
-                { $script:result = Test-DscObjectHasProperty -Object $testDscObject -PropertyName 'Verb' -Verbose } | Should -Not -Throw
-            }
-
-            It 'Should return $true' {
-                $script:result | Should -Be $true
+Describe 'Test-DscObjectHasProperty' {
+    Context 'When the object contains the expected property' {
+        BeforeAll {
+            # Use the Get-Verb cmdlet to just get a simple object fast
+            InModuleScope -ScriptBlock {
+                $script:testDscObject = (Get-Verb)[0]
             }
         }
 
-        Context 'When the object does not contain the expected property' {
-            It 'Should not throw exception' {
-                { $script:result = Test-DscObjectHasProperty -Object $testDscObject -PropertyName 'Missing' -Verbose } | Should -Not -Throw
+        It 'Should not throw exception' {
+            InModuleScope -ScriptBlock {
+                { Test-DscObjectHasProperty -Object $script:testDscObject -PropertyName 'Verb' -Verbose } | Should -Not -Throw
             }
+        }
 
-            It 'Should return $false' {
-                $script:result | Should -Be $false
+        It 'Should return $true' {
+            InModuleScope -ScriptBlock {
+                $result = Test-DscObjectHasProperty -Object $script:testDscObject -PropertyName 'Verb' -Verbose
+
+                $result | Should -BeTrue
+            }
+        }
+    }
+
+    Context 'When the object does not contain the expected property' {
+        BeforeAll {
+            # Use the Get-Verb cmdlet to just get a simple object fast
+            InModuleScope -ScriptBlock {
+                $script:testDscObject = (Get-Verb)[0]
+            }
+        }
+
+        It 'Should not throw exception' {
+            InModuleScope -ScriptBlock {
+                { Test-DscObjectHasProperty -Object $script:testDscObject -PropertyName 'Missing' -Verbose } | Should -Not -Throw
+            }
+        }
+
+        It 'Should return $false' {
+            InModuleScope -ScriptBlock {
+                $result = Test-DscObjectHasProperty -Object $script:testDscObject -PropertyName 'Missing' -Verbose
+
+                $result | Should -BeFalse
             }
         }
     }

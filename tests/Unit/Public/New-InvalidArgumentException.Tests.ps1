@@ -1,10 +1,12 @@
-$ProjectPath = "$PSScriptRoot\..\..\.." | Convert-Path
-$ProjectName = ((Get-ChildItem -Path $ProjectPath\*\*.psd1).Where{
-        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-        $(try { Test-ModuleManifest $_.FullName -ErrorAction Stop } catch { $false } )
-    }).BaseName
+BeforeAll {
+    $script:moduleName = 'DscResource.Common'
 
-Import-Module $ProjectName -Force
+    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
+
+    Get-Module -Name $script:moduleName -ListAvailable |
+        Select-Object -First 1 |
+        Import-Module -Force -ErrorAction 'Stop'
+}
 
 Describe 'New-InvalidArgumentException' {
     Context 'When calling with both the Message and ArgumentName parameter' {
@@ -18,6 +20,4 @@ Describe 'New-InvalidArgumentException' {
                     Should -BeLike ('{0}*Parameter*{1}*' -f $mockErrorMesssage, $mockArgumentName)
         }
     }
-
-    Assert-VerifiableMock
 }

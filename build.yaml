@@ -28,10 +28,11 @@ BuildWorkflow:
     - package_module_nupkg
 
   hqrmtest:
-    - DscResource_Tests_Stop_On_Fail
+    - Invoke_HQRM_Tests_Stop_On_Fail
 
   test:
     - Pester_Tests_Stop_On_Fail
+    - Convert_Pester_Coverage
     - Pester_if_Code_Coverage_Under_Threshold
 
   publish:
@@ -44,26 +45,39 @@ BuildWorkflow:
 ####################################################
 
 Pester:
-  OutputFormat: NUnitXML
+  Configuration:
+    Run:
+      Path:
+        - tests/QA
+        - tests/Unit
+        - tests/Integration
+    CodeCoverage:
+      CoveragePercentTarget: 78
+      OutputPath: JaCoCo_coverage.xml
+      OutputEncoding: ascii
   ExcludeFromCodeCoverage:
-  Script:
-    - tests/QA
-    - tests/Unit
-    - tests/Integration
-  ExcludeTag:
-  Tag:
-  CodeCoverageThreshold: 50
-  CodeCoverageOutputFile: JaCoCo_coverage.xml
-  CodeCoverageOutputFileEncoding: ascii
 
 DscTest:
-  ExcludeTag:
-    - 'Common Tests - New Error-Level Script Analyzer Rules'
-  Tag:
-  ExcludeSourceFile:
-    - output
-  ExcludeModuleFile:
-  MainGitBranch: main
+  Pester:
+    Configuration:
+      Filter:
+        Tag:
+        ExcludeTag:
+          - Common Tests - New Error-Level Script Analyzer Rules
+      Output:
+        Verbosity: Detailed
+      TestResult:
+        Enabled: true
+        OutputFormat: NUnitXML
+        OutputPath: ./output/testResults/NUnitXml_DscResourceCommon_HQRM.xml
+        OutputEncoding: UTF-8
+        TestSuiteName: DscResourceCommonHQRM
+  Script:
+    ExcludeSourceFile:
+      - output
+      - DscResource.Common
+    ExcludeModuleFile:
+    MainGitBranch: main
 
 Resolve-Dependency:
   Gallery: 'PSGallery'
@@ -75,6 +89,8 @@ ModuleBuildTasks:
     - '*.build.Sampler.ib.tasks'
   Sampler.GitHubTasks:
     - '*.ib.tasks'
+  DscResource.Test:
+    - 'Task.*'
 
 TaskHeader: |
   param($Path)
