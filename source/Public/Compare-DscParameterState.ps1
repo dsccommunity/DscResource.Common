@@ -331,7 +331,7 @@ function Compare-DscParameterState
             continue # pass to the next key
         }
         #endregion check same value
-        #region Check if the DesiredValuesClean has the key and if it don't have, it's not necessary to check his value
+        #region Check if the DesiredValuesClean has the key and if it doesn't have, it's not necessary to check his value
         if ($desiredValuesClean.GetType().Name -in 'HashTable', 'PSBoundParametersDictionary')
         {
             $checkDesiredValue = $desiredValuesClean.ContainsKey($key)
@@ -507,11 +507,22 @@ function Compare-DscParameterState
 
             if ($InDesiredStateTable.InDesiredState)
             {
-                $InDesiredStateTable.InDesiredState = Test-DscParameterState @param
+                <#
+                    if desiredvalue is an empty hashtable and not currentvalue, it's not necessery to compare them, it's not compliant.
+                    See issue 65 https://github.com/dsccommunity/DscResource.Common/issues/65
+                #>
+                if ($desiredValue.Keys.Count -eq 0 -and $currentValue.Keys.Count -ne 0)
+                {
+                    Write-Verbose -Message ($script:localizedData.NoMatchKeyMessage -f $desiredType.FullName, $key, $($currentValue.Keys -join ', '))
+                    $InDesiredStateTable.InDesiredState = $false
+                }
+                else{
+                    $InDesiredStateTable.InDesiredState = Test-DscParameterState @param
+                }
             }
             else
             {
-                Test-DscParameterState @param | Out-Null
+                $null = Test-DscParameterState @param
             }
             continue
         }

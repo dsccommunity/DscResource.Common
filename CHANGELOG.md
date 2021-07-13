@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Correction to `Compare-DscParameterState` returning false positive when parameter
+  with an empty hashtable or CimInstance property is passed in `DesriedValues` - fixes
+  [issue #65](https://github.com/dsccommunity/DscResource.Common/issues/65).
+
 ## [0.10.3] - 2021-06-26
 
 ### Added
