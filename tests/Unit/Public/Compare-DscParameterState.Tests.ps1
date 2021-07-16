@@ -10,7 +10,7 @@ BeforeAll {
 
 Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
     BeforeAll {
-        $verbose = $true
+        $verbose = $false
     }
 
     Context 'When testing single values' {
@@ -1941,6 +1941,7 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 { $script:result = Compare-DscParameterState `
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
+                        -ReverseCheck `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
             }
@@ -1949,8 +1950,25 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 $script:result | Should -Not -BeNullOrEmpty
             }
 
-            It 'Should return $false for all InDesiredState' {
-                $script:result.InDesiredState | Should -Not -Contain $false
+            It 'Should return $true for property Array and Hashtable' {
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeTrue
+            }
+
+            It 'Should return $false for property String, Bool, Int' {
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeFalse
             }
         }
 
@@ -1989,6 +2007,66 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 $script:result.Where({
                     $_.Property -ne 'Bool'
                 }).InDesiredState | Should -Not -Contain $false
+            }
+        }
+
+        Context 'When desired state has one more property' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = 'a', 'b', 'c', 1
+                    ArrayTest     = 'a', 'b', 'c', 1
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                }
+            }
+
+            It 'Should not throw exception' {
+                { $script:result = Compare-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -ReverseCheck `
+                        -IncludeInDesiredState `
+                        -Verbose:$true } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
+            It 'Should return $true for property Array, Hashtable, String, Bool and Int' {
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeTrue
+            }
+
+            It 'Should return not null value for property ArrayTest' {
+                $script:result.Where({
+                    $_.Property -eq 'ArrayTest'
+                }).InDesiredState | Should -Not -BeNullOrEmpty
+            }
+
+            It 'Should return $false for property ArrayTest' {
+                $script:result.Where({
+                    $_.Property -eq 'ArrayTest'
+                }).InDesiredState | Should -BeFalse
             }
         }
     }
@@ -2365,105 +2443,159 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 }).InDesiredState | Should -Not -Contain $false
             }
         }
-    }
 
-    # Test added to cover issue #65 https://github.com/dsccommunity/DscResource.Common/issues/65
-    Context 'When one property is an empty array in CurrentState and -ReverseCheck, -TurnOffTypeChecking are used' {
-        BeforeAll {
-            $nameServers = [Microsoft.Management.Infrastructure.CimInstance[]] @(
-                New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
-                    Key   = 'B.ROOT-SERVERS.NET.'
-                    Value = '199.9.14.201'
-                } -ClientOnly
+        # Test added to cover issue #65 https://github.com/dsccommunity/DscResource.Common/issues/65
+        Context "When a property is empty in DesriredValues" {
+            BeforeAll {
+                $nameServers = [Microsoft.Management.Infrastructure.CimInstance[]] @(
+                    New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
+                        Key   = 'B.ROOT-SERVERS.NET.'
+                        Value = '199.9.14.201'
+                    } -ClientOnly
 
-                New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
-                    Key   = 'M.ROOT-SERVERS.NET.'
-                    Value = '202.12.27.33'
-                } -ClientOnly
-            )
-        }
+                    New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
+                        Key   = 'M.ROOT-SERVERS.NET.'
+                        Value = '202.12.27.33'
+                    } -ClientOnly
+                )
+            }
+            Context 'When one property is an empty array in CurrentValues and -ReverseCheck, -TurnOffTypeChecking are used' {
+                BeforeAll {
+                    $desiredValues = @{
+                        NameServers = $nameServers
+                        IsSingleInstance = 'Yes'
+                        Verbose = $true
+                    }
 
-        It 'Should return the correct values' {
-            $compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues @{
-                    IsSingleInstance = 'Yes'
-                    NameServers = @()
-                } -DesiredValues @{
-                    NameServers = $nameServers
-                    IsSingleInstance = 'Yes'
-                    Verbose = $true
-                } -TurnOffTypeChecking -ReverseCheck -Verbose
-            $compareTargetResourceStateResult | Should -HaveCount 1
+                    $currentValues = @{
+                        IsSingleInstance = 'Yes'
+                        NameServers = @()
+                    }
+                }
 
-            $compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
-            $compareTargetResourceStateResult.InDesiredState | Should -BeFalse
-        }
-    }
+                It 'Should not throw' {
+                    $script:compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -TurnOffTypeChecking `
+                            -ReverseCheck `
+                            -Verbose:$verbose
+                }
 
-    # Test added to cover issue #65 https://github.com/dsccommunity/DscResource.Common/issues/65
-    Context 'When one property is an empty collection of CimInstance in CurrentState and -ReverseCheck, -TurnOffTypeChecking are used' {
-        It 'Should return the correct values' {
-            $compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues @{
-                    IsSingleInstance = 'Yes'
-                    NameServers = [Microsoft.Management.Infrastructure.CimInstance[]]@()
-                } -DesiredValues @{
-                    NameServers = $nameServers
-                    IsSingleInstance = 'Yes'
-                    Verbose = $true
-                } -TurnOffTypeChecking -ReverseCheck -Verbose
-            $compareTargetResourceStateResult | Should -HaveCount 1
+                It 'Should not be Null or Empty' {
+                    $script:compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
+                }
 
-            $compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
-            $compareTargetResourceStateResult.InDesiredState | Should -BeFalse
-        }
-    }
+                It 'Should have one value' {
+                    $script:compareTargetResourceStateResult | Should -HaveCount 1
+                }
 
-    # Test added to cover issue #65 https://github.com/dsccommunity/DscResource.Common/issues/65
-    Context 'When one property is an empty array in DesiredState and -TurnOffTypeChecking is used' {
-        BeforeAll {
-            $nameServers = [Microsoft.Management.Infrastructure.CimInstance[]] @(
-                New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
-                    Key   = 'B.ROOT-SERVERS.NET.'
-                    Value = '199.9.14.201'
-                } -ClientOnly
+                It 'Should be False in InDesiredState' {
+                    $script:compareTargetResourceStateResult.InDesiredState | Should -BeFalse
+                }
+            }
 
-                New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
-                    Key   = 'M.ROOT-SERVERS.NET.'
-                    Value = '202.12.27.33'
-                } -ClientOnly
-            )
-        }
+            Context 'When one property is an empty collection of CimInstance in CurrentValues and -ReverseCheck, -TurnOffTypeChecking are used' {
+                BeforeAll {
+                    $desiredValues = @{
+                        NameServers = $nameServers
+                        IsSingleInstance = 'Yes'
+                        Verbose = $true
+                    }
 
-        It 'Should return the correct values' {
-            $compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues @{
-                    IsSingleInstance = 'Yes'
-                    NameServers = $nameServers
-                } -DesiredValues @{
-                    NameServers = @()
-                    IsSingleInstance = 'Yes'
-                    Verbose = $true
-                } -TurnOffTypeChecking -ReverseCheck -Verbose
-            $compareTargetResourceStateResult | Should -HaveCount 1
+                    $currentValues = @{
+                        IsSingleInstance = 'Yes'
+                        NameServers = [Microsoft.Management.Infrastructure.CimInstance[]]@()
+                    }
+                }
 
-            $compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
-            $compareTargetResourceStateResult.InDesiredState | Should -BeFalse
-        }
-    }
+                It 'Should not throw' {
+                    $script:compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -TurnOffTypeChecking `
+                            -ReverseCheck `
+                            -Verbose:$verbose
+                }
 
-    # Test added to cover issue #65 https://github.com/dsccommunity/DscResource.Common/issues/65
-    Context 'When one property is an empty collection of CimInstance in DesiredState and -TurnOffTypeChecking is used' {
-        It 'Should return the correct values' {
-            $compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues @{
-                    IsSingleInstance = 'Yes'
-                    NameServers = $nameServers
-                } -DesiredValues @{
-                    NameServers = [Microsoft.Management.Infrastructure.CimInstance[]]@()
-                    IsSingleInstance = 'Yes'
-                    Verbose = $true
-                } -TurnOffTypeChecking -ReverseCheck -Verbose
-            $compareTargetResourceStateResult | Should -HaveCount 1
+                It 'Should not be Null or Empty' {
+                    $script:compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
+                }
 
-            $compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
-            $compareTargetResourceStateResult.InDesiredState | Should -BeFalse
+                It 'Should have one value' {
+                    $script:compareTargetResourceStateResult | Should -HaveCount 1
+                }
+
+                It 'Should be False in InDesiredState' {
+                    $script:compareTargetResourceStateResult.InDesiredState | Should -BeFalse
+                }
+            }
+
+            Context 'When one property is an empty array in DesiredValues and -TurnOffTypeChecking is used' {
+                BeforeAll {
+                    $desiredValues = @{
+                        NameServers = @()
+                        IsSingleInstance = 'Yes'
+                        Verbose = $true
+                    }
+
+                    $currentValues = @{
+                        IsSingleInstance = 'Yes'
+                        NameServers = $nameServers
+                    }
+                }
+
+                It 'Should not throw' {
+                    $script:compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -TurnOffTypeChecking `
+                            -Verbose:$verbose
+                }
+
+                It 'Should not be Null or Empty' {
+                    $script:compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
+                }
+
+                It 'Should have one value' {
+                    $script:compareTargetResourceStateResult | Should -HaveCount 1
+                }
+
+                It 'Should be False in InDesiredState' {
+                    $script:compareTargetResourceStateResult.InDesiredState | Should -BeFalse
+                }
+            }
+
+            Context 'When one property is an empty collection of CimInstance in DesiredValues and -TurnOffTypeChecking is used' {
+                BeforeAll {
+                    $desiredValues = @{
+                        NameServers = [Microsoft.Management.Infrastructure.CimInstance[]] @()
+                        IsSingleInstance = 'Yes'
+                        Verbose = $true
+                    }
+
+                    $currentValues = @{
+                        IsSingleInstance = 'Yes'
+                        NameServers = $nameServers
+                    }
+                }
+
+                It 'Should not throw' {
+                    $script:compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -TurnOffTypeChecking `
+                            -Verbose:$verbose
+                }
+
+                It 'Should not be Null or Empty' {
+                    $script:compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
+                }
+
+                It 'Should have one value' {
+                    $script:compareTargetResourceStateResult | Should -HaveCount 1
+                }
+
+                It 'Should be False in InDesiredState' {
+                    $script:compareTargetResourceStateResult.InDesiredState | Should -BeFalse
+                }
+            }
         }
     }
 }

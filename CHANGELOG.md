@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Correction to `Compare-DscParameterState` returning false positive when parameter
   with an empty hashtable or CimInstance property is passed in `DesriedValues` - fixes
   [issue #65](https://github.com/dsccommunity/DscResource.Common/issues/65).
+- Correction somes problems in `Compare-DscParameterState` - see [issue #70](https://github.com/dsccommunity/DscResource.Common/issues/70) :
+  - When you use `-ReverseCheck`, this value is used in recursive call of
+  `Test-DscParameterState` and `Compare-DscParameterState`, and that called
+  another time the function.
+  - When you use `-Properties` and `-ReverseCheck`, and you have an array in member,
+  that return a wrong value, because the properties are set in recursive calls of
+  `-ReverseCheck` to test the value of array.
+  - When you use `-ReverseCheck` and, in the function `Test-DscSompareState`/`Compare-DscParameterState`
+  are recursively called (like to test or compare value of array), `-ReverseCheck`
+  value is removed from `$PSBoundParameter`. And the ReverseCheck isn't done.
 
 ## [0.10.3] - 2021-06-26
 
