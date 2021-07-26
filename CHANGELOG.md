@@ -19,9 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - When you use `-Properties` and `-ReverseCheck`, and you have an array in member,
   that return a wrong value, because the properties are set in recursive calls of
   `-ReverseCheck` to test the value of array.
-  - When you use `-ReverseCheck` and, in the function `Test-DscSompareState`/`Compare-DscParameterState`
+  - When you use `-ReverseCheck` and, in the function `Test-DscCompareState`/`Compare-DscParameterState`
   are recursively called (like to test or compare value of array), `-ReverseCheck`
-  value is removed from `$PSBoundParameter`. And the ReverseCheck isn't done.
+  value is removed from `$PSBoundParameters`. And the ReverseCheck isn't done.
 
 ## [0.10.3] - 2021-06-26
 

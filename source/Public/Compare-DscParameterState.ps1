@@ -580,6 +580,7 @@ function Compare-DscParameterState
         {
             $reverseCheckParameters['Properties'] = $reverseCheckParameters['Properties'] | Where-Object -FilterScript { $_ -notin $ExcludeProperties }
         }
+
         $null = $reverseCheckParameters.Remove('ReverseCheck')
 
         if ($returnValue)
