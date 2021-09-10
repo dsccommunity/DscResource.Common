@@ -322,6 +322,12 @@ function Compare-DscParameterState
                 $InDesiredStateTable.InDesiredState = $false
                 continue # pass to the next key
             }
+            elseif ($desiredType.Name -eq 'Unknown' -and $desiredType.Name -ne $currentType.Name)
+            {
+                Write-Verbose -Message ($script:localizedData.NoMatchTypeMismatchMessage -f $key, $currentType.Name, $desiredType.Name)
+                $InDesiredStateTable.InDesiredState = $false
+                continue # pass to the next key
+            }
         }
         #endregion TestType
         #region Check if the value of Current and desired state is the same but only if they are not an array
@@ -331,7 +337,7 @@ function Compare-DscParameterState
             continue # pass to the next key
         }
         #endregion check same value
-        #region Check if the DesiredValuesClean has the key and if it don't have, it's not necessary to check his value
+        #region Check if the DesiredValuesClean has the key and if it doesn't have, it's not necessary to check his value
         if ($desiredValuesClean.GetType().Name -in 'HashTable', 'PSBoundParametersDictionary')
         {
             $checkDesiredValue = $desiredValuesClean.ContainsKey($key)
@@ -455,11 +461,11 @@ function Compare-DscParameterState
 
                     if ($desiredType -eq [System.Collections.Hashtable] -and $currentType -eq [System.Collections.Hashtable])
                     {
-                        $param = $PSBoundParameters
+                        $param = @{} + $PSBoundParameters
                         $param.CurrentValues = $currentArrayValues[$i]
                         $param.DesiredValues = $desiredArrayValues[$i]
 
-                        'IncludeInDesiredState','IncludeValue' | ForEach-Object {
+                        'IncludeInDesiredState','IncludeValue','Properties','ReverseCheck' | ForEach-Object {
                             if ($param.ContainsKey($_))
                             {
                                 $null = $param.Remove($_)
@@ -494,11 +500,11 @@ function Compare-DscParameterState
         }
         elseif ($desiredType -eq [System.Collections.Hashtable] -and $currentType -eq [System.Collections.Hashtable])
         {
-            $param = $PSBoundParameters
+            $param = @{} + $PSBoundParameters
             $param.CurrentValues = $currentValue
             $param.DesiredValues = $desiredValue
 
-            'IncludeInDesiredState','IncludeValue' | ForEach-Object {
+            'IncludeInDesiredState','IncludeValue','Properties','ReverseCheck' | ForEach-Object {
                 if ($param.ContainsKey($_))
                 {
                     $null = $param.Remove($_)
@@ -507,11 +513,22 @@ function Compare-DscParameterState
 
             if ($InDesiredStateTable.InDesiredState)
             {
-                $InDesiredStateTable.InDesiredState = Test-DscParameterState @param
+                <#
+                    if desiredvalue is an empty hashtable and not currentvalue, it's not necessery to compare them, it's not compliant.
+                    See issue 65 https://github.com/dsccommunity/DscResource.Common/issues/65
+                #>
+                if ($desiredValue.Keys.Count -eq 0 -and $currentValue.Keys.Count -ne 0)
+                {
+                    Write-Verbose -Message ($script:localizedData.NoMatchKeyMessage -f $desiredType.FullName, $key, $($currentValue.Keys -join ', '))
+                    $InDesiredStateTable.InDesiredState = $false
+                }
+                else{
+                    $InDesiredStateTable.InDesiredState = Test-DscParameterState @param
+                }
             }
             else
             {
-                Test-DscParameterState @param | Out-Null
+                $null = Test-DscParameterState @param
             }
             continue
         }
@@ -555,9 +572,15 @@ function Compare-DscParameterState
     if ($ReverseCheck)
     {
         Write-Verbose -Message $script:localizedData.StartingReverseCheck
-        $reverseCheckParameters = $PSBoundParameters
-        $reverseCheckParameters.CurrentValues = $DesiredValues
-        $reverseCheckParameters.DesiredValues = $CurrentValues
+        $reverseCheckParameters = @{} + $PSBoundParameters
+        $reverseCheckParameters['CurrentValues'] = $DesiredValues
+        $reverseCheckParameters['DesiredValues'] = $CurrentValues
+        $reverseCheckParameters['Properties'] = $keyList + $CurrentValues.Keys | Select-Object -Unique
+        if ($ExcludeProperties)
+        {
+            $reverseCheckParameters['Properties'] = $reverseCheckParameters['Properties'] | Where-Object -FilterScript { $_ -notin $ExcludeProperties }
+        }
+
         $null = $reverseCheckParameters.Remove('ReverseCheck')
 
         if ($returnValue)

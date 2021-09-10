@@ -10,7 +10,7 @@ BeforeAll {
 
 Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
     BeforeAll {
-        $verbose = $true
+        $verbose = $false
     }
 
     Context 'When testing single values' {
@@ -79,6 +79,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for String InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'String'
@@ -122,6 +126,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Bool InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Bool'
@@ -163,6 +171,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Int InDesiredState' {
@@ -209,6 +221,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for ScriptBlock InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'ScriptBlock'
@@ -252,6 +268,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Int InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Int'
@@ -288,6 +308,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Int InDesiredState' {
@@ -436,6 +460,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
+                It 'Should not be null' {
+                    $script:result | Should -Not -BeNullOrEmpty
+                }
+
                 It 'Should return $false for String InDesiredState' {
                     $script:result.Where({
                         $_.Property -eq 'String'
@@ -499,6 +527,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose  } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return all InDesiredState in $true' {
                 $script:result.InDesiredState  | Should -Not -Contain $false
             }
@@ -525,6 +557,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for String InDesiredState' {
@@ -563,6 +599,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Bool InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Bool'
@@ -597,6 +637,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Int InDesiredState' {
@@ -636,6 +680,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for ScriptBlock InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'ScriptBlock'
@@ -670,6 +718,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Int InDesiredState' {
@@ -709,6 +761,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Int InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Int'
@@ -739,6 +795,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -IncludeInDesiredState `
                         -TurnOffTypeChecking `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $true for Int InDesiredState' {
@@ -779,6 +839,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -ExcludeProperties $excludeProperties `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return all InDesiredState in $true' {
@@ -826,6 +890,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
+                It 'Should not be null' {
+                    $script:result | Should -Not -BeNullOrEmpty
+                }
+
                 It 'Should return all InDesiredState in $true' {
                     $script:result.InDesiredState | Should -Not -Contain $false
                 }
@@ -846,6 +914,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Properties $properties `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return all InDesiredState in $true' {
@@ -879,6 +951,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                             -Properties $properties `
                             -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should not be null' {
+                    $script:result | Should -Not -BeNullOrEmpty
                 }
 
                 It 'Should return $false for String InDesiredState' {
@@ -960,6 +1036,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
+                It 'Should not be null' {
+                    $script:result | Should -Not -BeNullOrEmpty
+                }
+
                 It 'Should return all InDesiredState in $true' {
                     $script:result.InDesiredState  | Should -Not -Contain $false
                 }
@@ -991,6 +1071,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                             -DesiredValues $desiredValues `
                             -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should not be null' {
+                    $script:result | Should -Not -BeNullOrEmpty
                 }
 
                 It 'Should return $false for PSCredential InDesiredState' {
@@ -1052,6 +1136,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                             -Verbose:$verbose } | Should -Not -Throw
                 }
 
+                It 'Should not be null' {
+                    $script:result | Should -Not -BeNullOrEmpty
+                }
+
                 It 'Should return all InDesiredState in $true' {
                     $script:result.InDesiredState  | Should -Not -Contain $false
                 }
@@ -1083,6 +1171,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                             -DesiredValues $desiredValues `
                             -IncludeInDesiredState `
                             -Verbose:$verbose } | Should -Not -Throw
+                }
+
+                It 'Should not be null' {
+                    $script:result | Should -Not -BeNullOrEmpty
                 }
 
                 It 'Should return $false for PSCredential InDesiredState' {
@@ -1138,6 +1230,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Array InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Array'
@@ -1167,6 +1263,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Array InDesiredState' {
@@ -1200,6 +1300,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Array InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Array'
@@ -1227,6 +1331,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Array InDesiredState' {
@@ -1257,6 +1365,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -SortArrayValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $true for Array InDesiredState' {
@@ -1290,6 +1402,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Array InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Array'
@@ -1320,6 +1436,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -TurnOffTypeChecking `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $true for Array InDesiredState' {
@@ -1370,6 +1490,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $true for Array InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Array'
@@ -1418,6 +1542,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Array InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Array'
@@ -1464,6 +1592,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Array InDesiredState' {
@@ -1518,6 +1650,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Hashtable InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Hashtable'
@@ -1552,6 +1688,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Hashtable InDesiredState' {
@@ -1590,6 +1730,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for Hashtable InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Hashtable'
@@ -1624,6 +1768,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Hashtable InDesiredState' {
@@ -1663,6 +1811,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $true for Hashtable InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'Hashtable'
@@ -1697,6 +1849,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for Hashtable InDesiredState' {
@@ -1734,6 +1890,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -TurnOffTypeChecking `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $true for Hashtable InDesiredState' {
@@ -1781,12 +1941,34 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 { $script:result = Compare-DscParameterState `
                         -CurrentValues $currentValues `
                         -DesiredValues $desiredValues `
+                        -ReverseCheck `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
-            It 'Should return $false for all InDesiredState' {
-                $script:result.InDesiredState | Should -Not -Contain $false
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
+            It 'Should return $true for property Array and Hashtable' {
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeTrue
+            }
+
+            It 'Should return $false for property String, Bool, Int' {
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).InDesiredState | Should -BeFalse
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeFalse
             }
         }
 
@@ -1811,6 +1993,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for missed property (Bool)' {
                 $script:result.Where({
                     $_.Property -eq 'Bool'
@@ -1821,6 +2007,66 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 $script:result.Where({
                     $_.Property -ne 'Bool'
                 }).InDesiredState | Should -Not -Contain $false
+            }
+        }
+
+        Context 'When desired state has one more property' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = 'a', 'b', 'c', 1
+                    ArrayTest     = 'a', 'b', 'c', 1
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                }
+            }
+
+            It 'Should not throw exception' {
+                { $script:result = Compare-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -ReverseCheck `
+                        -IncludeInDesiredState `
+                        -Verbose:$true } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
+            It 'Should return $true for property Array, Hashtable, String, Bool and Int' {
+                $script:result.Where({
+                    $_.Property -eq 'Array'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Hashtable'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).InDesiredState | Should -BeTrue
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeTrue
+            }
+
+            It 'Should return not null value for property ArrayTest' {
+                $script:result.Where({
+                    $_.Property -eq 'ArrayTest'
+                }).InDesiredState | Should -Not -BeNullOrEmpty
+            }
+
+            It 'Should return $false for property ArrayTest' {
+                $script:result.Where({
+                    $_.Property -eq 'ArrayTest'
+                }).InDesiredState | Should -BeFalse
             }
         }
     }
@@ -1920,6 +2166,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return all InDesiredState in $true' {
                 $script:result.InDesiredState | Should -Not -Contain $false
             }
@@ -1951,6 +2201,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return all InDesiredState in $true' {
@@ -1985,6 +2239,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -ReverseCheck `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for CimInstances InDesiredState' {
@@ -2030,6 +2288,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for CimInstances InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'CimInstances'
@@ -2072,6 +2334,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $false for CimInstances InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'CimInstances'
@@ -2112,6 +2378,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -DesiredValues $desiredValues `
                         -IncludeInDesiredState `
                         -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
             }
 
             It 'Should return $false for CimInstances InDesiredState' {
@@ -2157,6 +2427,10 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                         -Verbose:$verbose } | Should -Not -Throw
             }
 
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
             It 'Should return $true for CimInstances InDesiredState' {
                 $script:result.Where({
                     $_.Property -eq 'CimInstances'
@@ -2167,6 +2441,160 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
                 $script:result.Where({
                     $_.Property -ne 'CimInstances'
                 }).InDesiredState | Should -Not -Contain $false
+            }
+        }
+
+        # Test added to cover issue #65 https://github.com/dsccommunity/DscResource.Common/issues/65
+        Context "When a property is empty in DesriredValues" {
+            BeforeAll {
+                $nameServers = [Microsoft.Management.Infrastructure.CimInstance[]] @(
+                    New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
+                        Key   = 'B.ROOT-SERVERS.NET.'
+                        Value = '199.9.14.201'
+                    } -ClientOnly
+
+                    New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
+                        Key   = 'M.ROOT-SERVERS.NET.'
+                        Value = '202.12.27.33'
+                    } -ClientOnly
+                )
+            }
+            Context 'When one property is an empty array in CurrentValues and -ReverseCheck, -TurnOffTypeChecking are used' {
+                BeforeAll {
+                    $desiredValues = @{
+                        NameServers = $nameServers
+                        IsSingleInstance = 'Yes'
+                        Verbose = $true
+                    }
+
+                    $currentValues = @{
+                        IsSingleInstance = 'Yes'
+                        NameServers = @()
+                    }
+                }
+
+                It 'Should not throw' {
+                    $script:compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -TurnOffTypeChecking `
+                            -ReverseCheck `
+                            -Verbose:$verbose
+                }
+
+                It 'Should not be Null or Empty' {
+                    $script:compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
+                }
+
+                It 'Should have one value' {
+                    $script:compareTargetResourceStateResult | Should -HaveCount 1
+                }
+
+                It 'Should be False in InDesiredState' {
+                    $script:compareTargetResourceStateResult.InDesiredState | Should -BeFalse
+                }
+            }
+
+            Context 'When one property is an empty collection of CimInstance in CurrentValues and -ReverseCheck, -TurnOffTypeChecking are used' {
+                BeforeAll {
+                    $desiredValues = @{
+                        NameServers = $nameServers
+                        IsSingleInstance = 'Yes'
+                        Verbose = $true
+                    }
+
+                    $currentValues = @{
+                        IsSingleInstance = 'Yes'
+                        NameServers = [Microsoft.Management.Infrastructure.CimInstance[]]@()
+                    }
+                }
+
+                It 'Should not throw' {
+                    $script:compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -TurnOffTypeChecking `
+                            -ReverseCheck `
+                            -Verbose:$verbose
+                }
+
+                It 'Should not be Null or Empty' {
+                    $script:compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
+                }
+
+                It 'Should have one value' {
+                    $script:compareTargetResourceStateResult | Should -HaveCount 1
+                }
+
+                It 'Should be False in InDesiredState' {
+                    $script:compareTargetResourceStateResult.InDesiredState | Should -BeFalse
+                }
+            }
+
+            Context 'When one property is an empty array in DesiredValues and -TurnOffTypeChecking is used' {
+                BeforeAll {
+                    $desiredValues = @{
+                        NameServers = @()
+                        IsSingleInstance = 'Yes'
+                        Verbose = $true
+                    }
+
+                    $currentValues = @{
+                        IsSingleInstance = 'Yes'
+                        NameServers = $nameServers
+                    }
+                }
+
+                It 'Should not throw' {
+                    $script:compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -TurnOffTypeChecking `
+                            -Verbose:$verbose
+                }
+
+                It 'Should not be Null or Empty' {
+                    $script:compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
+                }
+
+                It 'Should have one value' {
+                    $script:compareTargetResourceStateResult | Should -HaveCount 1
+                }
+
+                It 'Should be False in InDesiredState' {
+                    $script:compareTargetResourceStateResult.InDesiredState | Should -BeFalse
+                }
+            }
+
+            Context 'When one property is an empty collection of CimInstance in DesiredValues and -TurnOffTypeChecking is used' {
+                BeforeAll {
+                    $desiredValues = @{
+                        NameServers = [Microsoft.Management.Infrastructure.CimInstance[]] @()
+                        IsSingleInstance = 'Yes'
+                        Verbose = $true
+                    }
+
+                    $currentValues = @{
+                        IsSingleInstance = 'Yes'
+                        NameServers = $nameServers
+                    }
+                }
+
+                It 'Should not throw' {
+                    $script:compareTargetResourceStateResult = Compare-DscParameterState -CurrentValues $currentValues `
+                            -DesiredValues $desiredValues `
+                            -TurnOffTypeChecking `
+                            -Verbose:$verbose
+                }
+
+                It 'Should not be Null or Empty' {
+                    $script:compareTargetResourceStateResult | Should -Not -BeNullOrEmpty
+                }
+
+                It 'Should have one value' {
+                    $script:compareTargetResourceStateResult | Should -HaveCount 1
+                }
+
+                It 'Should be False in InDesiredState' {
+                    $script:compareTargetResourceStateResult.InDesiredState | Should -BeFalse
+                }
             }
         }
     }

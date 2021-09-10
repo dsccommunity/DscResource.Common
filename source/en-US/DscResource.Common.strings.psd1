@@ -35,4 +35,5 @@ ConvertFrom-StringData @'
     PropertyInDesiredState = The parameter '{0}' is in desired state. (DRC0039)
     PropertyNotInDesiredState = The parameter '{0}' is not in desired state. (DRC0040)
     PropertyNotInDesiredStateMessage = Property '{0}' is not in desired state. (DRC0041)
+    NoMatchKeyMessage = NOTMATCH: Value (type '{0}') for property '{1}' does not match. Current state has the key(s) '{2}' and desired state has not. (DRC0042)
 '@
