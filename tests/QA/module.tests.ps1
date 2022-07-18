@@ -32,6 +32,35 @@ BeforeAll {
     ).Directory.FullName
 }
 
+    Describe 'Changelog Management' -Tag 'Changelog' {
+        It 'Changelog has been updated' -skip:(
+            !([bool](Get-Command git -EA SilentlyContinue) -and
+              [bool](&(Get-Process -id $PID).Path -NoProfile -Command 'git rev-parse --is-inside-work-tree 2>$null'))
+        ) {
+            # Get the list of changed files compared with branch main
+            $HeadCommit = &git rev-parse HEAD
+            $defaultBranchCommit = &git rev-parse origin/main
+            $filesChanged = &git @('diff', "$defaultBranchCommit...$HeadCommit", '--name-only')
+            $filesStagedAndUnstaged = &git @('diff', "HEAD", '--name-only')
+
+            $filesChanged += $filesStagedAndUnstaged
+
+            # Only check if there are any changed files.
+            if ($filesChanged)
+            {
+                $filesChanged | Should -Contain 'CHANGELOG.md' -Because 'the CHANGELOG.md must be updated with at least one entry in the Unreleased section for each PR'
+            }
+        }
+
+        It 'Changelog format compliant with keepachangelog format' -skip:(![bool](Get-Command git -EA SilentlyContinue)) {
+            { Get-ChangelogData (Join-Path $ProjectPath 'CHANGELOG.md') -ErrorAction Stop } | Should -Not -Throw
+        }
+
+        It 'Changelog should have an Unreleased header' -Skip:$skipTest {
+            (Get-ChangelogData -Path (Join-Path -Path $ProjectPath -ChildPath 'CHANGELOG.md') -ErrorAction 'Stop').Unreleased.RawData | Should -Not -BeNullOrEmpty
+        }
+    }
+
 Describe 'General module control' -Tags 'FunctionalQuality' {
     It 'Should import without errors' {
         { Import-Module -Name $script:moduleName -Force -ErrorAction Stop } | Should -Not -Throw
@@ -80,11 +109,11 @@ Describe 'Quality for module' -Tags 'TestQuality' {
         }
     }
 
-    It 'Should have a unit test for <Name>' -TestCases $testCases {
+    It 'Should have a unit test for <Name>' -ForEach $testCases {
         Get-ChildItem -Path 'tests\' -Recurse -Include "$Name.Tests.ps1" | Should -Not -BeNullOrEmpty
     }
 
-    It 'Should pass Script Analyzer for <Name>' -TestCases $testCases -Skip:(-not $scriptAnalyzerRules) {
+    It 'Should pass Script Analyzer for <Name>' -ForEach $testCases -Skip:(-not $scriptAnalyzerRules) {
         $functionFile = Get-ChildItem -Path $sourcePath -Recurse -Include "$Name.ps1"
 
         $pssaResult = (Invoke-ScriptAnalyzer -Path $functionFile.FullName)
@@ -95,7 +124,7 @@ Describe 'Quality for module' -Tags 'TestQuality' {
 }
 
 Describe 'Help for module' -Tags 'helpQuality' {
-    It 'Should have .SYNOPSIS for <Name>' -TestCases $testCases {
+    It 'Should have .SYNOPSIS for <Name>' -ForEach $testCases {
         $functionFile = Get-ChildItem -Path $sourcePath -Recurse -Include "$Name.ps1"
 
         $scriptFileRawContent = Get-Content -Raw -Path $functionFile.FullName
@@ -114,7 +143,7 @@ Describe 'Help for module' -Tags 'helpQuality' {
         $functionHelp.Synopsis | Should -Not -BeNullOrEmpty
     }
 
-    It 'Should have a .DESCRIPTION with length greater than 40 characters for <Name>' -TestCases $testCases {
+    It 'Should have a .DESCRIPTION with length greater than 40 characters for <Name>' -ForEach $testCases {
         $functionFile = Get-ChildItem -Path $sourcePath -Recurse -Include "$Name.ps1"
 
         $scriptFileRawContent = Get-Content -Raw -Path $functionFile.FullName
@@ -133,7 +162,7 @@ Describe 'Help for module' -Tags 'helpQuality' {
         $functionHelp.Description.Length | Should -BeGreaterThan 40
     }
 
-    It 'Should have at least one (1) example for <Name>' -TestCases $testCases {
+    It 'Should have at least one (1) example for <Name>' -ForEach $testCases {
         $functionFile = Get-ChildItem -Path $sourcePath -Recurse -Include "$Name.ps1"
 
         $scriptFileRawContent = Get-Content -Raw -Path $functionFile.FullName
@@ -155,7 +184,7 @@ Describe 'Help for module' -Tags 'helpQuality' {
 
     }
 
-    It 'Should have described all parameters for <Name>' -TestCases $testCases {
+    It 'Should have described all parameters for <Name>' -ForEach $testCases {
         $functionFile = Get-ChildItem -Path $sourcePath -Recurse -Include "$Name.ps1"
 
         $scriptFileRawContent = Get-Content -Raw -Path $functionFile.FullName

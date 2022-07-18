@@ -10,7 +10,7 @@ Encoding: UTF8
 VersionedOutputDirectory: true
 
 ####################################################
-#             Pipeline Configuration               #
+#       Sampler Pipeline Configuration             #
 ####################################################
 BuildWorkflow:
   '.':
@@ -35,10 +35,13 @@ BuildWorkflow:
     - Convert_Pester_Coverage
     - Pester_if_Code_Coverage_Under_Threshold
 
+  merge:
+    - Merge_CodeCoverage_Files
+
   publish:
     - Publish_release_to_GitHub
     - publish_module_to_gallery
-
+    - Publish_GitHub_Wiki_Content
 
 ####################################################
 #       PESTER  Configuration                      #
@@ -51,11 +54,30 @@ Pester:
         - tests/QA
         - tests/Unit
         - tests/Integration
+    Output:
+      Verbosity: Detailed
+      StackTraceVerbosity: Full
+      CIFormat: Auto
     CodeCoverage:
       CoveragePercentTarget: 78
-      OutputPath: JaCoCo_coverage.xml
       OutputEncoding: ascii
+      UseBreakpoints: false
   ExcludeFromCodeCoverage:
+
+####################################################
+#           Code Coverage Configuration            #
+####################################################
+
+CodeCoverage:
+  # Filename of the file that will be outputted by the task Merge_CodeCoverage_Files.
+  CodeCoverageMergedOutputFile: JaCoCo_coverage.xml
+  # File pattern used to search for files under the ./output/testResults folder
+  # by task Merge_CodeCoverage_Files.
+  CodeCoverageFilePattern: Codecov*.xml
+
+####################################################
+#             HQRM Test Configuration              #
+####################################################
 
 DscTest:
   Pester:
@@ -66,6 +88,7 @@ DscTest:
           - Common Tests - New Error-Level Script Analyzer Rules
       Output:
         Verbosity: Detailed
+        CIFormat: Auto
       TestResult:
         Enabled: true
         OutputFormat: NUnitXML
@@ -78,11 +101,6 @@ DscTest:
       - DscResource.Common
     ExcludeModuleFile:
     MainGitBranch: main
-
-Resolve-Dependency:
-  Gallery: 'PSGallery'
-  AllowPrerelease: false
-  Verbose: false
 
 ModuleBuildTasks:
   Sampler:
