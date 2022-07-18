@@ -53,11 +53,30 @@ Pester:
         - tests/QA
         - tests/Unit
         - tests/Integration
+    Output:
+      Verbosity: Detailed
+      StackTraceVerbosity: Full
+      CIFormat: Auto
     CodeCoverage:
       CoveragePercentTarget: 78
-      OutputPath: JaCoCo_coverage.xml
       OutputEncoding: ascii
+      UseBreakpoints: false
   ExcludeFromCodeCoverage:
+
+####################################################
+#           Code Coverage Configuration            #
+####################################################
+
+CodeCoverage:
+  # Filename of the file that will be outputted by the task Merge_CodeCoverage_Files.
+  CodeCoverageMergedOutputFile: JaCoCo_coverage.xml
+  # File pattern used to search for files under the ./output/testResults folder
+  # by task Merge_CodeCoverage_Files.
+  CodeCoverageFilePattern: Codecov*.xml
+
+####################################################
+#             HQRM Test Configuration              #
+####################################################
 
 DscTest:
   Pester:
@@ -68,6 +87,7 @@ DscTest:
           - Common Tests - New Error-Level Script Analyzer Rules
       Output:
         Verbosity: Detailed
+        CIFormat: Auto
       TestResult:
         Enabled: true
         OutputFormat: NUnitXML
