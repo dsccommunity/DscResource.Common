@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - DscResource.Common
   - Update pipeline files to the latest in Sampler.
+    - Fix missing tasks module.
+  - Update unit tests to import and remove the module being tested.
 
 ### Fixed
 

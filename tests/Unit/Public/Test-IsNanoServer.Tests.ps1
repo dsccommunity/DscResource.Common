@@ -1,17 +1,25 @@
 BeforeAll {
-    $moduleName = 'DscResource.Common'
-    $stubModuleName = 'DscResource.Common.Stubs'
+    $script:moduleName = 'DscResource.Common'
 
-    Remove-Module -Name $moduleName -Force -ErrorAction 'SilentlyContinue'
+    # If the module is not found, run the build task 'noop'.
+    if (-not (Get-Module -Name $script:moduleName -ListAvailable))
+    {
+        # Redirect all streams to $null, except the error stream (stream 2)
+        & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 2>&1 4>&1 5>&1 6>&1 > $null
+    }
 
-    Get-Module -Name $moduleName -ListAvailable |
-        Select-Object -First 1 |
-            Import-Module -Force -ErrorAction 'Stop'
+    # Re-import the module using force to get any code changes between runs.
+    Import-Module -Name $script:moduleName -Force -ErrorAction 'Stop'
+
+    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
+    $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
+    $PSDefaultParameterValues['Should:ModuleName'] = $script:moduleName
 
     <#
         This mocks the Get-CimInstance on platforms where the cmdlet does not
         exist, like Linux anc macOS.
     #>
+    $stubModuleName = 'DscResource.Common.Stubs'
     Remove-Module -Name $stubModuleName -Force -ErrorAction 'SilentlyContinue'
     New-Module -Name $stubModuleName -ScriptBlock {
         function Get-CimInstance
@@ -27,6 +35,12 @@ BeforeAll {
 }
 
 AfterAll {
+    $PSDefaultParameterValues.Remove('Mock:ModuleName')
+    $PSDefaultParameterValues.Remove('InModuleScope:ModuleName')
+    $PSDefaultParameterValues.Remove('Should:ModuleName')
+
+    Remove-Module -Name $script:moduleName
+
     <#
         This removes the stub module that was imported in the
         BeforeAll-block.

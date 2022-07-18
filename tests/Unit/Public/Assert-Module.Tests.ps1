@@ -1,11 +1,15 @@
 BeforeAll {
     $script:moduleName = 'DscResource.Common'
 
-    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
+    # If the module is not found, run the build task 'noop'.
+    if (-not (Get-Module -Name $script:moduleName -ListAvailable))
+    {
+        # Redirect all streams to $null, except the error stream (stream 2)
+        & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 2>&1 4>&1 5>&1 6>&1 > $null
+    }
 
-    Get-Module -Name $script:moduleName -ListAvailable |
-        Select-Object -First 1 |
-        Import-Module -Force -ErrorAction 'Stop'
+    # Re-import the module using force to get any code changes between runs.
+    Import-Module -Name $script:moduleName -Force -ErrorAction 'Stop'
 
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
@@ -13,9 +17,11 @@ BeforeAll {
 }
 
 AfterAll {
-    $PSDefaultParameterValues.Remove('InModuleScope:ModuleName')
     $PSDefaultParameterValues.Remove('Mock:ModuleName')
+    $PSDefaultParameterValues.Remove('InModuleScope:ModuleName')
     $PSDefaultParameterValues.Remove('Should:ModuleName')
+
+    Remove-Module -Name $script:moduleName
 }
 
 Describe 'Assert-Module' {
