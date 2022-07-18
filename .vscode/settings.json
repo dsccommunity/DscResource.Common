@@ -35,6 +35,7 @@
         "steppable"
     ],
     "[markdown]": {
+        "files.trimTrailingWhitespace": true,
         "files.encoding": "utf8"
     }
 }

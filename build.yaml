@@ -10,7 +10,7 @@ Encoding: UTF8
 VersionedOutputDirectory: true
 
 ####################################################
-#             Pipeline Configuration               #
+#       Sampler Pipeline Configuration             #
 ####################################################
 BuildWorkflow:
   '.':
@@ -35,10 +35,12 @@ BuildWorkflow:
     - Convert_Pester_Coverage
     - Pester_if_Code_Coverage_Under_Threshold
 
+  merge:
+    - Merge_CodeCoverage_Files
+
   publish:
     - Publish_release_to_GitHub
     - publish_module_to_gallery
-
 
 ####################################################
 #       PESTER  Configuration                      #
@@ -78,11 +80,6 @@ DscTest:
       - DscResource.Common
     ExcludeModuleFile:
     MainGitBranch: main
-
-Resolve-Dependency:
-  Gallery: 'PSGallery'
-  AllowPrerelease: false
-  Verbose: false
 
 ModuleBuildTasks:
   Sampler:
