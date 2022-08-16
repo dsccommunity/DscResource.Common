@@ -1,3 +1,4 @@
+
 <#
     .SYNOPSIS
         Gets language-specific data into scripts and functions based on the UI culture
@@ -312,8 +313,19 @@ function Get-LocalizedData
                 $PSBoundParameters['OutBuffer'] = 1
             }
 
-            $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand('Microsoft.PowerShell.Utility\Import-LocalizedData', [System.Management.Automation.CommandTypes]::Cmdlet)
-            $scriptCmd = { & $wrappedCmd @PSBoundParameters }
+            if ($currentCulture.LCID -eq 127)
+            {
+                # Culture is invariant, working around issue with Import-LocalizedData when pwsh configured as invariant
+                $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand('Get-LocalizedDataForInvariantCulture', [System.Management.Automation.CommandTypes]::Function)
+                $scriptCmd = { & $wrappedCmd -DefaultUICulture $DefaultUICulture - }
+            }
+            else
+            {
+                <# Action when all if and elseif conditions are false #>
+                $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand('Microsoft.PowerShell.Utility\Import-LocalizedData', [System.Management.Automation.CommandTypes]::Cmdlet)
+                $scriptCmd = { & $wrappedCmd @PSBoundParameters }
+            }
+
 
             $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
             $steppablePipeline.Begin($PSCmdlet)
