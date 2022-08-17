@@ -98,21 +98,56 @@ function Get-LocalizedDataForInvariantCulture
         [System.String]
         $BaseDirectory,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
         [System.String]
         $FileName,
 
         [Parameter()]
-        [System.String[]]
-        $SupportedCommand,
-
-        [Parameter(Mandatory = $true)]
         [System.String]
+        [ValidateNotNull()]
         $DefaultUICulture = 'en-US'
     )
 
     begin
     {
+        if ($FileName -match '\.psm1$|\.ps1$')
+        {
+            Write-Debug -Message 'Found an extension to the file name to search. Stripping...'
+            $FileName = $FileName -replace '\.psm1$|\.ps1$'
+        }
+
+        [string] $languageFile = ''
+        $localizedFolder = Join-Path -Path $BaseDirectory -ChildPath $DefaultUICulture
+        [string[]] $localizedFileNamesToTry = @(
+            ('{0}.psd1' -f $FileName)
+            ('{0}.strings.psd1' -f $FileName)
+        )
+
+        foreach ($localizedFileName in $localizedFileNamesToTry)
+        {
+            $filePath = [System.IO.Path]::Combine($localizedFolder, $localizedFileName)
+            if (Test-Path -Path $filePath)
+            {
+                Write-Debug -Message "Found '$filePath'."
+                $languageFile = $filePath
+                # Exit loop as we found the first filename.
+                break
+            }
+            else
+            {
+                Write-Debug -Message "File '$filePath' not found."
+            }
+        }
+
+        if ([string]::IsNullOrEmpty($languageFile))
+        {
+            throw ('File ''{0}'' not found in ''{1}''.' -f ($localizedFileNamesToTry -join ','),$localizedFolder)
+        }
+        else
+        {
+            Write-Verbose -Message ('Getting file {0}' -f $languageFile)
+        }
+
         $constrainedState = [System.Management.Automation.Runspaces.InitialSessionState]::Create()
 
         if (!$IsCoreCLR)
@@ -167,8 +202,7 @@ function Get-LocalizedDataForInvariantCulture
         {
             $powershell = [PowerShell]::Create()
             $powershell.Runspace = $constrainedRunspace
-            $localizedFolder = Join-Path -Path $BaseDirectory -ChildPath $DefaultUICulture.ToString()
-            $expression = Get-Content -Raw -Path (Join-Path -Path $localizedFolder -ChildPath $FileName)
+            $expression = Get-Content -Raw -Path $languageFile
             try
             {
                 $null = $powershell.AddScript($expression)
