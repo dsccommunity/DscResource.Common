@@ -110,10 +110,10 @@ function Get-LocalizedDataForInvariantCulture
 
     begin
     {
-        if ($FileName -match '\.psm1$|\.ps1$')
+        if ($FileName -match '\.psm1$|\.ps1$|\.psd1$')
         {
             Write-Debug -Message 'Found an extension to the file name to search. Stripping...'
-            $FileName = $FileName -replace '\.psm1$|\.ps1$'
+            $FileName = $FileName -replace '\.psm1$|\.ps1$|\.psd1$'
         }
 
         [string] $languageFile = ''
