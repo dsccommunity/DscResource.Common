@@ -29,7 +29,58 @@ Describe 'DscResource.Common\Get-LocalizedDataForInvariantCulture' {
         $verbose = $false
     }
 
-    Context 'Testing the thingy' {
-        # $data = Get-LocalizedDataForInvariantCulture -BaseDirectory
+    Context 'Finding data for DefaultUICulture' {
+        BeforeAll {
+            New-Item -Force -Path 'TestDrive:\ar-SA' -ItemType Directory
+
+            $null = "
+                ConvertFrom-StringData @`'
+                # English strings
+                ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be the first attribute of each parameter and be on its own line. See https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md#correct-format-for-parameter-block
+'@
+            " | Out-File -Force -FilePath 'TestDrive:\ar-SA\Strings.psd1'
+        }
+
+        It 'Should fail finding a Strings file in locale different from default' {
+            "Get-LocalizedDataForInvariantCulture -FileName 'Strings' -BaseDirectory 'TestDrive:\' -EA Stop" |
+            Out-File -Force -FilePath 'TestDrive:\execute.ps1' # will default to en-US
+
+            { $null = &'TestDrive:\execute.ps1' } | Should -Throw
+        }
+
+        It 'Should fail finding a Strings file in different locale' {
+            "Get-LocalizedDataForInvariantCulture -FileName 'Strings' -BaseDirectory 'TestDrive:\' -EA Stop -DefaultUICulture 'en-GB'" |
+                Out-File -Force -FilePath 'TestDrive:\execute.ps1'
+
+            { $null = &'TestDrive:\execute.ps1' } | Should -Throw
+        }
+
+        It 'Should succeed finding a Strings file in correct locale' {
+            "Get-LocalizedDataForInvariantCulture -FileName 'Strings' -BaseDirectory 'TestDrive:\' -EA Stop -DefaultUICulture 'ar-SA'" |
+                Out-File -Force -FilePath 'TestDrive:\execute.ps1'
+
+            { $null = &'TestDrive:\execute.ps1' } | Should -Not -Throw
+        }
+
+        It 'Should fail finding a Strings file if fileName doesn''t exist' {
+            "Get-LocalizedDataForInvariantCulture -FileName 'execute' -BaseDirectory 'TestDrive:\' -EA Stop -DefaultUICulture 'ar-SA'" |
+                Out-File -Force -FilePath 'TestDrive:\execute.ps1'
+
+            { $null = &'TestDrive:\execute.ps1' } | Should -Throw
+        }
+
+        It 'Should succeed finding the strings.psd1 file of caller''s basename' {
+
+            $null = "
+                        ConvertFrom-StringData @`'
+                        # English strings
+                        ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be the first attribute of each parameter and be on its own line. See https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md#correct-format-for-parameter-block
+'@
+                    " | Out-File -Force -FilePath 'TestDrive:\ar-SA\execute.strings.psd1'
+
+            "Get-LocalizedDataForInvariantCulture -FileName 'execute' -BaseDirectory 'TestDrive:\' -EA Stop -DefaultUICulture 'ar-SA'" |
+              Out-File -Force -FilePath 'TestDrive:\execute.ps1'
+            { $null = &'TestDrive:\execute.ps1' } | Should -Not -Throw
+        }
     }
 }
