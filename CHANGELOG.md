@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- DscResource.Common
+  - updating the Get-LocalizedData to bypass Import-LocalizedData when in Globalization-Invariant mode.
+    The command throws when running on an Invariant culture on Linux in the latest PS versions.
+
 ## [0.11.0] - 2022-08-01
 
 ### Changed
