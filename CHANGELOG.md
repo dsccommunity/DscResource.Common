@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added public function `Assert-ElevatedUser` that asserts the user has elevated
+  the PowerShell session. [issue #82](https://github.com/dsccommunity/DscResource.Common/issues/71)
+  - Related to SqlServerDsc [issue #1797](https://github.com/dsccommunity/SqlServerDsc/issues/1797).
+
 ## [0.11.1] - 2022-08-18
 
 ### Changed
