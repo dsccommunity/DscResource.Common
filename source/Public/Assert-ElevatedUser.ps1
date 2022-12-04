@@ -36,7 +36,6 @@ function Assert-ElevatedUser
         $PSCmdlet.ThrowTerminatingError(
             [System.Management.Automation.ErrorRecord]::new(
                 $script:localizedData.IsElevated_UserNotElevated,
-                'AEU0001',
                 [System.Management.Automation.ErrorCategory]::InvalidOperation,
                 'Command parameters'
             )
