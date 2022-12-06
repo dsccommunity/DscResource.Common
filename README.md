@@ -108,7 +108,7 @@ elevated PowerShell session.
 Asserts if the IP Address is valid and optionally validates
 the IP Address against an Address Family
 
-### Syntax
+#### Syntax
 
 ```plaintext
 Assert-IPAddress [-Address] <string> [[-AddressFamily] <string>] [<CommonParameters>]
