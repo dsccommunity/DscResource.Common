@@ -75,12 +75,40 @@ Assert-BoundParameter @assertBoundParameterParameters
 This example throws an exception if `$PSBoundParameters` contains both
 the parameters `Parameter1` and `Parameter2`.
 
+### `Assert-ElevatedUser`
+
+Assert that the user has elevated the PowerShell session.
+
+`Assert-ElevatedUser` will throw a statement-terminating error if the 
+script is not run from an elevated session.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Assert-ElevatedUser [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+None.
+
+#### Example
+
+```powershell
+`Assert-ElevatedUser -ErrorAction 'Stop'`
+```
+
+This example stops the entire script if it is not run from an 
+elevated PowerShell session.
+
 ### `Assert-IPAddress`
 
 Asserts if the IP Address is valid and optionally validates
 the IP Address against an Address Family
 
-### Syntax
+#### Syntax
 
 ```plaintext
 Assert-IPAddress [-Address] <string> [[-AddressFamily] <string>] [<CommonParameters>]
