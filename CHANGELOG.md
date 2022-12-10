@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2022-12-10
+
 ### Added
 
 - Added public function `Assert-ElevatedUser` that asserts the user has elevated
