@@ -62,7 +62,7 @@ Describe 'Assert-ElevatedUser' -Tag 'Private' {
 
     It 'Should throw the correct error' -Skip:$mockIsElevated {
         InModuleScope -ScriptBlock {
-            $mockErrorMessage = $script:localizedData.IsElevated_UserNotElevated
+            $mockErrorMessage = $script:localizedData.ElevatedUser_UserNotElevated
 
             { Assert-ElevatedUser } | Should -Throw -ExpectedMessage $mockErrorMessage
         }

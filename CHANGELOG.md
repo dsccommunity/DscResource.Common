@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Assert-ElevatedUser`
+  - Renamed the localized string key name and prepared the localized string
+    file to be able to distinguish which key belong to which command.
+
 ## [0.12.0] - 2022-12-10
 
 ### Added
