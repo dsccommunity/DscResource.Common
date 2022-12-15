@@ -943,4 +943,40 @@ if ((Test-IsNanoServer)) {
     'Nano server'
 }
 ```
+
+### `Test-IsNumericType`
+
+Returns whether the specified object is of a numeric type:
+- [System.Byte]
+- [System.Int16]
+- [System.Int32]
+- [System.Int64]
+- [System.SByte]
+- [System.UInt16]
+- [System.UInt32]
+- [System.UInt64]
+- [System.Decimal]
+- [System.Double]
+- [System.Single]
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Test-IsNumericType [[-Object] <Object>] [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+**System.Boolean**
+
+#### Example
+
+```PowerShell
+Test-IsNumericType -Object ([System.UInt32] 3)
+```
+```PowerShell
+([System.String] 'a') | Test-IsNumericType
+```
 <!-- markdownlint-enable MD036 - Emphasis used instead of a heading -->
