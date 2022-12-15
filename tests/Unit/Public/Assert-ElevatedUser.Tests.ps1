@@ -42,7 +42,7 @@ AfterAll {
     Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
 }
 
-Describe 'Assert-ElevatedUser' -Tag 'Private' {
+Describe 'Assert-ElevatedUser' -Tag 'Public' {
     BeforeDiscovery {
         <#
             Since it is not possible to elevated (or un-elevate) a user during testing
