@@ -27,7 +27,7 @@ function Test-IsNumericType
         $Object
     )
 
-    Process
+    process
     {
         $isNumeric = $false
 
