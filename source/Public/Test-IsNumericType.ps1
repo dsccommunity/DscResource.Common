@@ -27,24 +27,27 @@ function Test-IsNumericType
         $Object
     )
 
-    $isNumeric = $false
-
-    if (
-        $Object -is [System.Byte] -or
-        $Object -is [System.Int16] -or
-        $Object -is [System.Int32] -or
-        $Object -is [System.Int64] -or
-        $Object -is [System.SByte] -or
-        $Object -is [System.UInt16] -or
-        $Object -is [System.UInt32] -or
-        $Object -is [System.UInt64] -or
-        $Object -is [System.Decimal] -or
-        $Object -is [System.Double] -or
-        $Object -is [System.Single]
-    )
+    Process
     {
-        $isNumeric = $true
-    }
+        $isNumeric = $false
 
-    return $isNumeric
+        if (
+            $Object -is [System.Byte] -or
+            $Object -is [System.Int16] -or
+            $Object -is [System.Int32] -or
+            $Object -is [System.Int64] -or
+            $Object -is [System.SByte] -or
+            $Object -is [System.UInt16] -or
+            $Object -is [System.UInt32] -or
+            $Object -is [System.UInt64] -or
+            $Object -is [System.Decimal] -or
+            $Object -is [System.Double] -or
+            $Object -is [System.Single]
+        )
+        {
+            $isNumeric = $true
+        }
+
+        return $isNumeric
+    }
 }
