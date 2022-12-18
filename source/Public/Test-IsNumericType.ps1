@@ -13,8 +13,17 @@
 
         Returns $true since the object passed is of a numeric type.
 
+    .EXAMPLE
+        ('a', 2, 'b') | Test-IsNumericType
+
+        Returns $true since one of the values in the array is of a numeric type.
+
     .OUTPUTS
         [System.Boolean]
+
+    .NOTES
+        When passing in an array of values from the pipeline, the command will return
+        $true if any of the values in the array is numeric.
 #>
 function Test-IsNumericType
 {
@@ -27,10 +36,13 @@ function Test-IsNumericType
         $Object
     )
 
-    process
+    begin
     {
         $isNumeric = $false
+    }
 
+    process
+    {
         if (
             $Object -is [System.Byte] -or
             $Object -is [System.Int16] -or
@@ -47,7 +59,10 @@ function Test-IsNumericType
         {
             $isNumeric = $true
         }
+    }
 
+    end
+    {
         return $isNumeric
     }
 }

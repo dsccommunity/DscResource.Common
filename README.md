@@ -79,7 +79,7 @@ the parameters `Parameter1` and `Parameter2`.
 
 Assert that the user has elevated the PowerShell session.
 
-`Assert-ElevatedUser` will throw a statement-terminating error if the 
+`Assert-ElevatedUser` will throw a statement-terminating error if the
 script is not run from an elevated session.
 
 #### Syntax
@@ -100,7 +100,7 @@ None.
 `Assert-ElevatedUser -ErrorAction 'Stop'`
 ```
 
-This example stops the entire script if it is not run from an 
+This example stops the entire script if it is not run from an
 elevated PowerShell session.
 
 ### `Assert-IPAddress`
@@ -201,7 +201,7 @@ Compare-DscParameterState [-CurrentValues] <Object> [-DesiredValues] <Object>
 
 #### Outputs
 
-Returns an array containing a psobject with metadata for each property
+Returns an array containing a PSObject with metadata for each property
 that was evaluated.
 
 Metadata Name | Type | Description
@@ -216,6 +216,7 @@ ActualValue | `[System.PsObject]` | Return the value of current object.
 #### Example
 
 ##### Example 1
+
 ```powershell
 $currentValues = @{
     String = 'This is a string'
@@ -947,6 +948,7 @@ if ((Test-IsNanoServer)) {
 ### `Test-IsNumericType`
 
 Returns whether the specified object is of a numeric type:
+
 - [System.Byte]
 - [System.Int16]
 - [System.Int32]
@@ -973,10 +975,22 @@ Test-IsNumericType [[-Object] <Object>] [<CommonParameters>]
 
 #### Example
 
-```PowerShell
+```powershell
 Test-IsNumericType -Object ([System.UInt32] 3)
 ```
-```PowerShell
+
+Returns `$true` since the value is a numeric type.
+
+```powershell
 ([System.String] 'a') | Test-IsNumericType
 ```
+
+Returns `$false` since the value is not a numeric type.
+
+```powershell
+('a', 2, 'b') | Test-IsNumericType
+```
+
+Returns `$true` since one of the values passed in the pipeline is of a
+numeric type.
 <!-- markdownlint-enable MD036 - Emphasis used instead of a heading -->

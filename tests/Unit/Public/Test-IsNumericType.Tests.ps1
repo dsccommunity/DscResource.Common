@@ -85,5 +85,25 @@ Describe 'Test-IsNumericType' -Tag 'Public' {
                 }
             }
         }
+
+        Context 'When type is an array with no numeric values' {
+            It 'Should return the correct value' {
+                InModuleScope -ScriptBlock {
+                    $result = ('a', 'b') | Test-IsNumericType
+
+                    $result | Should -BeFalse
+                }
+            }
+        }
+
+        Context 'When type is an array with a numeric value' {
+            It 'Should return the correct value' {
+                InModuleScope -ScriptBlock {
+                    $result = ('a', 1, 'b') | Test-IsNumericType
+
+                    $result | Should -BeTrue
+                }
+            }
+        }
     }
 }
