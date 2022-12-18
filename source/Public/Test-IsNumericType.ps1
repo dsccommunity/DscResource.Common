@@ -13,12 +13,17 @@
 
         Returns $true since the object passed is of a numeric type.
 
+    .EXAMPLE
+        ('a', 2, 'b') | Test-IsNumericType
+
+        Returns $true since one of the values in the array is of a numeric type.
+
     .OUTPUTS
         [System.Boolean]
 
     .NOTES
-        When comparing an array of values, the command will return $true if
-        any of the values in the array is numeric.
+        When passing in an array of values from the pipeline, the command will return
+        $true if any of the values in the array is numeric.
 #>
 function Test-IsNumericType
 {
