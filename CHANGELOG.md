@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- DscResource.Common
+  - Now builds the module into a separate folder `output/builtModule`.
+
+### Fixed
+
+- `Test-IsNumericType`
+  - Now handles arrays correctly.
+
 ## [0.13.0] - 2022-12-17
 
 ### Added
 
-- Added public function `Test-IsNumericType` that returns whether the specified 
+- Added public function `Test-IsNumericType` that returns whether the specified
   object is of a numeric type - [Issue #87](https://github.com/dsccommunity/DscResource.Common/issues/87)
   - Related to SqlServerDsc [Issue #1795](https://github.com/dsccommunity/SqlServerDsc/issues/1795).
 

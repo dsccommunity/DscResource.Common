@@ -15,6 +15,10 @@
 
     .OUTPUTS
         [System.Boolean]
+
+    .NOTES
+        When comparing an array of values, the command will return $true if
+        any of the values in the array is numeric.
 #>
 function Test-IsNumericType
 {
@@ -27,10 +31,13 @@ function Test-IsNumericType
         $Object
     )
 
-    process
+    begin
     {
         $isNumeric = $false
+    }
 
+    process
+    {
         if (
             $Object -is [System.Byte] -or
             $Object -is [System.Int16] -or
@@ -47,7 +54,10 @@ function Test-IsNumericType
         {
             $isNumeric = $true
         }
+    }
 
+    end
+    {
         return $isNumeric
     }
 }
