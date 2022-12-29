@@ -42,56 +42,34 @@ AfterAll {
     Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
 }
 
-Describe 'Test-IsNumericType' -Tag 'Public' {
-    Context 'When passing value with named parameter' {
-        Context 'When type is numeric' {
-            It 'Should return the correct value' {
-                $result = Test-IsNumericType -Object ([System.UInt32] 3)
-
-                $result | Should -BeTrue
-            }
-        }
-
-        Context 'When type is not numeric' {
-            It 'Should return the correct value' {
-                $result = Test-IsNumericType -Object ([System.String] 'a')
-
-                $result | Should -BeFalse
-            }
+Describe 'Test-AccountRequirePassword' -Tag 'Public' {
+    Context 'When service account is a built-in account' {
+        It 'Should return $false' {
+            Test-AccountRequirePassword -Name 'NT Authority\NETWORK SERVICE' | Should -BeFalse
         }
     }
 
-    Context 'When passing value in pipeline' {
-        Context 'When type is numeric' {
-            It 'Should return the correct value' {
-                $result = ([System.UInt32] 3) | Test-IsNumericType
-
-                $result | Should -BeTrue
-            }
+    Context 'When service account is a virtual account' {
+        It 'Should return $false' {
+            Test-AccountRequirePassword -Name 'NT SERVICE\MSSQL$PAYROLL' | Should -BeFalse
         }
+    }
 
-        Context 'When type is not numeric' {
-            It 'Should return the correct value' {
-                $result = ([System.String] 'a') | Test-IsNumericType
-
-                $result | Should -BeFalse
-            }
+    Context 'When service account is a (global) managed service account' {
+        It 'Should return $false' {
+            Test-AccountRequirePassword -Name 'DOMAIN\MyMSA$' | Should -BeFalse
         }
+    }
 
-        Context 'When type is an array with no numeric values' {
-            It 'Should return the correct value' {
-                $result = ('a', 'b') | Test-IsNumericType
-
-                $result | Should -BeFalse
-            }
+    Context 'When service account is a local user account' {
+        It 'Should return $true' {
+            Test-AccountRequirePassword -Name 'MySqlUser' | Should -BeTrue
         }
+    }
 
-        Context 'When type is an array with a numeric value' {
-            It 'Should return the correct value' {
-                $result = ('a', 1, 'b') | Test-IsNumericType
-
-                $result | Should -BeTrue
-            }
+    Context 'When service account is a domain user account' {
+        It 'Should return $true' {
+            Test-AccountRequirePassword -Name 'DOMAIN\MySqlUser' | Should -BeTrue
         }
     }
 }
