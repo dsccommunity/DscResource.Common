@@ -182,6 +182,42 @@ This will assert that the module DhcpServer is available and it will be
 forcibly imported into the session (even if it was already in the session).
 If the module is not available an exception will be thrown.
 
+### `Assert-RequiredCommandParameter`
+
+Assert that required parameters has been specified, and throws an exception if not.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Assert-RequiredCommandParameter [-BoundParameter] <hashtable> [-RequiredParameter] <string[]> [[-IfParameterPresent]
+    <string[]>] [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+None.
+
+#### Example
+
+<!-- markdownlint-disable MD013 - Line length -->
+```powershell
+Assert-RequiredCommandParameter -BoundParameter $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange')
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+Throws an exception if either of the two parameters are not specified.
+
+<!-- markdownlint-disable MD013 - Line length -->
+```powershell
+Assert-RequiredCommandParameter -BoundParameter $PSBoundParameters -RequiredParameter @('Property2', 'Property3') -IfParameterPresent @('Property1')
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+Throws an exception if the parameter 'Property1' is specified and one of the
+required parameters are not.
+
 ### `Compare-DscParameterState`
 
 Compare current against desired property state for any DSC resource and return
@@ -842,6 +878,44 @@ Set-PSModulePath -Path '<Path 1>;<Path 2>' -Machine
 
 Sets the machine environment variable `PSModulePath` to the specified path
 or paths (separated with semi-colons).
+
+### `Test-AccountRequirePassword`
+
+Returns wether the specified service account require password to be provided.
+If the account is a (global) managed service account, virtual account, or a
+built-in account then there is no need to provide a password.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Test-AccountRequirePassword [-Name] <string> [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+None.
+
+#### Example
+
+```powershell
+Test-AccountRequirePassword -Name 'DOMAIN\MySqlUser'
+```
+
+Returns $true as a user account need a password.
+
+```powershell
+Test-AccountRequirePassword -Name 'DOMAIN\MyMSA$'
+```
+
+Returns $false as a manged service account does not need a password.
+
+```powershell
+Test-AccountRequirePassword -Name 'NT SERVICE\MSSQL$PAYROLL'
+```
+
+Returns $false as a virtual account does not need a password.
 
 ### `Test-DscParameterState`
 
