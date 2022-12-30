@@ -121,6 +121,21 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 } | Should -Not -Throw
             }
         }
+
+        Context 'When the required parameter is present' {
+            BeforeAll {
+                Mock -CommandName Assert-RequiredCommandParameter
+            }
+
+            It 'Should not throw an error' {
+                InModuleScope -ScriptBlock {
+                    { Assert-BoundParameter -BoundParameterList @{
+                        Parameter1 = 'Value1'
+                    } -RequiredParameter 'Parameter1' } |
+                        Should -Not -Throw
+                }
+            }
+        }
     }
 
     Context 'When the assert fails' {
@@ -169,6 +184,21 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
 
                     Assert-BoundParameter @assertBoundParameterParameters
                 } | Should -Throw -ExpectedMessage "$errorMessage*"
+            }
+        }
+
+        Context 'When the required parameter is not present' {
+            BeforeAll {
+                Mock -CommandName Assert-RequiredCommandParameter -MockWith {
+                    throw 'Mocked error'
+                }
+            }
+
+            It 'Should not throw an error' {
+                InModuleScope -ScriptBlock {
+                    { Assert-BoundParameter -BoundParameterList @{} -RequiredParameter 'Parameter1' } |
+                        Should -Throw -ExpectedMessage '*Mocked error*'
+                }
             }
         }
     }

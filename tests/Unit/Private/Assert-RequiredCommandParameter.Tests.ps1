@@ -57,7 +57,18 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
         }
     }
 
-    Context 'When the parameter in IfParameterPresent is not present' {
+    Context 'When the required parameter is present' {
+        It 'Should not throw an error' {
+            InModuleScope -ScriptBlock {
+                { Assert-RequiredCommandParameter -BoundParameterList @{
+                    Parameter1 = 'Value1'
+                } -RequiredParameter 'Parameter1' } |
+                    Should -Not -Throw
+            }
+        }
+    }
+
+    Context 'When both required parameter and parameter in IfParameterPresent is not present' {
         It 'Should not throw an error' {
             InModuleScope -ScriptBlock {
                 { Assert-RequiredCommandParameter -BoundParameterList @{} -RequiredParameter 'Parameter1' -IfParameterPresent 'Parameter2' } |
@@ -66,7 +77,7 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
         }
     }
 
-    Context 'When the parameter in IfParameterPresent is not present' {
+    Context 'When the required parameter is not present and parameter in IfParameterPresent is present' {
         It 'Should throw the correct error' {
             InModuleScope -ScriptBlock {
                 $mockErrorMessage = $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f 'Parameter1', 'Parameter2'
