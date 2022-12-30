@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added private function `Assert-RequiredCommandParameter` that throws an
-  exception if a specified parameter is not assigned a value and optionally
+  exception if a specified parameter is not assigned a value, and optionally
   throws only if a specific parameter is passed. - [Issue #92](https://github.com/dsccommunity/DscResource.Common/issues/92)
   - Related to SqlServerDsc [Issue #1796](https://github.com/dsccommunity/SqlServerDsc/issues/1796).
 - Added public function `Test-AccountRequirePassword` that returns true or
@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Assert-BoundParameter`
   - Now has a new parameter set that calls `Assert-RequiredCommandParameter`
     which will throw an exception if a specified parameter is not assigned
-    a value and optionally throws only if a specific parameter is passed.
+    a value, and optionally throws only if a specific parameter is passed.
 
 ### Fixed
 
