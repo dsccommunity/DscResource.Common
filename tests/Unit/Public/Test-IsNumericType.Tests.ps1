@@ -26,6 +26,9 @@ BeforeDiscovery {
 BeforeAll {
     $script:dscModuleName = 'DscResource.Common'
 
+    # Make sure there are not other modules imported that will conflict with mocks.
+    Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
+
     Import-Module -Name $script:dscModuleName
 
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:dscModuleName

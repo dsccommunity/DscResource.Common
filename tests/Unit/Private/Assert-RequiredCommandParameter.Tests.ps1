@@ -26,6 +26,9 @@ BeforeDiscovery {
 BeforeAll {
     $script:dscModuleName = 'DscResource.Common'
 
+    # Make sure there are not other modules imported that will conflict with mocks.
+    Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
+
     Import-Module -Name $script:dscModuleName
 
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:dscModuleName
@@ -42,62 +45,66 @@ AfterAll {
     Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
 }
 
-Describe 'Assert-RequiredCommandParameter' -Tag 'Public' {
+Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
     Context 'When required parameter is missing' {
         It 'Should throw the correct error' {
-            $mockErrorMessage = InModuleScope -ScriptBlock {
-                $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSet -f 'Parameter1'
-            }
+            InModuleScope -ScriptBlock {
+                $mockErrorMessage = $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSet -f 'Parameter1'
 
-            { Assert-RequiredCommandParameter -BoundParameter @{} -RequiredParameter 'Parameter1' } |
-                Should -Throw -ExpectedMessage $mockErrorMessage
+                { Assert-RequiredCommandParameter -BoundParameterList @{} -RequiredParameter 'Parameter1' } |
+                    Should -Throw -ExpectedMessage $mockErrorMessage
+            }
         }
     }
 
     Context 'When the parameter in IfParameterPresent is not present' {
         It 'Should not throw an error' {
-            { Assert-RequiredCommandParameter -BoundParameter @{} -RequiredParameter 'Parameter1' -IfParameterPresent 'Parameter2' } |
-                Should -Not -Throw
+            InModuleScope -ScriptBlock {
+                { Assert-RequiredCommandParameter -BoundParameterList @{} -RequiredParameter 'Parameter1' -IfParameterPresent 'Parameter2' } |
+                    Should -Not -Throw
+            }
         }
     }
 
     Context 'When the parameter in IfParameterPresent is not present' {
         It 'Should throw the correct error' {
-            $mockErrorMessage = InModuleScope -ScriptBlock {
-                 $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f 'Parameter1', 'Parameter2'
-            }
+            InModuleScope -ScriptBlock {
+                $mockErrorMessage = $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f 'Parameter1', 'Parameter2'
 
-            {
-                Assert-RequiredCommandParameter -BoundParameter @{
-                    Parameter2 = 'Value2'
-                } -RequiredParameter 'Parameter1' -IfParameterPresent 'Parameter2'
-            } | Should -Throw -ExpectedMessage $mockErrorMessage
+                {
+                    Assert-RequiredCommandParameter -BoundParameterList @{
+                        Parameter2 = 'Value2'
+                    } -RequiredParameter 'Parameter1' -IfParameterPresent 'Parameter2'
+                } | Should -Throw -ExpectedMessage $mockErrorMessage
+            }
         }
     }
 
     Context 'When the parameters in IfParameterPresent is present and the required parameters are not present' {
         It 'Should throw the correct error' {
-            $mockErrorMessage = InModuleScope -ScriptBlock {
-                $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f "Parameter3', 'Parameter4", "Parameter1', 'Parameter2"
-            }
+            InModuleScope -ScriptBlock {
+                $mockErrorMessage = $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f "Parameter3', 'Parameter4", "Parameter1', 'Parameter2"
 
-            {
-                Assert-RequiredCommandParameter -BoundParameter @{
-                    Parameter1 = 'Value1'
-                    Parameter2 = 'Value2'
-                } -RequiredParameter @('Parameter3', 'Parameter4') -IfParameterPresent @('Parameter1', 'Parameter2')
-            } | Should -Throw -ExpectedMessage $mockErrorMessage
+                {
+                    Assert-RequiredCommandParameter -BoundParameterList @{
+                        Parameter1 = 'Value1'
+                        Parameter2 = 'Value2'
+                    } -RequiredParameter @('Parameter3', 'Parameter4') -IfParameterPresent @('Parameter1', 'Parameter2')
+                } | Should -Throw -ExpectedMessage $mockErrorMessage
+            }
         }
     }
 
     Context 'When the parameters in IfParameterPresent is present and required parameters are present' {
         It 'Should throw the correct error' {
-            {
-                Assert-RequiredCommandParameter -BoundParameter @{
-                    Parameter1 = 'Value1'
-                    Parameter2 = 'Value2'
-                } -RequiredParameter @('Parameter1', 'Parameter2') -IfParameterPresent @('Parameter1', 'Parameter2')
-            } | Should -Not -Throw
+            InModuleScope -ScriptBlock {
+                {
+                    Assert-RequiredCommandParameter -BoundParameterList @{
+                        Parameter1 = 'Value1'
+                        Parameter2 = 'Value2'
+                    } -RequiredParameter @('Parameter1', 'Parameter2') -IfParameterPresent @('Parameter1', 'Parameter2')
+                } | Should -Not -Throw
+            }
         }
     }
 }

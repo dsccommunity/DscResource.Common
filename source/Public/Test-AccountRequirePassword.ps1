@@ -1,14 +1,14 @@
 <#
     .SYNOPSIS
-        Returns wether the specified service account require password to be provided.
+        Returns whether the specified account require a password to be provided.
 
     .DESCRIPTION
-        Returns wether the specified service account require password to be provided.
+        Returns whether the specified account require a password to be provided.
         If the account is a (global) managed service account, virtual account, or a
         built-in account then there is no need to provide a password.
 
     .PARAMETER Name
-        Credential name for the service account.
+        Credential name for the account.
 
     .EXAMPLE
         Test-AccountRequirePassword -Name 'DOMAIN\MyMSA$'

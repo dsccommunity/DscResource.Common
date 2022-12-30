@@ -5,7 +5,7 @@
     .DESCRIPTION
         Assert that required parameters has been specified, and throws an exception if not.
 
-    .PARAMETER BoundParameter
+    .PARAMETER BoundParameterList
        A hashtable containing the parameters to evaluate. Normally this is set to
        $PSBoundParameters.
 
@@ -25,7 +25,7 @@
     .EXAMPLE
         Assert-RequiredCommandParameter -BoundParameter $PSBoundParameters -RequiredParameter @('Property2', 'Property3') -IfParameterPresent @('Property1')
 
-        Throws an exception if the parameter 'Property1' is specified and one of the required parameters are not.
+        Throws an exception if the parameter 'Property1' is specified and either of the required parameters are not.
 
     .OUTPUTS
         None.
@@ -37,7 +37,7 @@ function Assert-RequiredCommandParameter
     (
         [Parameter(Mandatory = $true)]
         [System.Collections.Hashtable]
-        $BoundParameter,
+        $BoundParameterList,
 
         [Parameter(Mandatory = $true)]
         [System.String[]]
@@ -52,7 +52,7 @@ function Assert-RequiredCommandParameter
 
     if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
     {
-        $hasIfParameterPresent = $BoundParameter.Keys.Where( { $_ -in $IfParameterPresent } )
+        $hasIfParameterPresent = $BoundParameterList.Keys.Where( { $_ -in $IfParameterPresent } )
 
         if (-not $hasIfParameterPresent)
         {
@@ -64,7 +64,7 @@ function Assert-RequiredCommandParameter
     {
         foreach ($parameter in $RequiredParameter)
         {
-             if ($parameter -notin $BoundParameter.Keys)
+             if ($parameter -notin $BoundParameterList.Keys)
              {
                 $errorMessage = if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
                 {

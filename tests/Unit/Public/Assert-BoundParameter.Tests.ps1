@@ -25,6 +25,39 @@ AfterAll {
 }
 
 Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
+    It 'Should have the correct parameters in parameter set <MockParameterSetName>' -ForEach @(
+        @{
+            MockParameterSetName = 'MutuallyExclusiveParameters'
+            # cSpell: disable-next
+            MockExpectedParameters = '-BoundParameterList <hashtable> -MutuallyExclusiveList1 <string[]> -MutuallyExclusiveList2 <string[]> [<CommonParameters>]'
+        }
+        @{
+            MockParameterSetName = 'RequiredParameter'
+            # cSpell: disable-next
+            MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-IfParameterPresent <string[]>] [<CommonParameters>]'
+        }
+    ) {
+        InModuleScope -Parameters $_ -ScriptBlock {
+            $result = (Get-Command -Name 'Assert-BoundParameter').ParameterSets |
+                Where-Object -FilterScript {
+                    $_.Name -eq $mockParameterSetName
+                } |
+                Select-Object -Property @(
+                    @{
+                        Name = 'ParameterSetName'
+                        Expression = { $_.Name }
+                    },
+                    @{
+                        Name = 'ParameterListAsString'
+                        Expression = { $_.ToString() }
+                    }
+                )
+
+            $result.ParameterSetName | Should -Be $MockParameterSetName
+            $result.ParameterListAsString | Should -Be $MockExpectedParameters
+        }
+    }
+
     Context 'When the assert is successful' {
         Context 'When there are no bound parameters' {
             It 'Should not throw an error' {
