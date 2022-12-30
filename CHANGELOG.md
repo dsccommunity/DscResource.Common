@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added private function `Assert-RequiredCommandParameter` that throws an
+  exception if a specified parameter is not assigned a value, and optionally
+  throws only if a specific parameter is passed. - [Issue #92](https://github.com/dsccommunity/DscResource.Common/issues/92)
+  - Related to SqlServerDsc [Issue #1796](https://github.com/dsccommunity/SqlServerDsc/issues/1796).
+- Added public function `Test-AccountRequirePassword` that returns true or
+  false whether an account need a password to be passed - [Issue #93](https://github.com/dsccommunity/DscResource.Common/issues/93)
+  - Related to SqlServerDsc [Issue #1794](https://github.com/dsccommunity/SqlServerDsc/issues/1794).
+
+### Changed
+
+- DscResource.Common
+  - Updated Visual Studio Code project settings to configure testing for Pester 5.
+- `Assert-BoundParameter`
+  - Now has a new parameter set that calls `Assert-RequiredCommandParameter`
+    which will throw an exception if a specified parameter is not assigned
+    a value, and optionally throws only if a specific parameter is passed.
+
+### Fixed
+
+- Fixed unit tests for `Assert-ElevatedUser` and `Test-IsNumericType` so
+  the public function is tested correctly using the exported function.
+
 ## [0.13.1] - 2022-12-18
 
 ### Changed

@@ -24,7 +24,10 @@ BeforeDiscovery {
 }
 
 BeforeAll {
-    $script:dscModuleName = 'DSCResource.Common'
+    $script:dscModuleName = 'DscResource.Common'
+
+    # Make sure there are not other modules imported that will conflict with mocks.
+    Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
 
     Import-Module -Name $script:dscModuleName
 
@@ -61,17 +64,15 @@ Describe 'Assert-ElevatedUser' -Tag 'Public' {
     }
 
     It 'Should throw the correct error' -Skip:$mockIsElevated {
-        InModuleScope -ScriptBlock {
-            $mockErrorMessage = $script:localizedData.ElevatedUser_UserNotElevated
-
-            { Assert-ElevatedUser } | Should -Throw -ExpectedMessage $mockErrorMessage
+        $mockErrorMessage = InModuleScope -ScriptBlock {
+            $script:localizedData.ElevatedUser_UserNotElevated
         }
+
+        { Assert-ElevatedUser } | Should -Throw -ExpectedMessage $mockErrorMessage
     }
 
     It 'Should not throw an exception' -Skip:(-not $mockIsElevated) {
-        InModuleScope -ScriptBlock {
-            { Assert-ElevatedUser } | Should -Not -Throw
-        }
+        { Assert-ElevatedUser } | Should -Not -Throw
     }
 
     Context 'When on Linux or macOS' {
@@ -106,9 +107,7 @@ Describe 'Assert-ElevatedUser' -Tag 'Public' {
         }
 
         It 'Should not throw an exception' {
-            InModuleScope -ScriptBlock {
-                { Assert-ElevatedUser } | Should -Not -Throw
-            }
+            { Assert-ElevatedUser } | Should -Not -Throw
         }
     }
 }

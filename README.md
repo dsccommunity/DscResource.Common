@@ -37,18 +37,29 @@ functions.
 
 ### `Assert-BoundParameter`
 
+This command asserts passed parameters. It takes a hashtable, normally
+`$PSBoundParameters`. There are two parameter sets for this command.
+
+#### Mutually exclusive parameters are not set
+
 Asserts that a specified set of parameters are not passed together with
 another set of parameters.
-There is no built in logic to validate against parameters sets for DSC
-so this can be used instead to validate the parameters that were set in
-the configuration.
+
+>There is no built in logic to validate against parameters sets for DSC
+>so this can be used instead to validate the parameters that were set in
+>the configuration.
+
+#### Required parameter is set
+
+Assert that required parameters has been specified, and throws an exception if not.
 
 #### Syntax
 
 <!-- markdownlint-disable MD013 - Line length -->
 ```plaintext
-Assert-BoundParameter [-BoundParameterList] <hashtable> [-MutuallyExclusiveList1] <string[]>
- [-MutuallyExclusiveList2] <string[]> [<CommonParameters>]
+Assert-BoundParameter -BoundParameterList <hashtable> -MutuallyExclusiveList1 <string[]> -MutuallyExclusiveList2 <string[]> [<CommonParameters>]
+
+Assert-BoundParameter -BoundParameterList <hashtable> -RequiredParameter <string[]> [-IfParameterPresent <string[]>] [<CommonParameters>]
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
@@ -74,6 +85,23 @@ Assert-BoundParameter @assertBoundParameterParameters
 
 This example throws an exception if `$PSBoundParameters` contains both
 the parameters `Parameter1` and `Parameter2`.
+
+<!-- markdownlint-disable MD013 - Line length -->
+```powershell
+Assert-RequiredCommandParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange')
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+Throws an exception if either of the two parameters are not specified.
+
+<!-- markdownlint-disable MD013 - Line length -->
+```powershell
+Assert-RequiredCommandParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('Property2', 'Property3') -IfParameterPresent @('Property1')
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+Throws an exception if the parameter 'Property1' is specified and either
+of the required parameters are not.
 
 ### `Assert-ElevatedUser`
 
@@ -842,6 +870,44 @@ Set-PSModulePath -Path '<Path 1>;<Path 2>' -Machine
 
 Sets the machine environment variable `PSModulePath` to the specified path
 or paths (separated with semi-colons).
+
+### `Test-AccountRequirePassword`
+
+Returns whether the specified account require a password to be provided.
+If the account is a (global) managed service account, virtual account, or a
+built-in account then there is no need to provide a password.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Test-AccountRequirePassword [-Name] <string> [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+None.
+
+#### Example
+
+```powershell
+Test-AccountRequirePassword -Name 'DOMAIN\MySqlUser'
+```
+
+Returns $true as a user account need a password.
+
+```powershell
+Test-AccountRequirePassword -Name 'DOMAIN\MyMSA$'
+```
+
+Returns $false as a manged service account does not need a password.
+
+```powershell
+Test-AccountRequirePassword -Name 'NT SERVICE\MSSQL$PAYROLL'
+```
+
+Returns $false as a virtual account does not need a password.
 
 ### `Test-DscParameterState`
 
