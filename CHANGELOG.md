@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed unit tests for `Assert-ElevatedUser` and `Test-IsNumericType` so
   the public function is tested correctly using the exported function.
+- Fixed unit tests to easier run test both from command line and inside
+  Visual Studio Code.
 
 ## [0.13.1] - 2022-12-18
 
