@@ -550,6 +550,62 @@ None.
 $computerName = Get-ComputerName
 ```
 
+### `Get-DscProperty`
+
+Returns DSC resource properties that is part of a class-based DSC resource.
+The properties can be filtered using name, attribute, or if it has been
+assigned a non-null value.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Get-DscProperty [-InputObject] <PSObject> [[-Name] <String[]>] [[-ExcludeName] <String[]>] [[-Attribute] <String[]>] [-HasValue] [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+**System.Collections.Hashtable**
+
+#### Notes
+
+This command only works with nullable data types, if using a non-nullable
+type make sure to make it nullable, e.g. `[Nullable[System.Int32]]`.
+
+#### Example
+
+```powershell
+Get-DscProperty -InputObject $this
+```
+
+Returns all DSC resource properties of the DSC resource.
+
+```powershell
+$this | Get-DscProperty
+```
+
+Returns all DSC resource properties of the DSC resource.
+
+```powershell
+Get-DscProperty -InputObject $this -Name @('MyProperty1', 'MyProperty2')
+```
+
+Returns the DSC resource properties with the specified names.
+
+```powershell
+Get-DscProperty -InputObject $this -Attribute @('Mandatory', 'Optional')
+```
+
+Returns the DSC resource properties that has the specified attributes.
+
+```powershell
+Get-DscProperty -InputObject $this -Attribute @('Optional') -HasValue
+```
+
+Returns the DSC resource properties that has the specified attributes and
+has a non-null value assigned.
+
 ### `Get-LocalizedData`
 
 Gets language-specific data into scripts and functions based on the UI culture
@@ -887,7 +943,7 @@ Test-AccountRequirePassword [-Name] <string> [<CommonParameters>]
 
 #### Outputs
 
-None.
+**System.Boolean**
 
 #### Example
 
@@ -988,6 +1044,63 @@ $returnValue = Test-DscParameterState `
 This compares the values in the current state against the desires state.
 The function `Get-TargetResource` is called using just the required parameters
 to get the values in the current state.
+
+### `Test-DscProperty`
+
+Tests whether the class-based resource has the specified property, and
+can optionally tests if the property has a certain attribute or whether
+it is assigned a non-null value.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+ Test-DscProperty [-InputObject] <psobject> [-Name] <string> [[-Attribute] {Key | Mandatory | NotConfigurable | Optional}] [-HasValue] [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+**System.Boolean**
+
+#### Notes
+
+This command only works with nullable data types, if using a non-nullable
+type make sure to make it nullable, e.g. `[Nullable[System.Int32]]`.
+
+#### Example
+
+```powershell
+Test-DscProperty -InputObject $this -Name 'MyDscProperty'
+```
+
+Returns `$true` or `$false` whether the property exist or not.
+
+```powershell
+$this | Test-DscProperty -Name 'MyDscProperty'
+```
+
+Returns `$true` or `$false` whether the property exist or not.
+
+```powershell
+Test-DscProperty -InputObject $this -Name 'MyDscProperty' -HasValue
+```
+
+Returns `$true` if the property exist and is assigned a non-null value, if not
+`$false` is returned.
+
+```powershell
+Test-DscProperty -InputObject $this -Name 'MyDscProperty' -Attribute 'Optional'
+```
+
+Returns `$true` if the property exist and is an optional property.
+
+```powershell
+Test-DscProperty -InputObject $this -Name 'MyDscProperty' -Attribute 'Optional' -HasValue
+```
+
+Returns `$true` if the property exist, is an optional property, and is
+assigned a non-null value.
 
 ### `Test-IsNanoServer`
 

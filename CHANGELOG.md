@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added public function `Test-AccountRequirePassword` that returns true or
   false whether an account need a password to be passed - [Issue #93](https://github.com/dsccommunity/DscResource.Common/issues/93)
   - Related to SqlServerDsc [Issue #1794](https://github.com/dsccommunity/SqlServerDsc/issues/1794).
+- Added public command `Get-DscProperty` that returns a hashtable of available
+  properties for a class-based resource. See comment-based help for more
+  information.
+- Added public command `Test-DscProperty` that returns a true or false
+  whether a property exist in a class-based resource. See comment-based help
+  for more information.
+- Added private function `Test-DscPropertyIsAssigned` that returns a true
+  or false whether a property in a class-based resource has a non-null value.
 
 ### Changed
 
