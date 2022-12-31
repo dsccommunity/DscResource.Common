@@ -553,14 +553,14 @@ $computerName = Get-ComputerName
 ### `Get-DscProperty`
 
 Returns DSC resource properties that is part of a class-based DSC resource.
-The properties can be filtered using name, type, or if it has been assigned
-a value.
+The properties can be filtered using name, attribute, or if it has been
+assigned a non-null value.
 
 #### Syntax
 
 <!-- markdownlint-disable MD013 - Line length -->
 ```plaintext
-Get-DscProperty [-InputObject] <PSObject> [[-Name] <String[]>] [[-ExcludeName] <String[]>] [[-Type] <String[]>] [-HasValue] [<CommonParameters>]
+Get-DscProperty [-InputObject] <PSObject> [[-Name] <String[]>] [[-ExcludeName] <String[]>] [[-Attribute] <String[]>] [-HasValue] [<CommonParameters>]
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
@@ -591,20 +591,20 @@ Returns all DSC resource properties of the DSC resource.
 Get-DscProperty -InputObject $this -Name @('MyProperty1', 'MyProperty2')
 ```
 
-Returns the specified DSC resource properties names of the DSC resource.
+Returns the DSC resource properties with the specified names.
 
 ```powershell
-Get-DscProperty -InputObject $this -Type @('Mandatory', 'Optional')
+Get-DscProperty -InputObject $this -Attribute @('Mandatory', 'Optional')
 ```
 
-Returns the specified DSC resource property types of the DSC resource.
+Returns the DSC resource properties that has the specified attributes.
 
 ```powershell
-Get-DscProperty -InputObject $this -Type @('Optional') -HasValue
+Get-DscProperty -InputObject $this -Attribute @('Optional') -HasValue
 ```
 
-Returns the specified DSC resource property types of the DSC resource,
-but only those properties that has been assigned a non-null value.
+Returns the DSC resource properties that has the specified attributes and
+has a non-null value assigned.
 
 ### `Get-LocalizedData`
 
@@ -1045,15 +1045,19 @@ This compares the values in the current state against the desires state.
 The function `Get-TargetResource` is called using just the required parameters
 to get the values in the current state.
 
-### `Test-DscPropertyExist`
+### `Test-DscProperty`
 
-Tests whether the class-based resource has the specified property.
+Tests whether the class-based resource has the specified property, and
+can optionally tests if the property has a certain attribute or whether
+it is assigned a non-null value.
 
 #### Syntax
 
+<!-- markdownlint-disable MD013 - Line length -->
 ```plaintext
-Test-DscPropertyExist [-InputObject] <psobject> [-Name] <string> [-HasValue] [<CommonParameters>]
+ Test-DscProperty [-InputObject] <psobject> [-Name] <string> [[-Attribute] {Key | Mandatory | NotConfigurable | Optional}] [-HasValue] [<CommonParameters>]
 ```
+<!-- markdownlint-enable MD013 - Line length -->
 
 #### Outputs
 
@@ -1067,58 +1071,36 @@ type make sure to make it nullable, e.g. `[Nullable[System.Int32]]`.
 #### Example
 
 ```powershell
-Test-DscPropertyExist -InputObject $this -Name 'MyDscProperty'
+Test-DscProperty -InputObject $this -Name 'MyDscProperty'
 ```
 
 Returns `$true` or `$false` whether the property exist or not.
 
 ```powershell
-$this | Test-DscPropertyExist -Name 'MyDscProperty'
+$this | Test-DscProperty -Name 'MyDscProperty'
 ```
 
 Returns `$true` or `$false` whether the property exist or not.
 
 ```powershell
-Test-DscPropertyExist -InputObject $this -Name 'MyDscProperty' -HasValue
+Test-DscProperty -InputObject $this -Name 'MyDscProperty' -HasValue
 ```
 
 Returns `$true` if the property exist and is assigned a non-null value, if not
 `$false` is returned.
 
-### `Test-DscPropertyIsAssigned`
-
-Tests whether the class-based resource property is assigned a non-null value.
-
-#### Syntax
-
-```plaintext
-Test-DscPropertyIsAssigned [-InputObject] <psobject> [-Name] <string> [<CommonParameters>]
+```powershell
+Test-DscProperty -InputObject $this -Name 'MyDscProperty' -Attribute 'Optional'
 ```
 
-#### Outputs
-
-**System.Boolean**
-
-#### Notes
-
-This command only works with nullable data types, if using a non-nullable
-type make sure to make it nullable, e.g. `[Nullable[System.Int32]]`.
-
-#### Example
+Returns `$true` if the property exist and is an optional property.
 
 ```powershell
-Test-DscPropertyIsAssigned -InputObject $this -Name 'MyDscProperty'
+Test-DscProperty -InputObject $this -Name 'MyDscProperty' -Attribute 'Optional' -HasValue
 ```
 
-Returns `$true` or `$false` whether the property is assigned non-null value
-or not.
-
-```powershell
-$this | Test-DscPropertyIsAssigned -Name 'MyDscProperty'
-```
-
-Returns `$true` or `$false` whether the property is assigned non-null value
-or not.
+Returns `$true` if the property exist, is an optional property, and is
+assigned a non-null value.
 
 ### `Test-IsNanoServer`
 

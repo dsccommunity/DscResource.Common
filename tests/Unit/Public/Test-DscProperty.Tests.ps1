@@ -45,7 +45,7 @@ AfterAll {
     Get-Module -Name $script:moduleName -All | Remove-Module -Force
 }
 
-Describe 'Test-DscPropertyExist' -Tag 'Public' {
+Describe 'Test-DscProperty' -Tag 'Public' {
     Context 'When resource does not have an Ensure property' {
         BeforeAll {
             class MyMockResource
@@ -71,7 +71,7 @@ Describe 'Test-DscPropertyExist' -Tag 'Public' {
         }
 
         It 'Should return the correct value' {
-            $result = Test-DscPropertyExist -Name 'Ensure' -InputObject $script:mockResourceBaseInstance
+            $result = Test-DscProperty -Name 'Ensure' -InputObject $script:mockResourceBaseInstance
 
             $result | Should -BeFalse
         }
@@ -102,7 +102,7 @@ Describe 'Test-DscPropertyExist' -Tag 'Public' {
         }
 
         It 'Should return the correct value' {
-            $result = Test-DscPropertyExist -Name 'Ensure' -InputObject $script:mockResourceBaseInstance
+            $result = Test-DscProperty -Name 'Ensure' -InputObject $script:mockResourceBaseInstance
 
             $result | Should -BeTrue
         }
@@ -132,7 +132,7 @@ Describe 'Test-DscPropertyExist' -Tag 'Public' {
         }
 
         It 'Should return the correct value' {
-            $result = Test-DscPropertyExist -Name 'Ensure' -InputObject $script:mockResourceBaseInstance
+            $result = Test-DscProperty -Name 'Ensure' -InputObject $script:mockResourceBaseInstance
 
             $result | Should -BeFalse
         }
@@ -166,7 +166,7 @@ Describe 'Test-DscPropertyExist' -Tag 'Public' {
             }
 
             It 'Should return the correct value' {
-                $result = Test-DscPropertyExist -Name 'MyProperty3' -HasValue -InputObject $script:mockResourceBaseInstance
+                $result = Test-DscProperty -Name 'MyProperty3' -HasValue -InputObject $script:mockResourceBaseInstance
 
                 $result | Should -BeTrue
             }
@@ -197,7 +197,73 @@ Describe 'Test-DscPropertyExist' -Tag 'Public' {
             }
 
             It 'Should return the correct value' {
-                $result = Test-DscPropertyExist -Name 'MyProperty3' -HasValue -InputObject $script:mockResourceBaseInstance
+                $result = Test-DscProperty -Name 'MyProperty3' -HasValue -InputObject $script:mockResourceBaseInstance
+
+                $result | Should -BeFalse
+            }
+        }
+    }
+
+    Context 'When using parameter Attribute' {
+        Context 'When DSC property has the expected attribute' {
+            BeforeAll {
+                class MyMockResource
+                {
+                    [DscProperty(Key)]
+                    [System.String]
+                    $MyResourceKeyProperty1
+
+                    [DscProperty(Key)]
+                    [System.String]
+                    $MyResourceKeyProperty2
+
+                    [DscProperty()]
+                    [System.String]
+                    $MyProperty3
+
+                    [DscProperty(NotConfigurable)]
+                    [System.String]
+                    $MyResourceReadProperty
+                }
+
+                $script:mockResourceBaseInstance = [MyMockResource] @{
+                    MyProperty3 = 'AnyValue'
+                }
+            }
+
+            It 'Should return the correct value' {
+                $result = Test-DscProperty -Name 'MyProperty3' -Attribute 'Optional' -InputObject $script:mockResourceBaseInstance
+
+                $result | Should -BeTrue
+            }
+        }
+
+        Context 'When DSC property has the wrong attribute' {
+            BeforeAll {
+                class MyMockResource
+                {
+                    [DscProperty(Key)]
+                    [System.String]
+                    $MyResourceKeyProperty1
+
+                    [DscProperty(Key)]
+                    [System.String]
+                    $MyResourceKeyProperty2
+
+                    [DscProperty()]
+                    [System.String]
+                    $MyProperty3
+
+                    [DscProperty(NotConfigurable)]
+                    [System.String]
+                    $MyResourceReadProperty
+                }
+
+                $script:mockResourceBaseInstance = [MyMockResource] @{}
+            }
+
+            It 'Should return the correct value' {
+                $result = Test-DscProperty -Name 'MyProperty3' -Attribute 'Mandatory' -InputObject $script:mockResourceBaseInstance
 
                 $result | Should -BeFalse
             }

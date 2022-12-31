@@ -19,11 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added public command `Get-DscProperty` that returns a hashtable of available
   properties for a class-based resource. See comment-based help for more
   information.
-- Added public command `Test-DscPropertyExist` that returns a true or false
+- Added public command `Test-DscProperty` that returns a true or false
   whether a property exist in a class-based resource. See comment-based help
   for more information.
-- Added public command `Test-DscPropertyIsAssigned` that returns a true or false
-  whether a property in a class-based resource has a non-null value.
+- Added private function `Test-DscPropertyIsAssigned` that returns a true
+  or false whether a property in a class-based resource has a non-null value.
 
 ### Changed
 

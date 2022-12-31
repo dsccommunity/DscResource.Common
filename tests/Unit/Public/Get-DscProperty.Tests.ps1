@@ -224,7 +224,7 @@ Describe 'Get-DscProperty' -Tag 'Public' {
         }
     }
 
-    Context 'When using parameter Type' {
+    Context 'When using parameter alias Type' {
         Context 'When getting all key properties' {
             BeforeAll {
                 class MyMockResource
@@ -273,6 +273,57 @@ Describe 'Get-DscProperty' -Tag 'Public' {
                 $result.MyResourceKeyProperty2 | Should -Be 'MockValue2'
             }
         }
+    }
+
+    Context 'When using parameter Attribute' {
+        Context 'When getting all key properties' {
+            BeforeAll {
+                class MyMockResource
+                {
+                    [DscProperty(Key)]
+                    [System.String]
+                    $MyResourceKeyProperty1
+
+                    [DscProperty(Key)]
+                    [System.String]
+                    $MyResourceKeyProperty2
+
+                    [DscProperty(Mandatory)]
+                    [System.String]
+                    $MyResourceMandatoryProperty
+
+                    [DscProperty()]
+                    [System.String]
+                    $MyResourceProperty
+
+                    [DscProperty(NotConfigurable)]
+                    [System.String]
+                    $MyResourceReadProperty
+                }
+
+                $script:mockResourceBaseInstance = [MyMockResource]::new()
+                $script:mockResourceBaseInstance.MyResourceKeyProperty1 = 'MockValue1'
+                $script:mockResourceBaseInstance.MyResourceKeyProperty2 = 'MockValue2'
+                $script:mockResourceBaseInstance.MyResourceMandatoryProperty = 'MockValue3'
+                $script:mockResourceBaseInstance.MyResourceProperty = 'MockValue4'
+            }
+
+            It 'Should return the correct value' {
+                $result = Get-DscProperty -Attribute 'Key' -InputObject $script:mockResourceBaseInstance
+
+                $result | Should -BeOfType [System.Collections.Hashtable]
+
+                $result.Keys | Should -Not -Contain 'MyResourceProperty' -Because 'optional properties should not be part of the collection'
+                $result.Keys | Should -Not -Contain 'MyResourceMandatoryProperty' -Because 'mandatory properties should not be part of the collection'
+                $result.Keys | Should -Not -Contain 'MyResourceReadProperty' -Because 'read properties should not be part of the collection'
+
+                $result.Keys | Should -Contain 'MyResourceKeyProperty1' -Because 'the property is a key property'
+                $result.Keys | Should -Contain 'MyResourceKeyProperty2' -Because 'the property is a key property'
+
+                $result.MyResourceKeyProperty1 | Should -Be 'MockValue1'
+                $result.MyResourceKeyProperty2 | Should -Be 'MockValue2'
+            }
+        }
 
         Context 'When getting all mandatory properties' {
             BeforeAll {
@@ -307,7 +358,7 @@ Describe 'Get-DscProperty' -Tag 'Public' {
             }
 
             It 'Should return the correct value' {
-                $result = Get-DscProperty -Type 'Mandatory' -InputObject $script:mockResourceBaseInstance
+                $result = Get-DscProperty -Attribute 'Mandatory' -InputObject $script:mockResourceBaseInstance
 
                 $result | Should -BeOfType [System.Collections.Hashtable]
 
@@ -355,7 +406,7 @@ Describe 'Get-DscProperty' -Tag 'Public' {
             }
 
             It 'Should return the correct value' {
-                $result = Get-DscProperty -Type 'Optional' -InputObject $script:mockResourceBaseInstance
+                $result = Get-DscProperty -Attribute 'Optional' -InputObject $script:mockResourceBaseInstance
 
                 $result | Should -BeOfType [System.Collections.Hashtable]
 
@@ -403,7 +454,7 @@ Describe 'Get-DscProperty' -Tag 'Public' {
             }
 
             It 'Should return the correct value' {
-                $result = Get-DscProperty -Type 'NotConfigurable' -InputObject $script:mockResourceBaseInstance
+                $result = Get-DscProperty -Attribute 'NotConfigurable' -InputObject $script:mockResourceBaseInstance
 
                 $result | Should -BeOfType [System.Collections.Hashtable]
 
@@ -451,7 +502,7 @@ Describe 'Get-DscProperty' -Tag 'Public' {
             }
 
             It 'Should return the correct value' {
-                $result = Get-DscProperty -Type @('Mandatory', 'Optional') -InputObject $script:mockResourceBaseInstance
+                $result = Get-DscProperty -Attribute @('Mandatory', 'Optional') -InputObject $script:mockResourceBaseInstance
 
                 $result | Should -BeOfType [System.Collections.Hashtable]
 
@@ -467,7 +518,7 @@ Describe 'Get-DscProperty' -Tag 'Public' {
             }
         }
 
-        Context 'When getting specific property names of a certain type' {
+        Context 'When getting specific property names with a certain attribute' {
             BeforeAll {
                 class MyMockResource
                 {
@@ -504,7 +555,7 @@ Describe 'Get-DscProperty' -Tag 'Public' {
             }
 
             It 'Should return the correct value' {
-                $result = Get-DscProperty -Name @('MyResourceProperty', 'MyResourceMandatoryProperty') -Type 'Mandatory' -InputObject $script:mockResourceBaseInstance
+                $result = Get-DscProperty -Name @('MyResourceProperty', 'MyResourceMandatoryProperty') -Attribute 'Mandatory' -InputObject $script:mockResourceBaseInstance
 
                 $result | Should -BeOfType [System.Collections.Hashtable]
 
@@ -556,7 +607,7 @@ Describe 'Get-DscProperty' -Tag 'Public' {
             }
 
             It 'Should return the correct value' {
-                $result = Get-DscProperty -Type 'Optional' -HasValue -InputObject $script:mockResourceBaseInstance
+                $result = Get-DscProperty -Attribute 'Optional' -HasValue -InputObject $script:mockResourceBaseInstance
 
                 $result | Should -BeOfType [System.Collections.Hashtable]
 

@@ -16,13 +16,18 @@
         Specifies if the property should be evaluated to have a non-value. If
         the property exist but is assigned `$null` the command returns `$false`.
 
+    .PARAMETER Attribute
+        Specifies if the property should be evaluated to have a specific attribute.
+        If the property exist but is not the specific attribute the command returns
+        `$false`.
+
     .EXAMPLE
-        Test-DscPropertyExist -InputObject $this -Name 'MyDscProperty'
+        Test-DscProperty -InputObject $this -Name 'MyDscProperty'
 
         Returns $true or $false whether the property exist or not.
 
     .EXAMPLE
-        Test-DscPropertyExist -InputObject $this -Name 'MyDscProperty' -HasValue
+        Test-DscProperty -InputObject $this -Name 'MyDscProperty' -HasValue
 
         Returns $true if the property exist and is assigned a non-null value, if not
         $false is returned.
@@ -34,7 +39,7 @@
         This command only works with nullable data types, if using a non-nullable
         type make sure to make it nullable, e.g. [Nullable[System.Int32]].
 #>
-function Test-DscPropertyExist
+function Test-DscProperty
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
@@ -50,7 +55,12 @@ function Test-DscPropertyExist
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
-        $HasValue
+        $HasValue,
+
+        [Parameter()]
+        [ValidateSet('Key', 'Mandatory', 'NotConfigurable', 'Optional')]
+        [System.String[]]
+        $Attribute
     )
 
     begin

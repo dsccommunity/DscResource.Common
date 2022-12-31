@@ -18,8 +18,8 @@
     .PARAMETER ExcludeName
         Specifies one or more property names to exclude.
 
-    .PARAMETER Type
-        Specifies one or more property types to return. If left out all property
+    .PARAMETER Attribute
+        Specifies one or more property attributes to return. If left out all property
         types are returned.
 
     .PARAMETER HasValue
@@ -35,18 +35,18 @@
     .EXAMPLE
         Get-DscProperty -InputObject $this -Name @('MyProperty1', 'MyProperty2')
 
-        Returns the specified DSC resource properties names of the DSC resource.
+        Returns the DSC resource properties with the specified names.
 
     .EXAMPLE
-        Get-DscProperty -InputObject $this -Type @('Mandatory', 'Optional')
+        Get-DscProperty -InputObject $this -Attribute @('Mandatory', 'Optional')
 
-        Returns the specified DSC resource property types of the DSC resource.
+        Returns the DSC resource properties that has the specified attributes.
 
     .EXAMPLE
-        Get-DscProperty -InputObject $this -Type @('Optional') -HasValue
+        Get-DscProperty -InputObject $this -Attribute @('Optional') -HasValue
 
-        Returns the specified DSC resource property types of the DSC resource,
-        but only those properties that has been assigned a non-null value.
+        Returns the DSC resource properties that has the specified attributes and
+        has a non-null value assigned.
 
     .OUTPUTS
         [System.Collections.Hashtable]
@@ -75,8 +75,9 @@ function Get-DscProperty
 
         [Parameter()]
         [ValidateSet('Key', 'Mandatory', 'NotConfigurable', 'Optional')]
+        [Alias('Type')]
         [System.String[]]
-        $Type,
+        $Attribute,
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
@@ -109,26 +110,26 @@ function Get-DscProperty
 
         if (-not [System.String]::IsNullOrEmpty($property))
         {
-            if ($PSBoundParameters.ContainsKey('Type'))
+            if ($PSBoundParameters.ContainsKey('Attribute'))
             {
-                $propertiesOfType = @()
+                $propertiesOfAttribute = @()
 
-                $propertiesOfType += $property | Where-Object -FilterScript {
+                $propertiesOfAttribute += $property | Where-Object -FilterScript {
                     $InputObject.GetType().GetMember($_).CustomAttributes.Where(
                         {
                             <#
                                 To simplify the code, ignoring that this will compare
                                 MemberNAme against type 'Optional' which does not exist.
                             #>
-                            $_.NamedArguments.MemberName -in $Type
+                            $_.NamedArguments.MemberName -in $Attribute
                         }
                     ).NamedArguments.TypedValue.Value -eq $true
                 }
 
                 # Include all optional parameter if it was requested.
-                if ($Type -contains 'Optional')
+                if ($Attribute -contains 'Optional')
                 {
-                    $propertiesOfType += $property | Where-Object -FilterScript {
+                    $propertiesOfAttribute += $property | Where-Object -FilterScript {
                         $InputObject.GetType().GetMember($_).CustomAttributes.Where(
                             {
                                 $_.NamedArguments.MemberName -notin @('Key', 'Mandatory', 'NotConfigurable')
@@ -137,7 +138,7 @@ function Get-DscProperty
                     }
                 }
 
-                $property = $propertiesOfType
+                $property = $propertiesOfAttribute
             }
         }
 
