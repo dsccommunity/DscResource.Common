@@ -5,8 +5,8 @@
 
     .DESCRIPTION
         Returns DSC resource properties that is part of a class-based DSC resource.
-        The properties can be filtered using name, type, or if it has been assigned
-        a value.
+        The properties can be filtered using name, attribute, or if it has been
+        assigned a value.
 
     .PARAMETER InputObject
         The object that contain one or more key properties.
