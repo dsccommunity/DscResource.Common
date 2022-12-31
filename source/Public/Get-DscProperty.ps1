@@ -33,6 +33,11 @@
         Returns all DSC resource properties of the DSC resource.
 
     .EXAMPLE
+        $this | Get-DscProperty
+
+        Returns all DSC resource properties of the DSC resource.
+
+    .EXAMPLE
         Get-DscProperty -InputObject $this -Name @('MyProperty1', 'MyProperty2')
 
         Returns the DSC resource properties with the specified names.

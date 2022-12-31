@@ -27,10 +27,26 @@
         Returns $true or $false whether the property exist or not.
 
     .EXAMPLE
+        $this | Test-DscProperty -Name 'MyDscProperty'
+
+        Returns $true or $false whether the property exist or not.
+
+    .EXAMPLE
         Test-DscProperty -InputObject $this -Name 'MyDscProperty' -HasValue
 
         Returns $true if the property exist and is assigned a non-null value, if not
         $false is returned.
+
+    .EXAMPLE
+        Test-DscProperty -InputObject $this -Name 'MyDscProperty' -Attribute 'Optional'
+
+        Returns `$true` if the property exist and is an optional property.
+
+    .EXAMPLE
+        Test-DscProperty -InputObject $this -Name 'MyDscProperty' -Attribute 'Optional' -HasValue
+
+        Returns `$true` if the property exist, is an optional property, and is
+        assigned a non-null value.
 
     .OUTPUTS
         [System.Boolean]
