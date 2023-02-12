@@ -24,13 +24,16 @@ BeforeDiscovery {
 }
 
 BeforeAll {
-    $script:dscModuleName = 'DSCResource.Common'
+    $script:moduleName = 'DscResource.Common'
 
-    Import-Module -Name $script:dscModuleName
+    # Make sure there are not other modules imported that will conflict with mocks.
+    Get-Module -Name $script:moduleName -All | Remove-Module -Force
 
-    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:dscModuleName
-    $PSDefaultParameterValues['Mock:ModuleName'] = $script:dscModuleName
-    $PSDefaultParameterValues['Should:ModuleName'] = $script:dscModuleName
+    Import-Module -Name $script:moduleName
+
+    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
+    $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
+    $PSDefaultParameterValues['Should:ModuleName'] = $script:moduleName
 }
 
 AfterAll {
@@ -39,7 +42,7 @@ AfterAll {
     $PSDefaultParameterValues.Remove('Should:ModuleName')
 
     # Unload the module being tested so that it doesn't impact any other tests.
-    Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
+    Get-Module -Name $script:moduleName -All | Remove-Module -Force
 }
 
 Describe 'Assert-ElevatedUser' -Tag 'Public' {
@@ -61,17 +64,15 @@ Describe 'Assert-ElevatedUser' -Tag 'Public' {
     }
 
     It 'Should throw the correct error' -Skip:$mockIsElevated {
-        InModuleScope -ScriptBlock {
-            $mockErrorMessage = $script:localizedData.ElevatedUser_UserNotElevated
-
-            { Assert-ElevatedUser } | Should -Throw -ExpectedMessage $mockErrorMessage
+        $mockErrorMessage = InModuleScope -ScriptBlock {
+            $script:localizedData.ElevatedUser_UserNotElevated
         }
+
+        { Assert-ElevatedUser } | Should -Throw -ExpectedMessage $mockErrorMessage
     }
 
     It 'Should not throw an exception' -Skip:(-not $mockIsElevated) {
-        InModuleScope -ScriptBlock {
-            { Assert-ElevatedUser } | Should -Not -Throw
-        }
+        { Assert-ElevatedUser } | Should -Not -Throw
     }
 
     Context 'When on Linux or macOS' {
@@ -106,9 +107,7 @@ Describe 'Assert-ElevatedUser' -Tag 'Public' {
         }
 
         It 'Should not throw an exception' {
-            InModuleScope -ScriptBlock {
-                { Assert-ElevatedUser } | Should -Not -Throw
-            }
+            { Assert-ElevatedUser } | Should -Not -Throw
         }
     }
 }

@@ -7,11 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+<<<<<<< HEAD
 ### Added
 
 - Added public function `Find-Certificate` that returns one or more
   certificates using certificate selector parameters - [Issue #100](https://github.com/dsccommunity/DscResource.Common/issues/100)
   - Related to CertificateDsc [Issue #272](https://github.com/dsccommunity/CertificateDsc/issues/272).
+=======
+## [0.14.0] - 2022-12-31
+
+### Added
+
+- Added private function `Assert-RequiredCommandParameter` that throws an
+  exception if a specified parameter is not assigned a value, and optionally
+  throws only if a specific parameter is passed. - [Issue #92](https://github.com/dsccommunity/DscResource.Common/issues/92)
+  - Related to SqlServerDsc [Issue #1796](https://github.com/dsccommunity/SqlServerDsc/issues/1796).
+- Added public function `Test-AccountRequirePassword` that returns true or
+  false whether an account need a password to be passed - [Issue #93](https://github.com/dsccommunity/DscResource.Common/issues/93)
+  - Related to SqlServerDsc [Issue #1794](https://github.com/dsccommunity/SqlServerDsc/issues/1794).
+- Added public command `Get-DscProperty` that returns a hashtable of available
+  properties for a class-based resource. See comment-based help for more
+  information.
+- Added public command `Test-DscProperty` that returns a true or false
+  whether a property exist in a class-based resource. See comment-based help
+  for more information.
+- Added private function `Test-DscPropertyIsAssigned` that returns a true
+  or false whether a property in a class-based resource has a non-null value.
+
+### Changed
+
+- DscResource.Common
+  - Updated Visual Studio Code project settings to configure testing for Pester 5.
+- `Assert-BoundParameter`
+  - Now has a new parameter set that calls `Assert-RequiredCommandParameter`
+    which will throw an exception if a specified parameter is not assigned
+    a value, and optionally throws only if a specific parameter is passed.
+
+### Fixed
+
+- Fixed unit tests for `Assert-ElevatedUser` and `Test-IsNumericType` so
+  the public function is tested correctly using the exported function.
+- Fixed unit tests to easier run test both from command line and inside
+  Visual Studio Code.
+>>>>>>> bdcb5330000a192591f6dff630fd97915326349a
 
 ## [0.13.1] - 2022-12-18
 

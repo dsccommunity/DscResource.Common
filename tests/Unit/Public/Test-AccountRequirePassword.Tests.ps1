@@ -29,8 +29,7 @@ BeforeAll {
     # Make sure there are not other modules imported that will conflict with mocks.
     Get-Module -Name $script:moduleName -All | Remove-Module -Force
 
-    # Re-import the module using force to get any code changes between runs.
-    Import-Module -Name $script:moduleName -Force -ErrorAction 'Stop'
+    Import-Module -Name $script:moduleName
 
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
@@ -38,36 +37,42 @@ BeforeAll {
 }
 
 AfterAll {
-    $PSDefaultParameterValues.Remove('Mock:ModuleName')
     $PSDefaultParameterValues.Remove('InModuleScope:ModuleName')
+    $PSDefaultParameterValues.Remove('Mock:ModuleName')
     $PSDefaultParameterValues.Remove('Should:ModuleName')
 
-    Remove-Module -Name $script:moduleName
+    # Unload the module being tested so that it doesn't impact any other tests.
+    Get-Module -Name $script:moduleName -All | Remove-Module -Force
 }
 
-Describe 'Get-ComputerName' {
-    BeforeAll {
-        $mockComputerName = 'MyComputer'
-
-        if ($IsLinux -or $IsMacOs)
-        {
-            function hostname
-            {
-            }
-
-            Mock -CommandName 'hostname' -MockWith {
-                return $mockComputerName
-            } -ModuleName 'DscResource.Common'
-        }
-        else
-        {
-            $mockComputerName = $env:COMPUTERNAME
+Describe 'Test-AccountRequirePassword' -Tag 'Public' {
+    Context 'When service account is a built-in account' {
+        It 'Should return $false' {
+            Test-AccountRequirePassword -Name 'NT Authority\NETWORK SERVICE' | Should -BeFalse
         }
     }
 
-    Context 'When getting computer name' {
-        It 'Should return the correct computer name' {
-            Get-ComputerName | Should -Be $mockComputerName
+    Context 'When service account is a virtual account' {
+        It 'Should return $false' {
+            Test-AccountRequirePassword -Name 'NT SERVICE\MSSQL$PAYROLL' | Should -BeFalse
+        }
+    }
+
+    Context 'When service account is a (global) managed service account' {
+        It 'Should return $false' {
+            Test-AccountRequirePassword -Name 'DOMAIN\MyMSA$' | Should -BeFalse
+        }
+    }
+
+    Context 'When service account is a local user account' {
+        It 'Should return $true' {
+            Test-AccountRequirePassword -Name 'MySqlUser' | Should -BeTrue
+        }
+    }
+
+    Context 'When service account is a domain user account' {
+        It 'Should return $true' {
+            Test-AccountRequirePassword -Name 'DOMAIN\MySqlUser' | Should -BeTrue
         }
     }
 }

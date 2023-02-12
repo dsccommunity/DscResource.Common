@@ -24,13 +24,16 @@ BeforeDiscovery {
 }
 
 BeforeAll {
-    $script:dscModuleName = 'DscResource.Common'
+    $script:moduleName = 'DscResource.Common'
 
-    Import-Module -Name $script:dscModuleName
+    # Make sure there are not other modules imported that will conflict with mocks.
+    Get-Module -Name $script:moduleName -All | Remove-Module -Force
 
-    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:dscModuleName
-    $PSDefaultParameterValues['Mock:ModuleName'] = $script:dscModuleName
-    $PSDefaultParameterValues['Should:ModuleName'] = $script:dscModuleName
+    Import-Module -Name $script:moduleName
+
+    $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
+    $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
+    $PSDefaultParameterValues['Should:ModuleName'] = $script:moduleName
 }
 
 AfterAll {
@@ -39,28 +42,24 @@ AfterAll {
     $PSDefaultParameterValues.Remove('Should:ModuleName')
 
     # Unload the module being tested so that it doesn't impact any other tests.
-    Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
+    Get-Module -Name $script:moduleName -All | Remove-Module -Force
 }
 
 Describe 'Test-IsNumericType' -Tag 'Public' {
     Context 'When passing value with named parameter' {
         Context 'When type is numeric' {
             It 'Should return the correct value' {
-                InModuleScope -ScriptBlock {
-                    $result = Test-IsNumericType -Object ([System.UInt32] 3)
+                $result = Test-IsNumericType -Object ([System.UInt32] 3)
 
-                    $result | Should -BeTrue
-                }
+                $result | Should -BeTrue
             }
         }
 
         Context 'When type is not numeric' {
             It 'Should return the correct value' {
-                InModuleScope -ScriptBlock {
-                    $result = Test-IsNumericType -Object ([System.String] 'a')
+                $result = Test-IsNumericType -Object ([System.String] 'a')
 
-                    $result | Should -BeFalse
-                }
+                $result | Should -BeFalse
             }
         }
     }
@@ -68,41 +67,33 @@ Describe 'Test-IsNumericType' -Tag 'Public' {
     Context 'When passing value in pipeline' {
         Context 'When type is numeric' {
             It 'Should return the correct value' {
-                InModuleScope -ScriptBlock {
-                    $result = ([System.UInt32] 3) | Test-IsNumericType
+                $result = ([System.UInt32] 3) | Test-IsNumericType
 
-                    $result | Should -BeTrue
-                }
+                $result | Should -BeTrue
             }
         }
 
         Context 'When type is not numeric' {
             It 'Should return the correct value' {
-                InModuleScope -ScriptBlock {
-                    $result = ([System.String] 'a') | Test-IsNumericType
+                $result = ([System.String] 'a') | Test-IsNumericType
 
-                    $result | Should -BeFalse
-                }
+                $result | Should -BeFalse
             }
         }
 
         Context 'When type is an array with no numeric values' {
             It 'Should return the correct value' {
-                InModuleScope -ScriptBlock {
-                    $result = ('a', 'b') | Test-IsNumericType
+                $result = ('a', 'b') | Test-IsNumericType
 
-                    $result | Should -BeFalse
-                }
+                $result | Should -BeFalse
             }
         }
 
         Context 'When type is an array with a numeric value' {
             It 'Should return the correct value' {
-                InModuleScope -ScriptBlock {
-                    $result = ('a', 1, 'b') | Test-IsNumericType
+                $result = ('a', 1, 'b') | Test-IsNumericType
 
-                    $result | Should -BeTrue
-                }
+                $result | Should -BeTrue
             }
         }
     }
