@@ -1,12 +1,33 @@
+[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+param ()
+
+BeforeDiscovery {
+    try
+    {
+        if (-not (Get-Module -Name 'DscResource.Test'))
+        {
+            # Assumes dependencies has been resolved, so if this module is not available, run 'noop' task.
+            if (-not (Get-Module -Name 'DscResource.Test' -ListAvailable))
+            {
+                # Redirect all streams to $null, except the error stream (stream 2)
+                & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 2>&1 4>&1 5>&1 6>&1 > $null
+            }
+
+            # If the dependencies has not been resolved, this will throw an error.
+            Import-Module -Name 'DscResource.Test' -Force -ErrorAction 'Stop'
+        }
+    }
+    catch [System.IO.FileNotFoundException]
+    {
+        throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -ResolveDependency -Tasks build" first.'
+    }
+}
+
 BeforeAll {
     $script:moduleName = 'DscResource.Common'
 
-    # If the module is not found, run the build task 'noop'.
-    if (-not (Get-Module -Name $script:moduleName -ListAvailable))
-    {
-        # Redirect all streams to $null, except the error stream (stream 2)
-        & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 2>&1 4>&1 5>&1 6>&1 > $null
-    }
+    # Make sure there are not other modules imported that will conflict with mocks.
+    Get-Module -Name $script:moduleName -All | Remove-Module -Force
 
     # Re-import the module using force to get any code changes between runs.
     Import-Module -Name $script:moduleName -Force -ErrorAction 'Stop'
@@ -15,7 +36,8 @@ BeforeAll {
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
     $PSDefaultParameterValues['Should:ModuleName'] = $script:moduleName
 
-    # Generate the Valid certificate for testing but remove it from the store straight away
+
+    #Generate test cert object to run against.
     $certificateDNSNames = @('www.fabrikam.com', 'www.contoso.com')
     $certificateDNSNamesReverse = @('www.contoso.com', 'www.fabrikam.com')
     $certificateDNSNamesNoMatch = $certificateDNSNames + @('www.nothere.com')
@@ -30,41 +52,71 @@ BeforeAll {
         Microsoft EFS File Recovery. 1.3.6.1.4.1.311.10.3.4.1
     #>
     $certificateEKU = @('Server Authentication', 'Client authentication')
-    $certificateEKUOID = '2.5.29.37={text}1.3.6.1.5.5.7.3.2,1.3.6.1.5.5.7.3.1'
+    #$certificateEKUOID = '2.5.29.37={text}1.3.6.1.5.5.7.3.2,1.3.6.1.5.5.7.3.1'
     $certificateEKUReverse = @('Client authentication','Server Authentication')
     $certificateEKUNoMatch = $certificateEKU + @('Encrypting File System')
     $certificateSubject = 'CN=contoso, DC=com'
     $certificateFriendlyName = 'Contoso Test Cert'
-    $validCertificate = New-SelfSignedCertificate `
-        -Subject $certificateSubject `
-        -KeyUsage $certificateKeyUsage `
-        -KeySpec 'KeyExchange' `
-        -TextExtension $certificateEKUOID `
-        -DnsName $certificateDNSNames `
-        -FriendlyName $certificateFriendlyName `
-        -CertStoreLocation 'cert:\CurrentUser' `
-        -KeyExportPolicy Exportable
-    # Pull the generated certificate from the store so we have the friendlyname
-    $validThumbprint = $validCertificate.Thumbprint
-    $validCertificate = Get-Item -Path "cert:\CurrentUser\My\$validThumbprint"
-    Remove-Item -Path $validCertificate.PSPath -Force
 
-    # Generate the Expired certificate for testing but remove it from the store straight away
-    $expiredCertificate = New-SelfSignedCertificate `
-        -Subject $certificateSubject `
-        -KeyUsage $certificateKeyUsage `
-        -KeySpec 'KeyExchange' `
-        -TextExtension $certificateEKUOID `
-        -DnsName $certificateDNSNames `
-        -FriendlyName $certificateFriendlyName `
-        -NotBefore ((Get-Date) - (New-TimeSpan -Days 2)) `
-        -NotAfter ((Get-Date) - (New-TimeSpan -Days 1)) `
-        -CertStoreLocation 'cert:\CurrentUser' `
-        -KeyExportPolicy Exportable
-    # Pull the generated certificate from the store so we have the friendlyname
-    $expiredThumbprint = $expiredCertificate.Thumbprint
-    $expiredCertificate = Get-Item -Path "cert:\CurrentUser\My\$expiredThumbprint"
-    Remove-Item -Path $expiredCertificate.PSPath -Force
+    $validThumbprint = 'B994DA47197931EFA3B00CB2DF34E2510E404C8D'
+    $expiredThumbprint = '31343B742B3062CF880487C2125E851E2884D00A'
+
+    $validCertificate = @{
+        FriendlyName = $certificateFriendlyName
+        Subject = $certificateSubject
+        Thumbprint = $validThumbprint
+        NotBefore = ((Get-Date) - (New-TimeSpan -Days 1))
+        NotAfter = ((Get-Date) + (New-TimeSpan -Days 30))
+        Issuer = $certificateSubject
+        DnsNameList = $certificateDNSNames | ForEach-Object { @{ Unicode = $PSItem } }
+        Extensions = @{ KeyUsages = $certificateKeyUsage -join ", " }
+        EnhancedKeyUsageList = $certificateEKU | ForEach-Object { @{ FriendlyName = $PSItem } }
+    }
+
+    $expiredCertificate = @{
+        FriendlyName = $certificateFriendlyName
+        Subject = $certificateSubject
+        Thumbprint = $expiredThumbprint
+        NotBefore = ((Get-Date) - (New-TimeSpan -Days 2))
+        NotAfter = ((Get-Date) - (New-TimeSpan -Days 1))
+        Issuer = $certificateSubject
+        DnsNameList = $certificateDNSNames | ForEach-Object { @{ Unicode = $PSItem } }
+        Extensions = @{ KeyUsages = $certificateKeyUsage -join ", " }
+        EnhancedKeyUsageList = $certificateEKU | ForEach-Object { @{ FriendlyName = $PSItem } }
+    }
+
+    # # Generate the Valid certificate for testing but remove it from the store straight away
+
+    # $validCertificate = New-SelfSignedCertificate `
+    #     -Subject $certificateSubject `
+    #     -KeyUsage $certificateKeyUsage `
+    #     -KeySpec 'KeyExchange' `
+    #     -TextExtension $certificateEKUOID `
+    #     -DnsName $certificateDNSNames `
+    #     -FriendlyName $certificateFriendlyName `
+    #     -CertStoreLocation 'cert:\CurrentUser' `
+    #     -KeyExportPolicy Exportable
+    # # Pull the generated certificate from the store so we have the friendlyname
+
+    # $validCertificate = Get-Item -Path "cert:\CurrentUser\My\$validThumbprint"
+    # Remove-Item -Path $validCertificate.PSPath -Force
+
+    # # Generate the Expired certificate for testing but remove it from the store straight away
+    # $expiredCertificate = New-SelfSignedCertificate `
+    #     -Subject $certificateSubject `
+    #     -KeyUsage $certificateKeyUsage `
+    #     -KeySpec 'KeyExchange' `
+    #     -TextExtension $certificateEKUOID `
+    #     -DnsName $certificateDNSNames `
+    #     -FriendlyName $certificateFriendlyName `
+    #     -NotBefore ((Get-Date) - (New-TimeSpan -Days 2)) `
+    #     -NotAfter ((Get-Date) - (New-TimeSpan -Days 1)) `
+    #     -CertStoreLocation 'cert:\CurrentUser' `
+    #     -KeyExportPolicy Exportable
+    # # Pull the generated certificate from the store so we have the friendlyname
+    # $expiredThumbprint = $expiredCertificate.Thumbprint
+    # $expiredCertificate = Get-Item -Path "cert:\CurrentUser\My\$expiredThumbprint"
+    # Remove-Item -Path $expiredCertificate.PSPath -Force
 
     $noCertificateThumbprint = '1111111111111111111111111111111111111111'
 
@@ -106,6 +158,10 @@ AfterAll {
     $PSDefaultParameterValues.Remove('Should:ModuleName')
 
     Remove-Module -Name $script:moduleName
+}
+
+BeforeAll {
+
 }
 
 Describe 'Find-Certificate' -Tag 'FindCertificate' {
