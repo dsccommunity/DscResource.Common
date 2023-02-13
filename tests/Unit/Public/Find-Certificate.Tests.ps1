@@ -66,6 +66,14 @@ BeforeAll {
             }
         }
     }
+
+    $mockJoinPath = {
+        return "Cert:\LocalMachine\$ChildPath"
+    }
+
+    $mockTestPath = {
+        return $true
+    }
 }
 
 AfterAll {
@@ -78,8 +86,9 @@ AfterAll {
 
 Describe 'Find-Certificate' -Tag 'FindCertificate' {
     BeforeAll {
+        Mock -CommandName Join-Path     -MockWith $mockJoinPath
         Mock -CommandName Get-ChildItem -MockWith $mockGetChildItem
-        Mock -CommandName Test-Path     -MockWith { return $true }
+        Mock -CommandName Test-Path     -MockWith $mockTestPath
 
         #Generate test cert object to run against.
         $certificateDNSNames = @('www.fabrikam.com', 'www.contoso.com')
