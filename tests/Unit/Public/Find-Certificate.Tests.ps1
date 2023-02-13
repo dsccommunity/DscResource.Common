@@ -36,90 +36,6 @@ BeforeAll {
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
     $PSDefaultParameterValues['Should:ModuleName'] = $script:moduleName
 
-
-    #Generate test cert object to run against.
-    $certificateDNSNames = @('www.fabrikam.com', 'www.contoso.com')
-    $certificateDNSNamesReverse = @('www.contoso.com', 'www.fabrikam.com')
-    $certificateDNSNamesNoMatch = $certificateDNSNames + @('www.nothere.com')
-    $certificateKeyUsage = @('DigitalSignature', 'DataEncipherment')
-    $certificateKeyUsageReverse = @('DataEncipherment', 'DigitalSignature')
-    $certificateKeyUsageNoMatch = $certificateKeyUsage + @('KeyEncipherment')
-    <#
-        To set Enhanced Key Usage, we must use OIDs:
-        Enhanced Key Usage. 2.5.29.37
-        Client Authentication. 1.3.6.1.5.5.7.3.2
-        Server Authentication. 1.3.6.1.5.5.7.3.1
-        Microsoft EFS File Recovery. 1.3.6.1.4.1.311.10.3.4.1
-    #>
-    $certificateEKU = @('Server Authentication', 'Client authentication')
-    #$certificateEKUOID = '2.5.29.37={text}1.3.6.1.5.5.7.3.2,1.3.6.1.5.5.7.3.1'
-    $certificateEKUReverse = @('Client authentication','Server Authentication')
-    $certificateEKUNoMatch = $certificateEKU + @('Encrypting File System')
-    $certificateSubject = 'CN=contoso, DC=com'
-    $certificateFriendlyName = 'Contoso Test Cert'
-
-    $validThumbprint = 'B994DA47197931EFA3B00CB2DF34E2510E404C8D'
-    $expiredThumbprint = '31343B742B3062CF880487C2125E851E2884D00A'
-
-    $validCertificate = @{
-        FriendlyName = $certificateFriendlyName
-        Subject = $certificateSubject
-        Thumbprint = $validThumbprint
-        NotBefore = ((Get-Date) - (New-TimeSpan -Days 1))
-        NotAfter = ((Get-Date) + (New-TimeSpan -Days 30))
-        Issuer = $certificateSubject
-        DnsNameList = $certificateDNSNames | ForEach-Object { @{ Unicode = $PSItem } }
-        Extensions = @{ KeyUsages = $certificateKeyUsage -join ", " }
-        EnhancedKeyUsageList = $certificateEKU | ForEach-Object { @{ FriendlyName = $PSItem } }
-    }
-
-    $expiredCertificate = @{
-        FriendlyName = $certificateFriendlyName
-        Subject = $certificateSubject
-        Thumbprint = $expiredThumbprint
-        NotBefore = ((Get-Date) - (New-TimeSpan -Days 2))
-        NotAfter = ((Get-Date) - (New-TimeSpan -Days 1))
-        Issuer = $certificateSubject
-        DnsNameList = $certificateDNSNames | ForEach-Object { @{ Unicode = $PSItem } }
-        Extensions = @{ KeyUsages = $certificateKeyUsage -join ", " }
-        EnhancedKeyUsageList = $certificateEKU | ForEach-Object { @{ FriendlyName = $PSItem } }
-    }
-
-    # # Generate the Valid certificate for testing but remove it from the store straight away
-
-    # $validCertificate = New-SelfSignedCertificate `
-    #     -Subject $certificateSubject `
-    #     -KeyUsage $certificateKeyUsage `
-    #     -KeySpec 'KeyExchange' `
-    #     -TextExtension $certificateEKUOID `
-    #     -DnsName $certificateDNSNames `
-    #     -FriendlyName $certificateFriendlyName `
-    #     -CertStoreLocation 'cert:\CurrentUser' `
-    #     -KeyExportPolicy Exportable
-    # # Pull the generated certificate from the store so we have the friendlyname
-
-    # $validCertificate = Get-Item -Path "cert:\CurrentUser\My\$validThumbprint"
-    # Remove-Item -Path $validCertificate.PSPath -Force
-
-    # # Generate the Expired certificate for testing but remove it from the store straight away
-    # $expiredCertificate = New-SelfSignedCertificate `
-    #     -Subject $certificateSubject `
-    #     -KeyUsage $certificateKeyUsage `
-    #     -KeySpec 'KeyExchange' `
-    #     -TextExtension $certificateEKUOID `
-    #     -DnsName $certificateDNSNames `
-    #     -FriendlyName $certificateFriendlyName `
-    #     -NotBefore ((Get-Date) - (New-TimeSpan -Days 2)) `
-    #     -NotAfter ((Get-Date) - (New-TimeSpan -Days 1)) `
-    #     -CertStoreLocation 'cert:\CurrentUser' `
-    #     -KeyExportPolicy Exportable
-    # # Pull the generated certificate from the store so we have the friendlyname
-    # $expiredThumbprint = $expiredCertificate.Thumbprint
-    # $expiredCertificate = Get-Item -Path "cert:\CurrentUser\My\$expiredThumbprint"
-    # Remove-Item -Path $expiredCertificate.PSPath -Force
-
-    $noCertificateThumbprint = '1111111111111111111111111111111111111111'
-
     # Dynamic mock content for Get-ChildItem
     $mockGetChildItem = {
         switch ( $Path )
@@ -160,19 +76,58 @@ AfterAll {
     Remove-Module -Name $script:moduleName
 }
 
-BeforeAll {
-
-}
-
 Describe 'Find-Certificate' -Tag 'FindCertificate' {
-    BeforeEach {
-        Mock `
-            -CommandName Test-Path `
-            -MockWith { $true }
+    BeforeAll {
+        Mock -CommandName Get-ChildItem -MockWith $mockGetChildItem
+        Mock -CommandName Test-Path     -MockWith { return $true }
 
-        Mock `
-            -CommandName Get-ChildItem `
-            -MockWith $mockGetChildItem
+        #Generate test cert object to run against.
+        $certificateDNSNames = @('www.fabrikam.com', 'www.contoso.com')
+        $certificateDNSNamesReverse = @('www.contoso.com', 'www.fabrikam.com')
+        $certificateDNSNamesNoMatch = $certificateDNSNames + @('www.nothere.com')
+        $certificateKeyUsage = @('DigitalSignature', 'DataEncipherment')
+        $certificateKeyUsageReverse = @('DataEncipherment', 'DigitalSignature')
+        $certificateKeyUsageNoMatch = $certificateKeyUsage + @('KeyEncipherment')
+        <#
+            To set Enhanced Key Usage, we must use OIDs:
+            Enhanced Key Usage. 2.5.29.37
+            Client Authentication. 1.3.6.1.5.5.7.3.2
+            Server Authentication. 1.3.6.1.5.5.7.3.1
+            Microsoft EFS File Recovery. 1.3.6.1.4.1.311.10.3.4.1
+        #>
+        $certificateEKU = @('Server Authentication', 'Client authentication')
+        $certificateEKUReverse = @('Client authentication','Server Authentication')
+        $certificateEKUNoMatch = $certificateEKU + @('Encrypting File System')
+        $certificateSubject = 'CN=contoso, DC=com'
+        $certificateFriendlyName = 'Contoso Test Cert'
+
+        $validThumbprint = 'B994DA47197931EFA3B00CB2DF34E2510E404C8D'
+        $expiredThumbprint = '31343B742B3062CF880487C2125E851E2884D00A'
+        $noCertificateThumbprint = '1111111111111111111111111111111111111111'
+
+        $validCertificate = @{
+            FriendlyName = $certificateFriendlyName
+            Subject = $certificateSubject
+            Thumbprint = $validThumbprint
+            NotBefore = ((Get-Date) - (New-TimeSpan -Days 1))
+            NotAfter = ((Get-Date) + (New-TimeSpan -Days 30))
+            Issuer = $certificateSubject
+            DnsNameList = $certificateDNSNames | ForEach-Object { @{ Unicode = $PSItem } }
+            Extensions = @{ KeyUsages = $certificateKeyUsage -join ", " }
+            EnhancedKeyUsageList = $certificateEKU | ForEach-Object { @{ FriendlyName = $PSItem } }
+        }
+
+        $expiredCertificate = @{
+            FriendlyName = $certificateFriendlyName
+            Subject = $certificateSubject
+            Thumbprint = $expiredThumbprint
+            NotBefore = ((Get-Date) - (New-TimeSpan -Days 2))
+            NotAfter = ((Get-Date) - (New-TimeSpan -Days 1))
+            Issuer = $certificateSubject
+            DnsNameList = $certificateDNSNames | ForEach-Object { @{ Unicode = $PSItem } }
+            Extensions = @{ KeyUsages = $certificateKeyUsage -join ", " }
+            EnhancedKeyUsageList = $certificateEKU | ForEach-Object { @{ FriendlyName = $PSItem } }
+        }
     }
 
     Context 'Thumbprint only is passed and matching certificate exists' {
@@ -192,6 +147,7 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
 
     Context 'Thumbprint only is passed and matching certificate does not exist' {
         It 'Should not throw exception' {
+
             { $script:result = Find-Certificate -Thumbprint $noCertificateThumbprint } | Should -Not -Throw
         }
 
@@ -530,8 +486,10 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Should -Invoke Test-Path -Exactly -Times 1
+            Should -Invoke Get-ChildItem -Exactly -Times 1
+            # Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
+            # Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
         }
     }
 }
