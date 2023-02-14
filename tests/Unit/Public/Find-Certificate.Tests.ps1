@@ -149,8 +149,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -165,8 +165,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -180,8 +180,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -195,8 +195,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -210,8 +210,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -225,8 +225,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -240,8 +240,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -255,8 +255,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -270,8 +270,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -285,8 +285,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -300,8 +300,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -315,8 +315,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -330,8 +330,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -345,8 +345,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -360,8 +360,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -375,8 +375,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -390,8 +390,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -405,8 +405,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -420,8 +420,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -435,8 +435,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -450,8 +450,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -465,8 +465,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -480,8 +480,8 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 
@@ -495,10 +495,10 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         It 'Should call expected mocks' {
-            Should -Invoke Test-Path -Exactly -Times 1
-            Should -Invoke Get-ChildItem -Exactly -Times 1
-            # Assert-MockCalled -CommandName Test-Path -Exactly -Times 1
-            # Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1
+            Should -Invoke Test-Path -Exactly -Times 1 -Scope "context"
+            Should -Invoke Get-ChildItem -Exactly -Times 1 -Scope "context"
+            # Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            # Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 1 -Scope "context"
         }
     }
 }
