@@ -5,6 +5,10 @@
         If more than one certificate is found matching the selector criteria, they will be
         returned in order of descending expiration date.
 
+    .DESCRIPTION
+        A common function to find certificates based on multiple search filters, including,
+        but not limited to: Thumbprint, Friendly Name, DNS Names, Key Usage, Issuers, etc.
+
     .PARAMETER Thumbprint
         The thumbprint of the certificate to find.
 
@@ -32,6 +36,23 @@
 
     .PARAMETER AllowExpired
         Allows expired certificates to be returned.
+
+    .EXAMPLE
+        Find-Certificate -Thumbprint '1111111111111111111111111111111111111111'
+
+        Return certificate that matches thumbprint.
+
+    .EXAMPLE
+        Find-Certificate -EnhancedKeyUsage 'Server Authentication' -AllowExpired $true
+
+        Return all certificates that can be used for "Server Authentication",
+        even if the certificate is expired.
+
+    .EXAMPLE
+        Find-Certificate -FriendlyName 'My IIS Site SSL Cert'
+
+        Return certificate based on FriendlyName.
+
 #>
 function Find-Certificate
 {
