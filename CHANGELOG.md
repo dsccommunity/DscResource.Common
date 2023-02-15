@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added public function `Find-Certificate` that returns one or more
   certificates using certificate selector parameters - [Issue #100](https://github.com/dsccommunity/DscResource.Common/issues/100)
-  - Related to CertificateDsc [Issue #272](https://github.com/dsccommunity/CertificateDsc/issues/272).
+  - Related to [CertificateDsc Issue #272](https://github.com/dsccommunity/CertificateDsc/issues/272).
 
 ## [0.14.0] - 2022-12-31
 
