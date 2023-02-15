@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-<<<<<<< HEAD
 ### Added
 
 - Added public function `Find-Certificate` that returns one or more
@@ -49,7 +48,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the public function is tested correctly using the exported function.
 - Fixed unit tests to easier run test both from command line and inside
   Visual Studio Code.
->>>>>>> bdcb5330000a192591f6dff630fd97915326349a
 
 ## [0.13.1] - 2022-12-18
 
