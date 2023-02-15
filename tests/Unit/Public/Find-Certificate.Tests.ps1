@@ -86,27 +86,23 @@ AfterAll {
 
 Describe 'Find-Certificate' -Tag 'FindCertificate' {
     BeforeAll {
-        Mock -CommandName Join-Path     -MockWith $mockJoinPath
         Mock -CommandName Get-ChildItem -MockWith $mockGetChildItem
-        Mock -CommandName Test-Path     -MockWith $mockTestPath
+        Mock -CommandName Test-Path -MockWith $mockTestPath
+        Mock -CommandName Join-Path -MockWith $mockJoinPath
 
         #Generate test cert object to run against.
         $certificateDNSNames = @('www.fabrikam.com', 'www.contoso.com')
         $certificateDNSNamesReverse = @('www.contoso.com', 'www.fabrikam.com')
         $certificateDNSNamesNoMatch = $certificateDNSNames + @('www.nothere.com')
+
         $certificateKeyUsage = @('DigitalSignature', 'DataEncipherment')
         $certificateKeyUsageReverse = @('DataEncipherment', 'DigitalSignature')
         $certificateKeyUsageNoMatch = $certificateKeyUsage + @('KeyEncipherment')
-        <#
-            To set Enhanced Key Usage, we must use OIDs:
-            Enhanced Key Usage. 2.5.29.37
-            Client Authentication. 1.3.6.1.5.5.7.3.2
-            Server Authentication. 1.3.6.1.5.5.7.3.1
-            Microsoft EFS File Recovery. 1.3.6.1.4.1.311.10.3.4.1
-        #>
+
         $certificateEKU = @('Server Authentication', 'Client authentication')
-        $certificateEKUReverse = @('Client authentication','Server Authentication')
+        $certificateEKUReverse = @('Client authentication', 'Server Authentication')
         $certificateEKUNoMatch = $certificateEKU + @('Encrypting File System')
+
         $certificateSubject = 'CN=contoso, DC=com'
         $certificateFriendlyName = 'Contoso Test Cert'
 
@@ -121,22 +117,39 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
             NotBefore = ((Get-Date) - (New-TimeSpan -Days 1))
             NotAfter = ((Get-Date) + (New-TimeSpan -Days 30))
             Issuer = $certificateSubject
-            DnsNameList = $certificateDNSNames | ForEach-Object { @{ Unicode = $PSItem } }
-            Extensions = @{ KeyUsages = $certificateKeyUsage -join ", " }
-            EnhancedKeyUsageList = $certificateEKU | ForEach-Object { @{ FriendlyName = $PSItem } }
+
+            DnsNameList = $certificateDNSNames | ForEach-Object {
+                @{
+                    Unicode = $PSItem
+                }
+            }
+
+            Extensions = @{
+                KeyUsages = $certificateKeyUsage -join ", "
+            }
+
+            EnhancedKeyUsageList = $certificateEKU | ForEach-Object {
+                @{
+                    FriendlyName = $PSItem
+                }
+            }
         }
 
-        $expiredCertificate = @{
-            FriendlyName = $certificateFriendlyName
-            Subject = $certificateSubject
-            Thumbprint = $expiredThumbprint
-            NotBefore = ((Get-Date) - (New-TimeSpan -Days 2))
-            NotAfter = ((Get-Date) - (New-TimeSpan -Days 1))
-            Issuer = $certificateSubject
-            DnsNameList = $certificateDNSNames | ForEach-Object { @{ Unicode = $PSItem } }
-            Extensions = @{ KeyUsages = $certificateKeyUsage -join ", " }
-            EnhancedKeyUsageList = $certificateEKU | ForEach-Object { @{ FriendlyName = $PSItem } }
-        }
+        $expiredCertificate = $validCertificate.Clone()
+        $expiredCertificate['NotBefore'] = ((Get-Date) - (New-TimeSpan -Days 2))
+        $expiredCertificate['NotAfter'] = ((Get-Date) - (New-TimeSpan -Days 1))
+
+        # @{
+        #     FriendlyName = $certificateFriendlyName
+        #     Subject = $certificateSubject
+        #     Thumbprint = $expiredThumbprint
+        #     NotBefore = ((Get-Date) - (New-TimeSpan -Days 2))
+        #     NotAfter = ((Get-Date) - (New-TimeSpan -Days 1))
+        #     Issuer = $certificateSubject
+        #     DnsNameList = $certificateDNSNames | ForEach-Object { @{ Unicode = $PSItem } }
+        #     Extensions = @{ KeyUsages = $certificateKeyUsage -join ", " }
+        #     EnhancedKeyUsageList = $certificateEKU | ForEach-Object { @{ FriendlyName = $PSItem } }
+        # }
     }
 
     Context 'Thumbprint only is passed and matching certificate exists' {
