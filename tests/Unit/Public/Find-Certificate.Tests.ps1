@@ -442,6 +442,24 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
     }
 
+    Context 'Store only is passed but the path to the certificate store does not exist' {
+        BeforeAll {
+            Mock -CommandName Test-Path -MockWith { return $false }
+        }
+        It 'Should throw exception' {
+            { $script:result = Find-Certificate -Store "MockWillForceFailureOfTestPath" } | Should -Throw
+        }
+
+        It 'Should return null' {
+            $script:result | Should -BeNullOrEmpty
+        }
+
+        It 'Should call expected mocks' {
+            Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope "context"
+            Assert-MockCalled -CommandName Get-ChildItem -Exactly -Times 0 -Scope "context"
+        }
+    }
+
     Context 'Thumbprint only is passed and matching certificate does not exist in the store' {
         It 'Should not throw exception' {
             { $script:result = Find-Certificate -Thumbprint $validThumbprint -Store 'NoCert' } | Should -Not -Throw
