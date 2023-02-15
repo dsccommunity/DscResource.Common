@@ -521,6 +521,82 @@ ConvertTo-HashTable -CimInstance $cimInstance
 This creates a array om CimInstances of the class name MSFT_KeyValuePair
 and passes it to ConvertTo-HashTable which returns a hashtable.
 
+### `Find-Certificate`
+
+A common function to find certificates based on multiple search filters,
+including, but not limited to: Thumbprint, Friendly Name, DNS Names,
+Key Usage, Issuers, etc.
+
+Locates one or more certificates using the passed certificate selector
+parameters.
+
+If more than one certificate is found matching the selector criteria,
+they will be returned in order of descending expiration date.
+
+#### Syntax
+
+```plaintext
+Find-Certificate [[-Thumbprint] <String>] [[-FriendlyName] <String>]
+[[-Subject] <String>] [[-DNSName] <String[]>] [[-Issuer] <String>]
+[[-KeyUsage] <String[]>] [[-EnhancedKeyUsage] <String[]>] [[-Store] <String>]
+[[-AllowExpired] <Boolean>] [<CommonParameters>]
+```
+
+### Outputs
+
+**System.Security.Cryptography.X509Certificates.X509Certificate2**
+
+### Example
+
+```PowerShell
+Find-Certificate -Thumbprint '1111111111111111111111111111111111111111'
+```
+
+Return certificate that matches thumbprint.
+
+```PowerShell
+Find-Certificate -KeyUsage 'DataEncipherment', 'DigitalSignature'
+```
+
+Return certificate(s) that have specific key usage.
+
+```PowerShell
+Find-Certificate -DNSName 'www.fabrikam.com', 'www.contoso.com'
+```
+
+Return certificate(s) filtered on specific DNS Names.
+
+```PowerShell
+find-certificate -Subject 'CN=contoso, DC=com'
+```
+
+Return certificate(s) with specific subject.
+
+```PowerShell
+find-certificate -Issuer 'CN=contoso-ca, DC=com' -AllowExpired $true
+```
+
+Return all certificates from specific issuer, including expired certificates.
+
+```PowerShell
+$findCertSplat = @{
+    EnhancedKeyUsage = @('Client authentication','Server Authentication')
+    AllowExpired = $true
+}
+
+Find-Certificate @findCertSplat
+```
+
+Return all certificates that can be used for server or client authentication,
+including expired certificates.
+
+```PowerShell
+Find-Certificate -FriendlyName 'My SSL Cert'
+```
+
+Return certificate based on FriendlyName.
+
+
 ### `Get-ComputerName`
 
 Returns the computer name cross-plattform. The variable `$env:COMPUTERNAME`

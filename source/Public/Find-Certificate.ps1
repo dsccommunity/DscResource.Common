@@ -43,10 +43,29 @@
         Return certificate that matches thumbprint.
 
     .EXAMPLE
+        Find-Certificate -KeyUsage 'DataEncipherment', 'DigitalSignature'
+
+        Return certificate(s) that have specific key usage.
+
+    .EXAMPLE
+        Find-Certificate -DNSName 'www.fabrikam.com', 'www.contoso.com'
+
+        Return certificate(s) filtered on specific DNS Names.
+
+    .EXAMPLE
+        find-certificate -Subject 'CN=contoso, DC=com'
+
+        Return certificate(s) with specific subject.
+
+    .EXAMPLE
+        find-certificate -Issuer 'CN=contoso-ca, DC=com' -AllowExpired $true
+
+        Return all certificates from specific issuer, including expired certificates.
+
+    .EXAMPLE
         Find-Certificate -EnhancedKeyUsage 'Server Authentication' -AllowExpired $true
 
-        Return all certificates that can be used for "Server Authentication",
-        even if the certificate is expired.
+        Return all certificates that can be used for "Server Authentication", including expired certificates.
 
     .EXAMPLE
         Find-Certificate -FriendlyName 'My IIS Site SSL Cert'
