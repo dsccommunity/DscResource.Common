@@ -136,6 +136,7 @@ Describe 'Find-Certificate' -Tag 'FindCertificate' {
         }
 
         $expiredCertificate = $validCertificate.Clone()
+        $expiredCertificate['Thumbprint'] = $expiredThumbprint
         $expiredCertificate['NotBefore'] = ((Get-Date) - (New-TimeSpan -Days 2))
         $expiredCertificate['NotAfter'] = ((Get-Date) - (New-TimeSpan -Days 1))
     }
