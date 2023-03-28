@@ -6,8 +6,11 @@
     .DESCRIPTION
         Returns the value from an environment variable from a specified target.
 
+    .PARAMETER Name
+        Specifies the environment variable name.
+
     .PARAMETER FromTarget
-        Specifies the target to get the value from. Defaults to 'Session'.
+        Specifies the target to return the value from. Defaults to 'Session'.
 
     .EXAMPLE
         Get-EnvironmentVariable -Name 'PSModulePath'
