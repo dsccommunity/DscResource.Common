@@ -43,4 +43,8 @@ ConvertFrom-StringData @'
     ## Assert-RequiredCommandParameter
     RequiredCommandParameter_SpecificParametersMustAllBeSet = The parameters '{0}' must all be specified. (DRC0044)
     RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist = The parameters '{0}' must all be specified if either parameter '{1}' is specified. (DRC0045)
+
+    ## Find-Certificate
+    CertificatePathError = Certificate Path '{0}' is not valid. (DRC0046)
+    SearchingForCertificateUsingFilters = Looking for certificate in Store '{0}' using filter '{1}'. (DRC0047)
 '@
