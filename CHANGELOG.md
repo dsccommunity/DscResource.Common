@@ -22,11 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added public function `Find-Certificate` that returns one or more
   certificates using certificate selector parameters - [Issue #100](https://github.com/dsccommunity/DscResource.Common/issues/100)
   - Related to [CertificateDsc Issue #272](https://github.com/dsccommunity/CertificateDsc/issues/272).
-- New public commands.
-  - `Get-EnvironmentVariable` - Get a specific environment variable from a
-    specific environment variable target.
-  - `Get-PSModulePath` - Get the the PSModulePath from one or more environment
-    variable targets - [Issue #103](https://github.com/dsccommunity/DscResource.Common/issues/103)
 
 ## [0.14.0] - 2022-12-31
 
