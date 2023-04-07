@@ -720,8 +720,8 @@ Machine target.
 ### `Get-PSModulePath`
 
 Returns the environment variable PSModulePath from the specified target.
-If more than one target are provided only the unique paths will be
-concatenated and returned.
+If more than one target is provided the return will contain all the
+concatenation of all unique paths from the targets.
 
 #### Syntax
 

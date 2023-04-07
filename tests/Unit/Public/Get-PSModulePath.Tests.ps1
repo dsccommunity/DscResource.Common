@@ -83,5 +83,4 @@ Describe 'Get-PSModulePath' {
             Should -Invoke -CommandName Get-EnvironmentVariable -Exactly -Times 3 -Scope It
         }
     }
-
 }

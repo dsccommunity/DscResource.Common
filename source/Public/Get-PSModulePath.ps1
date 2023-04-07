@@ -5,8 +5,8 @@
 
     .DESCRIPTION
         Returns the environment variable PSModulePath from the specified target.
-        If more than one target are provided only the unique paths will be
-        concatenated and returned.
+        If more than one target is provided the return will contain all the
+        concatenation of all unique paths from the targets.
 
     .PARAMETER FromTarget
         Specifies the target to get the PSModulePath from.
@@ -38,9 +38,7 @@ function Get-PSModulePath
         $FromTarget
     )
 
-    $modulePathSession = $null
-    $modulePathUser = $null
-    $modulePathMachine = $null
+    $modulePathSession = $modulePathUser = $modulePathMachine = $null
 
     <#
         Get the environment variables from required targets. The value returned
