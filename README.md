@@ -682,6 +682,77 @@ Get-DscProperty -InputObject $this -Attribute @('Optional') -HasValue
 Returns the DSC resource properties that has the specified attributes and
 has a non-null value assigned.
 
+### `Get-EnvironmentVariable`
+
+Returns the value from an environment variable from a specified target.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Get-EnvironmentVariable [-Name] <String> [[-FromTarget] <String>] [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+**System.String**
+
+#### Notes
+
+This command returns `$null` if the environment variable does not exist.
+
+#### Example
+
+```powershell
+Get-EnvironmentVariable -Name 'PSModulePath'
+```
+
+Returns the value for the environment variable PSModulePath.
+
+```powershell
+Get-EnvironmentVariable -Name 'PSModulePath' -FromTarget 'Machine'
+```
+
+Returns the value for the environment variable PSModulePath from the
+Machine target.
+
+### `Get-PSModulePath`
+
+Returns the environment variable PSModulePath from the specified target.
+If more than one target is provided the return will contain all the
+concatenation of all unique paths from the targets.
+
+#### Syntax
+
+<!-- markdownlint-disable MD013 - Line length -->
+```plaintext
+Get-PSModulePath [-FromTarget] <String[]> [<CommonParameters>]
+```
+<!-- markdownlint-enable MD013 - Line length -->
+
+#### Outputs
+
+**System.String**
+
+#### Notes
+
+If there are no paths to return the command will return an empty string.
+
+#### Example
+
+```powershell
+Get-PSModulePath -FromTarget 'Session'
+```
+
+Returns the paths from the Session target.
+
+```powershell
+Get-PSModulePath -FromTarget 'Session', 'User', 'Machine'
+```
+
+Returns the unique paths from the all targets.
+
 ### `Get-LocalizedData`
 
 Gets language-specific data into scripts and functions based on the UI culture

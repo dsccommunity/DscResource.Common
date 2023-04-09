@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New public commands.
+  - `Get-EnvironmentVariable` - Get a specific environment variable from a
+    specific environment variable target.
+  - `Get-PSModulePath` - Get the the PSModulePath from one or more environment
+    variable targets - [Issue #103](https://github.com/dsccommunity/DscResource.Common/issues/103)
+
 ## [0.15.0] - 2023-04-06
 
 ### Added
