@@ -88,7 +88,7 @@ the parameters `Parameter1` and `Parameter2`.
 
 <!-- markdownlint-disable MD013 - Line length -->
 ```powershell
-Assert-RequiredCommandParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange')
+Assert-BoundParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange')
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
@@ -96,7 +96,7 @@ Throws an exception if either of the two parameters are not specified.
 
 <!-- markdownlint-disable MD013 - Line length -->
 ```powershell
-Assert-RequiredCommandParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('Property2', 'Property3') -IfParameterPresent @('Property1')
+Assert-BoundParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('Property2', 'Property3') -IfParameterPresent @('Property1')
 ```
 <!-- markdownlint-enable MD013 - Line length -->
 
