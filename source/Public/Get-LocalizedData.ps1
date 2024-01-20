@@ -376,12 +376,18 @@ function Get-LocalizedData
         $localizedData = Microsoft.PowerShell.Utility\Import-LocalizedData @PSBoundParameters
     }
 
-    if ($PSBoundParameters.ContainsKey('BindingVariable') -and $localizedData)
+    if ($PSBoundParameters.ContainsKey('BindingVariable'))
     {
-        Write-Debug -Message ('Binding variable ''{0}'' to localized data.' -f $BindingVariable)
+        # The command we called returned the localized data in the binding variable.
+        $boundLocalizedData = Get-Variable -Name $BindingVariable -ValueOnly -ErrorAction 'Ignore'
 
-        # Bringing the variable to the parent scope
-        Set-Variable -Scope 1 -Name $BindingVariable -Force -ErrorAction 'SilentlyContinue' -Value $localizedData
+        if ($boundLocalizedData)
+        {
+            Write-Debug -Message ('Binding variable ''{0}'' to localized data.' -f $BindingVariable)
+
+            # Bringing the variable to the parent scope
+            Set-Variable -Scope 1 -Name $BindingVariable -Force -ErrorAction 'SilentlyContinue' -Value $boundLocalizedData
+        }
     }
     else
     {
