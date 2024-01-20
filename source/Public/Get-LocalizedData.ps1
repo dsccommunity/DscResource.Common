@@ -27,6 +27,32 @@
         user messages in the UI language of the current user. For more information
         about this and about the format of the .psd1 files, see about_Script_Internationalization.
 
+        ```mermaid
+        graph LR
+
+        Argument{Parameter set?} -->|"Only UICulture
+        (DefaultUICulture = en-US)"| UseUIC
+        Argument -->|"Only DefaultUICulture"| GetUIC[[Get OS Culture]]
+        GetUIC --> LCID127{"Is LCID = 127?<br>(in variant culture)"}
+        Argument -->|"Both UICulture and
+        DefaultUICulture"| UseUIC
+        UseUIC[Use UICulture] --> LCID127
+        LCID127 -->|"No"| SetUIC[[Set UICulture]]
+        LCID127 -->|"Yes"| UseDC[Use default culture]
+        UseDC --> SetUIC
+        SetUIC --> SearchFile[[Find UICulture<br>localization file]]
+        SearchFile --> FileExist
+        FileExist{localization<br>file exist?} -->|"No"| ParentCulture{Parent culture<br>exist?}
+        ParentCulture -->|"Yes"| UseParentC[Use parent culture]
+        UseParentC --> SetUIC
+        ParentCulture -->|"No"| EvalDefaultC{Evaluate<br>default>br>culture?}
+        EvalDefaultC -->|"Yes"| UseDC
+        EvalDefaultC -->|"No"| EvalStillLCID127{Still invariant?}
+        FileExist -->|"Yes"| EvalStillLCID127
+        EvalStillLCID127 -->|"Yes, Use Get-LocalizedDataForInvariantCulture"| GetFile[[Get localization strings]]
+        EvalStillLCID127 -->|"No, Use Import-LocalizedData"| GetFile
+        ```
+
     .PARAMETER BindingVariable
         Specifies the variable into which the text strings are imported. Enter a variable
         name without a dollar sign ($).
@@ -132,11 +158,31 @@
         For more information, see about_Script_Internationalization.
 
     .EXAMPLE
-        $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+        $script:localizedData = Get-LocalizedData
 
-        This is an example that can be used in DSC resources to import the
-        localized strings and if the current UI culture localized folder does
-        not exist the UI culture 'en-US' is returned.
+        Imports the localized strings for the current OS UI culture. If the localized
+        folder does not exist then the localized strings for the default UI culture
+        'en-US' is returned.
+
+    .EXAMPLE
+        $script:localizedData = Get-LocalizedData -DefaultUICulture 'de-DE'
+
+        Imports the localized strings for the current OS UI culture. If the localized
+        folder does not exist then the localized strings for the default UI culture
+        'de-DE' is returned.
+
+    .EXAMPLE
+        $script:localizedData = Get-LocalizedData -UICulture 'de-DE'
+
+        Imports the localized strings for UI culture 'de-DE'. If the localized folder
+        does not exist then the localized strings for the default UI culture 'en-US'
+        is returned.
+
+        $script:localizedData = Get-LocalizedData -UICulture 'de-DE' -DefaultUICulture 'en-GB'
+
+        Imports the localized strings for UI culture 'de-DE'. If the localized folder
+        does not exist then the localized strings for the default UI culture
+        'en-GB' is returned.
 #>
 function Get-LocalizedData
 {
@@ -149,7 +195,7 @@ function Get-LocalizedData
         [System.String]
         $BindingVariable,
 
-        [Parameter(Position = 1, ParameterSetName = 'TargetedUICulture')]
+        [Parameter(Position = 1)]
         [System.String]
         $UICulture,
 
@@ -165,232 +211,233 @@ function Get-LocalizedData
         [System.String[]]
         $SupportedCommand,
 
-        [Parameter(Position = 1, ParameterSetName = 'DefaultUICulture')]
+        [Parameter(Position = 2)]
+        [ValidateNotNullOrEmpty()]
         [System.String]
         $DefaultUICulture = 'en-US'
     )
 
-    begin
+    if ($PSBoundParameters.ContainsKey('FileName'))
     {
-        <#
-            Because Proxy Command changes the Invocation origin, we need to be explicit
-            when handing the pipeline back to original command.
-        #>
-        if ($PSBoundParameters.ContainsKey('FileName'))
+        Write-Debug -Message ('Looking for provided file with base name: ''{0}''.' -f $FileName)
+    }
+    else
+    {
+        if ($myInvocation.ScriptName)
         {
-            Write-Debug -Message ('Looking for provided file with base name: ''{0}''.' -f $FileName)
+            $file = [System.IO.FileInfo] $myInvocation.ScriptName
         }
         else
         {
-            if ($myInvocation.ScriptName)
+            $file = [System.IO.FileInfo] $myInvocation.MyCommand.Module.Path
+        }
+
+        $FileName = $file.BaseName
+
+        $PSBoundParameters.Add('FileName', $file.Name)
+
+        Write-Debug -Message ('Looking for resolved file with base name: ''{0}''.' -f $FileName)
+    }
+
+    if ($PSBoundParameters.ContainsKey('BaseDirectory'))
+    {
+        $callingScriptRoot = $BaseDirectory
+    }
+    else
+    {
+        $callingScriptRoot = $MyInvocation.PSScriptRoot
+
+        $PSBoundParameters.Add('BaseDirectory', $callingScriptRoot)
+    }
+
+    # If UICulture wasn't specified use the OS configured one, otherwise use the one specified.
+    if (-not $PSBoundParameters.ContainsKey('UICulture'))
+    {
+        $currentCulture = Get-UICulture
+
+        Write-Debug -Message ("Using OS configured culture:`n{0}" -f ($currentCulture | Out-String))
+
+        $PSBoundParameters['UICulture'] = $currentCulture.Name
+    }
+    else
+    {
+        $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($UICulture)
+
+        Write-Debug -Message ("Using specified culture:`n{0}" -f ($currentCulture | Out-String))
+    }
+
+    <#
+        If the LCID is 127 (invariant) then use default UI culture anyway.
+        If we can't create the CultureInfo object, it's probably because the
+        Globalization-invariant mode is enabled for the DotNet runtime (breaking change in .Net)
+        See more information in issue https://github.com/dsccommunity/DscResource.Common/issues/11.
+        https://docs.microsoft.com/en-us/dotnet/core/compatibility/globalization/6.0/culture-creation-invariant-mode
+    #>
+
+    $evaluateDefaultCulture = $true
+
+    if ($currentCulture.LCID -eq 127) # cSpell: ignore LCID
+    {
+        try
+        {
+            # Current culture is invariant, let's directly evaluate the DefaultUICulture
+            $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($DefaultUICulture)
+
+            Write-Debug -Message ("Invariant culture. Using default culture instead:`n{0}" -f ($currentCulture | Out-String))
+
+            # No need to evaluate the DefaultUICulture later, as we'll start with this (in the while loop below)
+            $evaluateDefaultCulture = $false
+        }
+        catch
+        {
+            # The code will now skip to the InvokeCommand part and execute the Get-LocalizedDataForInvariantCulture
+            # function instead of Import-LocalizedData.
+
+            Write-Debug -Message 'The Globalization-Invariant mode is enabled, only the Invariant Culture is allowed.'
+        }
+
+        Write-Debug -Message ('Setting parameter UICulture to ''{0}''.' -f $DefaultUICulture)
+
+        $PSBoundParameters['UICulture'] = $DefaultUICulture
+    }
+
+    [System.String] $languageFile = ''
+
+    [System.String[]] $localizedFileNamesToTry = @(
+        ('{0}.psd1' -f $FileName)
+        ('{0}.strings.psd1' -f $FileName)
+    )
+
+    while (-not [System.String]::IsNullOrEmpty($currentCulture.Name) -and [System.String]::IsNullOrEmpty($languageFile))
+    {
+        Write-Debug -Message ('Looking for Localized data file using the current culture ''{0}''.' -f $currentCulture.Name)
+
+        foreach ($localizedFileName in $localizedFileNamesToTry)
+        {
+            $filePath = [System.IO.Path]::Combine($callingScriptRoot, $CurrentCulture.Name, $localizedFileName)
+
+            if (Test-Path -Path $filePath)
             {
-                $file = [System.IO.FileInfo] $myInvocation.ScriptName
+                Write-Debug -Message "Found '$filePath'."
+
+                $languageFile = $filePath
+
+                # Set the filename to the file we found.
+                $PSBoundParameters['FileName'] = $localizedFileName
+
+                # Exit loop if as we found the first filename.
+                break
             }
             else
             {
-                $file = [System.IO.FileInfo] $myInvocation.MyCommand.Module.Path
+                Write-Debug -Message "File '$filePath' not found."
             }
-
-            $FileName = $file.BaseName
-
-            $PSBoundParameters.Add('FileName', $file.Name)
-            Write-Debug -Message ('Looking for resolved file with base name: ''{0}''.' -f $FileName)
         }
 
-        if ($PSBoundParameters.ContainsKey('BaseDirectory'))
+        # If the file wasn't found one, try parent culture or the default culture.
+        if ([System.String]::IsNullOrEmpty($languageFile))
         {
-            $callingScriptRoot = $BaseDirectory
-        }
-        else
-        {
-            $callingScriptRoot = $MyInvocation.PSScriptRoot
-            $PSBoundParameters.Add('BaseDirectory', $callingScriptRoot)
-        }
-
-        # If we're not looking for a specific UICulture, but looking for current culture, one of its parent, or the default.
-        if (-not $PSBoundParameters.ContainsKey('UICulture') -and $PSBoundParameters.ContainsKey('DefaultUICulture'))
-        {
-            <#
-                We don't want the resolution to eventually return the ModuleManifest
-                so we run the same GetFilePath() logic than here:
-                https://github.com/PowerShell/PowerShell/blob/master/src/Microsoft.PowerShell.Commands.Utility/commands/utility/Import-LocalizedData.cs#L302-L333
-                and if we see it will return the wrong thing, set the UICulture to DefaultUI culture, and return the logic to Import-LocalizedData.
-
-                If the LCID is 127 (invariant) then use default UI culture anyway.
-                If we can't create the CultureInfo object, it's probably because the Globalization-invariant mode is enabled for the DotNet runtime (breaking change in .Net)
-                See more information in issue https://github.com/dsccommunity/DscResource.Common/issues/11.
-                https://docs.microsoft.com/en-us/dotnet/core/compatibility/globalization/6.0/culture-creation-invariant-mode
-            #>
-
-            $currentCulture = Get-UICulture
-            $evaluateDefaultCulture = $true
-
-            if ($currentCulture.LCID -eq 127)
+            # Evaluate the parent culture if there is a valid one (not invariant culture).
+            if ($currentCulture.Parent -and [System.String] $currentCulture.Parent.Name)
             {
-                try
+                $currentCulture = $currentCulture.Parent
+
+                Write-Debug -Message ('Setting parameter UICulture to ''{0}''.' -f $currentCulture.Name)
+
+                $PSBoundParameters['UICulture'] = $currentCulture.Name
+
+                Write-Debug -Message ("Did not find matching file for current culture, testing parent culture:`n{0}" -f ($currentCulture | Out-String))
+            }
+            else
+            {
+                # If we haven't evaluated the default culture yet, do it now.
+                if ($evaluateDefaultCulture)
                 {
-                    # Current culture is invariant, let's directly evaluate the DefaultUICulture
-                    $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($DefaultUICulture)
-                    # No need to evaluate the DefaultUICulture later, as we'll start with this (in the while loop below)
                     $evaluateDefaultCulture = $false
-                }
-                catch
-                {
-                    Write-Debug -Message 'The Globalization-Invariant mode is enabled, only the Invariant Culture is allowed.'
-                    # The code will now skip to the InvokeCommand part and execute the Get-LocalizedDataForInvariantCulture
-                }
 
-                $PSBoundParameters['UICulture'] = $DefaultUICulture
-            }
-
-            [string] $languageFile = ''
-            [string[]] $localizedFileNamesToTry = @(
-                ('{0}.psd1' -f $FileName)
-                ('{0}.strings.psd1' -f $FileName)
-            )
-
-            while (-not [string]::IsNullOrEmpty($currentCulture.Name) -and [String]::IsNullOrEmpty($languageFile))
-            {
-                Write-Debug -Message ('Looking for Localized data file using the current culture ''{0}''.' -f $currentCulture.Name)
-                foreach ($localizedFileName in $localizedFileNamesToTry)
-                {
-                    $filePath = [System.IO.Path]::Combine($callingScriptRoot, $CurrentCulture.Name, $localizedFileName)
-                    if (Test-Path -Path $filePath)
+                    <#
+                        Evaluating the default UI culture (which defaults to 'en-US').
+                        If the default UI culture cannot be resolved, we'll revert
+                        to the current culture because then most likely the invariant
+                        mode is enabled for the DotNet runtime.
+                    #>
+                    try
                     {
-                        Write-Debug -Message "Found '$filePath'."
-                        $languageFile = $filePath
-                        # Set the filename to the file we found.
-                        $PSBoundParameters['FileName'] = $localizedFileName
-                        # Exit loop if as we found the first filename.
+                        $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($DefaultUICulture)
+
+                        Write-Debug -Message ("Did not find matching file for current or parent culture, testing default culture:`n{0}" -f ($currentCulture | Out-String))
+                    }
+                    catch
+                    {
+                        # Set the OS culture to revert to invariant culture (LCID 127).
+                        $currentCulture = Get-UICulture
+
+                        Write-Debug -Message ("Unable to create the [CultureInfo] object for default culture '{0}', most likely due to invariant mode being enabled. Reverting to current (invariant) culture:`n{1}" -f $DefaultUICulture, ($currentCulture | Out-String))
+
+                        <#
+                            Already tried every possible way. Exit the while loop and hand over to
+                            Import-LocalizedData or Get-LocalizedDataForInvariantCultureMode
+                        #>
                         break
                     }
-                    else
-                    {
-                        Write-Debug -Message "File '$filePath' not found."
-                    }
-                }
 
-                if ([String]::IsNullOrEmpty($languageFile))
+                    Write-Debug -Message ('Setting parameter UICulture to ''{0}''.' -f $DefaultUICulture)
+
+                    $PSBoundParameters['UICulture'] = $DefaultUICulture
+                }
+                else
                 {
-                    <#
-                        Evaluate the parent culture if there is a valid one (not Invariant).
+                    Write-Debug -Message 'Already evaluated everything we could, continue and let the command called next throw an exception.'
 
-                        If the parent culture is LCID 127 then move to the default culture.
-                        See more information in issue https://github.com/dsccommunity/DscResource.Common/issues/11.
-                    #>
-                    if ($currentCulture.Parent -and [string]$currentCulture.Parent.Name)
-                    {
-                        $currentCulture = $currentCulture.Parent
-                    }
-                    else
-                    {
-                        if ($evaluateDefaultCulture)
-                        {
-                            $evaluateDefaultCulture = $false
-
-                            <#
-                                Could not find localized strings file for the the operating
-                                system UI culture. Evaluating the default UI culture (which
-                                defaults to 'en-US' if not specifically set).
-                            #>
-                            try
-                            {
-                                $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($DefaultUICulture)
-                            }
-                            catch
-                            {
-                                Write-Debug -Message ('Unable to create the Default UI Culture [CultureInfo] object, most likely due to invariant mode being enabled.')
-                                $currentCulture = Get-UICulture
-                                # We already tried everything we could, exit the while loop and hand over to Import-LocalizedData or Get-LocalizedDataForInvariantCultureMode
-                                break
-                            }
-
-                            $PSBoundParameters['UICulture'] = $DefaultUICulture
-                        }
-                        else
-                        {
-                            <#
-                                Already evaluated everything we could, exit and let
-                                Import-LocalizedData throw an exception.
-                            #>
-                            break
-                        }
-                    }
+                    break
                 }
             }
-
-            <#
-                Removes the parameter DefaultUICulture so that isn't used when
-                calling Import-LocalizedData.
-            #>
-            $null = $PSBoundParameters.Remove('DefaultUICulture')
-        }
-
-        try
-        {
-            $outBuffer = $null
-
-            if ($PSBoundParameters.TryGetValue('OutBuffer', [ref] $outBuffer))
-            {
-                $PSBoundParameters['OutBuffer'] = 1
-            }
-
-            if ($currentCulture.LCID -eq 127)
-            {
-                # Culture is invariant, working around issue with Import-LocalizedData when pwsh configured as invariant
-                $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand('Get-LocalizedDataForInvariantCulture', [System.Management.Automation.CommandTypes]::Function)
-                $PSBoundParameters.Keys.ForEach({
-                    if ($_ -notin $wrappedCmd.Parameters.Keys)
-                    {
-                        $PSBoundParameters.Remove($_)
-                    }
-                })
-
-                $scriptCmd = { & $wrappedCmd @PSBoundParameters }
-            }
-            else
-            {
-                <# Action when all if and elseif conditions are false #>
-                $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand('Microsoft.PowerShell.Utility\Import-LocalizedData', [System.Management.Automation.CommandTypes]::Cmdlet)
-                $scriptCmd = { & $wrappedCmd @PSBoundParameters }
-            }
-
-            $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
-            $steppablePipeline.Begin($PSCmdlet)
-        }
-        catch
-        {
-            throw
         }
     }
 
-    process
+    if ($currentCulture.LCID -eq 127)
     {
-        try
-        {
-            $steppablePipeline.Process($_)
-        }
-        catch
-        {
-            throw
-        }
+        $getLocalizedDataForInvariantCultureParameters = Get-Command -Name 'Get-LocalizedDataForInvariantCulture' -ErrorAction 'Stop'
+
+        $PSBoundParameters.Keys.ForEach({
+            if ($_ -notin $getLocalizedDataForInvariantCultureParameters.Parameters.Keys)
+            {
+                $PSBoundParameters.Remove($_)
+            }
+        })
+
+        Write-Debug ('Because culture is invariant, calling Get-LocalizedDataForInvariantCulture using parameters: {0}' -f ($PSBoundParameters | Out-String))
+
+        # This works around issue with Import-LocalizedData when pwsh configured as invariant.
+        $localizedData = Get-LocalizedDataForInvariantCulture @PSBoundParameters
+    }
+    else
+    {
+        Write-Debug ('Calling Microsoft.PowerShell.Utility\Import-LocalizedData using parameters: {0}' -f ($PSBoundParameters | Out-String))
+
+        # Removes the parameter DefaultUICulture so that isn't used when calling Import-LocalizedData.
+        $PSBoundParameters.Remove('DefaultUICulture')
+
+        $localizedData = Microsoft.PowerShell.Utility\Import-LocalizedData @PSBoundParameters
     }
 
-    end
+    if ($PSBoundParameters.ContainsKey('BindingVariable'))
     {
-        if ($BindingVariable -and ($valueToBind = Get-Variable -Name $BindingVariable -ValueOnly -ErrorAction 'Ignore'))
+        # The command we called returned the localized data in the binding variable.
+        $boundLocalizedData = Get-Variable -Name $BindingVariable -ValueOnly -ErrorAction 'Ignore'
+
+        if ($boundLocalizedData)
         {
+            Write-Debug -Message ('Binding variable ''{0}'' to localized data.' -f $BindingVariable)
+
             # Bringing the variable to the parent scope
-            Set-Variable -Scope 1 -Name $BindingVariable -Force -ErrorAction 'SilentlyContinue' -Value $valueToBind
+            Set-Variable -Scope 1 -Name $BindingVariable -Force -ErrorAction 'SilentlyContinue' -Value $boundLocalizedData
         }
+    }
+    else
+    {
+        Write-Debug -Message ('Returning localized data.' -f $BindingVariable)
 
-        try
-        {
-            $steppablePipeline.End()
-        }
-        catch
-        {
-            throw
-        }
+        return $localizedData
     }
 }
