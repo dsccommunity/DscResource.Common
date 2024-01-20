@@ -239,4 +239,95 @@ StringKey    = String value
             }
         }
     }
+
+    Context 'When specifying a specific filename and UICulture' {
+        BeforeAll {
+            New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
+
+            $null = "
+ConvertFrom-StringData @`'
+# English strings
+ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be the first attribute of each parameter and be on its own line. See https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md#correct-format-for-parameter-block
+'@
+            " | Out-File -Force -FilePath 'TestDrive:\en-US\Strings.psd1'
+
+            "Get-LocalizedData -FileName 'Strings' -UICulture 'en-US' -EA Stop" |
+                Out-File -Force -FilePath 'TestDrive:\execute.ps1'
+        }
+
+        It 'Should retrieve the data' {
+            { $null = &'TestDrive:\execute.ps1' } | Should -Not -Throw
+            &'TestDrive:\execute.ps1' | Should -Not -BeNullOrEmpty
+        }
+    }
+
+    Context 'When specifying a specific filename, UICulture and DefaultUICulture' {
+        BeforeAll {
+            New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
+
+            $null = "
+ConvertFrom-StringData @`'
+# English strings
+ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be the first attribute of each parameter and be on its own line. See https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md#correct-format-for-parameter-block
+'@
+            " | Out-File -Force -FilePath 'TestDrive:\en-US\Strings.psd1'
+
+            "Get-LocalizedData -FileName 'Strings' -UICulture 'en-US' -DefaultUICulture 'en-US' -EA Stop" |
+                Out-File -Force -FilePath 'TestDrive:\execute.ps1'
+        }
+
+        It 'Should retrieve the data' {
+            { $null = &'TestDrive:\execute.ps1' } | Should -Not -Throw
+            &'TestDrive:\execute.ps1' | Should -Not -BeNullOrEmpty
+        }
+    }
+
+    Context 'When specifying a specific filename, UICulture and DefaultUICulture but the UICulture does not match any file' {
+        BeforeAll {
+            New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
+
+            $null = "
+ConvertFrom-StringData @`'
+# English strings
+ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be the first attribute of each parameter and be on its own line. See https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md#correct-format-for-parameter-block
+'@
+            " | Out-File -Force -FilePath 'TestDrive:\en-US\Strings.psd1'
+
+            "Get-LocalizedData -FileName 'Strings' -UICulture 'fr-FR' -DefaultUICulture 'en-US' -EA Stop" |
+                Out-File -Force -FilePath 'TestDrive:\execute.ps1'
+        }
+
+        It 'Should retrieve the data from the DefaultUICulture' {
+            { $null = &'TestDrive:\execute.ps1' } | Should -Not -Throw
+            &'TestDrive:\execute.ps1' | Should -Not -BeNullOrEmpty
+        }
+    }
+
+    Context 'When the culture LCID is 127' {
+        BeforeAll {
+            New-Item -Force -Path 'TestDrive:\en-US' -ItemType Directory
+
+            Mock -CommandName Get-UICulture -MockWith {
+                return [System.Globalization.CultureInfo]::InvariantCulture
+            } -ModuleName $script:moduleName
+
+            $null = "
+ConvertFrom-StringData @`'
+# English strings
+ParameterBlockParameterAttributeMissing    = A [Parameter()] attribute must be the first attribute of each parameter and be on its own line. See https://github.com/PowerShell/DscResources/blob/master/StyleGuidelines.md#correct-format-for-parameter-block
+'@
+            " | Out-File -Force -FilePath 'TestDrive:\en-US\Strings.psd1'
+
+            $script = @"
+Get-LocalizedData -FileName 'Strings' -DefaultUICulture 'en-US' -EA Stop
+"@
+
+            $script | Out-File -Force -FilePath 'TestDrive:\execute.ps1'
+        }
+
+        It 'Should retrieve the data' {
+            { $null = &'TestDrive:\execute.ps1' } | Should -Not -Throw
+            &'TestDrive:\execute.ps1' | Should -Not -BeNullOrEmpty
+        }
+    }
 }
