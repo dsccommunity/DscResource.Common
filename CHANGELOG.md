@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated the pipelines files for resolving dependencies.
+- `Get-LocalizedData`
+  - Refactored to simplify execution and debugging. The command previously
+    used a steppable pipeline (proxies `Import-LocalizedData`), that was
+    removed since it was not possible to use the command in a pipeline.
+    It just made it more complex and harder to debug. There are more
+    debug messages added to hopefully simplify solving some hard to find
+    edge cases bugs.
 
 ### Fixed
 
