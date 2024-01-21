@@ -6,6 +6,9 @@
         This function serves the purpose of removing common parameters and option
         common parameters from a parameter hashtable.
 
+    .OUTPUTS
+        System.Collections.Hashtable
+
     .PARAMETER Hashtable
         The parameter hashtable that should be pruned.
 

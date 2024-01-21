@@ -1,10 +1,29 @@
 <#
     .SYNOPSIS
-        Compare current and desired property values for any DSC resource.
+        Compare current and desired property values for any DSC resource and return
+        a hashtable with the metadata from the comparison.
 
     .DESCRIPTION
         This function is used to compare current and desired property values for any
         DSC resource, and return a hashtable with the metadata from the comparison.
+
+        This introduces another design pattern that is used to evaluate current and
+        desired state in a DSC resource. This command is meant to be used in a DSC
+        resource from both _Test_ and _Set_. The evaluation is made in _Set_
+        to make sure to only change the properties that are not in the desired state.
+        Properties that are in the desired state should not be changed again. This
+        design pattern also handles when the command `Invoke-DscResource` is called
+        with the method `Set`, which with this design pattern will evaluate the
+        properties correctly.
+
+        >[!NOTE]
+        >This design pattern is not widely used in the DSC resource modules in the
+        >DSC Community, the only known use is in SqlServerDsc. This design pattern
+        >can be viewed as deprecated, and should be replaced with the design pattern
+        >that uses the command [`Compare-DscParameterState`](Compare-DscParameterState).
+
+        See the other design patterns that uses the command [`Compare-DscParameterState`](Compare-DscParameterState)
+        or [`Test-DscParameterState`](Test-DscParameterState).
 
     .PARAMETER CurrentValues
         The current values that should be compared to to desired values. Normally
@@ -33,17 +52,82 @@
             Permission = @('State')
         }
 
+    .OUTPUTS
+        System.Collections.Hashtable[]
+
+    .NOTES
+        Returns an array containing a hashtable with metadata for each property
+        that was evaluated.
+
+        Metadata Name | Type | Description
+        --- | --- | ---
+        ParameterName | `[System.String]` | The name of the property that was evaluated
+        Expected | The type of the property | The desired value for the property
+        Actual | The type of the property | The actual current value for the property
+        InDesiredState | `[System.Boolean]` | Returns `$true` if the expected and actual value was equal.
+
     .EXAMPLE
         $compareTargetResourceStateParameters = @{
             CurrentValues = (Get-TargetResource $PSBoundParameters)
             DesiredValues = $PSBoundParameters
         }
-
         $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+        $propertiesNotInDesiredState = $propertyState.Where({ -not $_.InDesiredState })
 
-        This examples call Compare-ResourcePropertyState with the current state
+        This example calls Compare-ResourcePropertyState with the current state
         and the desired state and returns a hashtable array of all the properties
         that was evaluated based on the properties pass in the parameter DesiredValues.
+        Finally it sets a parameter `$propertiesNotInDesiredState` that contain
+        an array with all properties not in desired state.
+
+    .EXAMPLE
+        $compareTargetResourceStateParameters = @{
+            CurrentValues = (Get-TargetResource $PSBoundParameters)
+            DesiredValues = $PSBoundParameters
+            Properties    = @(
+                'Property1'
+            )
+        }
+        $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+        $false -in $propertyState.InDesiredState
+
+        This example calls Compare-ResourcePropertyState with the current state
+        and the desired state and returns a hashtable array with just the property
+        `Property1` as that was the only property that was to be evaluated.
+        Finally it checks if `$false` is present in the array property `InDesiredState`.
+
+    .EXAMPLE
+        $compareTargetResourceStateParameters = @{
+            CurrentValues    = (Get-TargetResource $PSBoundParameters)
+            DesiredValues    = $PSBoundParameters
+            IgnoreProperties = @(
+                'Property1'
+            )
+        }
+        $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+
+        This example calls Compare-ResourcePropertyState with the current state
+        and the desired state and returns a hashtable array of all the properties
+        except the property `Property1`.
+
+    .EXAMPLE
+        $compareTargetResourceStateParameters = @{
+            CurrentValues    = (Get-TargetResource $PSBoundParameters)
+            DesiredValues    = $PSBoundParameters
+            CimInstanceKeyProperties = @{
+                ResourceProperty1 = @(
+                    'CimProperty1'
+                )
+            }
+        }
+        $propertyState = Compare-ResourcePropertyState @compareTargetResourceStateParameters
+
+        This example calls Compare-ResourcePropertyState with the current state
+        and the desired state and have a property `ResourceProperty1` who's value
+        is an  array of embedded CIM instances. The key property for the CIM instances
+        are `CimProperty1`. The CIM instance key property `CimProperty1` is used
+        to get the unique CIM instance object to compare against from both the current
+        state and the desired state.
 #>
 function Compare-ResourcePropertyState
 {

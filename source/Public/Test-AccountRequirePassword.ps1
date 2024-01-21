@@ -13,17 +13,17 @@
     .EXAMPLE
         Test-AccountRequirePassword -Name 'DOMAIN\MyMSA$'
 
-        Returns $false as a manged service account does not need a password.
+        Returns `$false` as a manged service account does not need a password.
 
     .EXAMPLE
         Test-AccountRequirePassword -Name 'DOMAIN\MySqlUser'
 
-        Returns $true as a user account need a password.
+        Returns `$true` as a user account need a password.
 
     .EXAMPLE
         Test-AccountRequirePassword -Name 'NT SERVICE\MSSQL$PAYROLL'
 
-        Returns $false as a virtual account does not need a password.
+        Returns `$false`as a virtual account does not need a password.
 
     .OUTPUTS
         [System.Boolean]

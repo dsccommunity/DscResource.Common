@@ -11,7 +11,7 @@
         A hashtable with the values to convert.
 
     .OUTPUTS
-        An object array with CimInstance objects.
+        System.Object[]
 
     .EXAMPLE
         ConvertTo-CimInstance -Hashtable @{

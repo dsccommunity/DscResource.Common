@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Tasks for automating documentation for the GitHub repository wiki ([issue #110](https://github.com/dsccommunity/DscResource.Common/issues/110)).
+
 ### Changed
 
 - Updated the pipelines files for resolving dependencies.
+- Command documentation was moved from README to GitHub repository wiki.
+- Change the word cmdlet to command throughout in the documentation, code
+  and localization strings.
 - `Get-LocalizedData`
   - Refactored to simplify execution and debugging. The command previously
     used a steppable pipeline (proxies `Import-LocalizedData`), that was

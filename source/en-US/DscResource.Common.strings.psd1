@@ -30,7 +30,7 @@ ConvertFrom-StringData @'
     KeyPropertiesMissing = The hashtable passed to function Test-DscPropertyState is missing the key 'KeyProperties'. This must be set to the property names that makes each instance in the CIM instance collection unique. (DRC0034)
     ArrayDoesNotMatch = One or more values in an array does not match the desired state. Details of the changes are below. (DRC0035)
     PropertyValueOfTypeDoesNotMatch = {0} value does not match. Current value is '{1}', but expected the value '{2}'. (DRC0036)
-    UnableToCompareType = Unable to compare the type {0} as it is not handled by the Test-DscPropertyState cmdlet. (DRC0037)
+    UnableToCompareType = Unable to compare the type {0} as it is not handled by the Test-DscPropertyState command. (DRC0037)
     EvaluatePropertyState = Evaluating the state of the property '{0}'. (DRC0038)
     PropertyInDesiredState = The parameter '{0}' is in desired state. (DRC0039)
     PropertyNotInDesiredState = The parameter '{0}' is not in desired state. (DRC0040)

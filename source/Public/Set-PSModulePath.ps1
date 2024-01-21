@@ -1,12 +1,14 @@
-
 <#
     .SYNOPSIS
         Set environment variable PSModulePath in the current session or machine
         wide.
 
     .DESCRIPTION
-        This is a wrapper to set environment variable PSModulePath in current
+        This is a command to set environment variable PSModulePath in current
         session or machine wide.
+
+    .OUTPUTS
+        None
 
     .PARAMETER Path
         A string with all the paths separated by semi-colons.
@@ -18,8 +20,14 @@
     .EXAMPLE
         Set-PSModulePath -Path '<Path 1>;<Path 2>'
 
+        Sets the session environment variable `PSModulePath` to the specified path
+        or paths (separated with semi-colons).
+
     .EXAMPLE
         Set-PSModulePath -Path '<Path 1>;<Path 2>' -Machine
+
+        Sets the machine environment variable `PSModulePath` to the specified path
+        or paths (separated with semi-colons).
 #>
 function Set-PSModulePath
 {

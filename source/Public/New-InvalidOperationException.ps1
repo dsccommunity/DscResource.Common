@@ -5,6 +5,9 @@
     .DESCRIPTION
         Creates and throws an invalid operation exception.
 
+    .OUTPUTS
+        None
+
     .PARAMETER Message
         The message explaining why this error is being thrown.
 
@@ -18,9 +21,11 @@
         }
         catch
         {
-            $errorMessage = $script:localizedData.InstallationFailedMessage -f $Path, $processId
-            New-InvalidOperationException -Message $errorMessage -ErrorRecord $_
+            New-InvalidOperationException -Message 'My error message' -ErrorRecord $_
         }
+
+        Creates and throws an invalid operation exception with the message 'My error message'
+        and includes the exception that caused this terminating error.
 #>
 function New-InvalidOperationException
 {

@@ -11,11 +11,14 @@
     .PARAMETER ArgumentName
         The name of the invalid argument that is causing this error to be thrown.
 
-    .EXAMPLE
-        $errorMessage = $script:localizedData.ActionCannotBeUsedInThisContextMessage `
-                -f $Action, $Parameter
+    .OUTPUTS
+        None
 
-        New-InvalidArgumentException -ArgumentName 'Action' -Message $errorMessage
+    .EXAMPLE
+        New-InvalidArgumentException -ArgumentName 'Action' -Message 'My error message'
+
+        Creates and throws an invalid argument exception for (parameter) 'Action'
+        with the message 'My error message'.
 #>
 function New-InvalidArgumentException
 {

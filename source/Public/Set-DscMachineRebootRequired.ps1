@@ -7,10 +7,13 @@
         This function is used to set the global variable that indicates
         to the LCM that a reboot of the node is required.
 
-    .EXAMPLE
-        PS C:\> Set-DscMachineRebootRequired
+    .OUTPUTS
+        None
 
-        Sets the $global:DSCMachineStatus variable to 1.
+    .EXAMPLE
+        Set-DscMachineRebootRequired
+
+        Sets the `$global:DSCMachineStatus` variable to 1.
 
     .NOTES
         This function is implemented so that individual resource modules

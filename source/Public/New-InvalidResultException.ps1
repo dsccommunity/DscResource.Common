@@ -11,20 +11,30 @@
     .PARAMETER ErrorRecord
         The error record containing the exception that is causing this terminating error.
 
+    .OUTPUTS
+        None
+
+    .EXAMPLE
+        $numberOfObjects = Get-ChildItem -Path $path
+        if ($numberOfObjects -eq 0)
+        {
+            New-InvalidResultException -Message 'To few files'
+        }
+
+        Creates and throws an invalid result exception with the message 'To few files'
+
     .EXAMPLE
         try
         {
             $numberOfObjects = Get-ChildItem -Path $path
-            if ($numberOfObjects -eq 0)
-            {
-                throw 'To few files.'
-            }
         }
         catch
         {
-            $errorMessage = $script:localizedData.TooFewFilesMessage -f $path
-            New-InvalidResultException -Message $errorMessage -ErrorRecord $_
+            New-InvalidResultException -Message 'Missing files' -ErrorRecord $_
         }
+
+        Creates and throws an invalid result exception with the message 'Missing files'
+        and includes the exception that caused this terminating error.
 #>
 function New-InvalidResultException
 {

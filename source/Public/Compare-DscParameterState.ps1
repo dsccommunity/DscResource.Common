@@ -7,6 +7,11 @@
         the current values present on the system, and return a hashtable with the metadata
         from the comparison.
 
+        >[!NOTE]
+        >The content of the function `Test-DscParameterState` has been extracted and now
+        >`Test-DscParameterState` is just calling `Compare-DscParameterState`.
+        >This function can be used in a DSC resource from the _Get_ function/method.
+
     .PARAMETER CurrentValues
         A hashtable with the current values on the system, obtained by e.g.
         Get-TargetResource.
@@ -39,7 +44,23 @@
         By default, this command returns only the properties not in desired state.
 
     .PARAMETER IncludeValue
-        Indicates that result contains the ActualValue and ExcpectedValue properties.
+        Indicates that result contains the ActualValue and ExpectedValue properties.
+
+    .OUTPUTS
+        System.Object[]
+
+    .NOTES
+        Returns an array containing a PSCustomObject with metadata for each property
+        that was evaluated.
+
+        Metadata Name | Type | Description
+        --- | --- | ---
+        Property | `[System.String]` | The name of the property that was evaluated
+        InDesiredState | `[System.Boolean]` | Returns `$true` if the expected and actual value was equal.
+        ExpectedType | `[System.String]` | Return the type of desired object.
+        ActualType | `[System.String]` | Return the type of current object.
+        ExpectedValue | `[System.PsObject]` | Return the value of expected object.
+        ActualValue | `[System.PsObject]` | Return the value of current object.
 
     .EXAMPLE
         $currentValues = @{
@@ -47,21 +68,11 @@
             Int = 1
             Bool = $true
         }
-
         $desiredValues = @{
             String = 'This is a string'
             Int = 99
         }
-
         Compare-DscParameterState -CurrentValues $currentValues -DesiredValues $desiredValues
-
-        Name                           Value
-        ----                           -----
-        Property                       Int
-        InDesiredState                 False
-        ExpectedType                   System.Int32
-        ActualType                     System.Int32
-        ```
 
         The function Compare-DscParameterState compare the value of each hashtable based
         on the keys present in $desiredValues hashtable. The result indicates that Int
@@ -74,27 +85,16 @@
             Int = 1
             Bool = $true
         }
-
         $desiredValues = @{
             String = 'This is a string'
             Int = 99
             Bool = $false
         }
-
         $excludeProperties = @('Bool')
-
         Compare-DscParameterState `
             -CurrentValues $currentValues `
             -DesiredValues $desiredValues `
             -ExcludeProperties $ExcludeProperties
-
-        Name                           Value
-        ----                           -----
-        Property                       Int
-        InDesiredState                 False
-        ExpectedType                   System.Int32
-        ActualType                     System.Int32
-        ```
 
         The function Compare-DscParameterState compare the value of each hashtable based
         on the keys present in $desiredValues hashtable and without those in $excludeProperties.
@@ -105,7 +105,6 @@
         $serviceParameters = @{
             Name     = $Name
         }
-
         $returnValue = Compare-DscParameterState `
             -CurrentValues (Get-Service @serviceParameters) `
             -DesiredValues $PSBoundParameters `

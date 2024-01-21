@@ -3,14 +3,18 @@
         Returns the computer name cross-plattform.
 
     .DESCRIPTION
-        The variable `$env:COMPUTERNAME` does not exist cross-platform which
-        hinders development and testing on macOS and Linux. Instead this cmdlet
-        can be used to get the computer name cross-plattform.
+        Returns the computer name cross-plattform. The variable `$env:COMPUTERNAME`
+        does not exist cross-platform which hinders development and testing on
+        macOS and Linux. Instead this command can be used to get the computer name
+        cross-plattform.
+
+    .OUTPUTS
+        System.String
 
     .EXAMPLE
         Get-ComputerName
 
-        This example returns the computer name cross-plattform.
+        Returns the computer name regardless of platform.
 #>
 function Get-ComputerName
 {

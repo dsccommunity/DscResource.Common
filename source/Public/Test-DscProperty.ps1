@@ -3,7 +3,9 @@
         Tests whether the class-based resource has the specified property.
 
     .DESCRIPTION
-        Tests whether the class-based resource has the specified property.
+        Tests whether the class-based resource has the specified property, and
+        can optionally tests if the property has a certain attribute or whether
+        it is assigned a non-null value.
 
     .PARAMETER InputObject
         Specifies the object that should be tested for existens of the specified
@@ -21,21 +23,24 @@
         If the property exist but is not the specific attribute the command returns
         `$false`.
 
+    .OUTPUTS
+        [System.Boolean]
+
     .EXAMPLE
         Test-DscProperty -InputObject $this -Name 'MyDscProperty'
 
-        Returns $true or $false whether the property exist or not.
+        Returns `$true` or `$false` whether the property exist or not.
 
     .EXAMPLE
         $this | Test-DscProperty -Name 'MyDscProperty'
 
-        Returns $true or $false whether the property exist or not.
+        Returns `$true` or `$false` whether the property exist or not.
 
     .EXAMPLE
         Test-DscProperty -InputObject $this -Name 'MyDscProperty' -HasValue
 
-        Returns $true if the property exist and is assigned a non-null value, if not
-        $false is returned.
+        Returns `$true` if the property exist and is assigned a non-null value,
+        if not `$false` is returned.
 
     .EXAMPLE
         Test-DscProperty -InputObject $this -Name 'MyDscProperty' -Attribute 'Optional'

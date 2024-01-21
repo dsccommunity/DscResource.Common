@@ -10,7 +10,7 @@
         An array of CimInstances or a single CimInstance object to convert.
 
     .OUTPUTS
-        Hashtable
+        System.Collections.Hashtable
 
     .EXAMPLE
         $newInstanceParameters = @{
@@ -18,22 +18,19 @@
             Namespace = 'root/microsoft/Windows/DesiredStateConfiguration'
             ClientOnly = $true
         }
-
         $cimInstance = [Microsoft.Management.Infrastructure.CimInstance[]] (
             (New-CimInstance @newInstanceParameters -Property @{
                 Key   = 'FirstName'
                 Value = 'John'
             }),
-
             (New-CimInstance @newInstanceParameters -Property @{
                 Key   = 'LastName'
                 Value = 'Smith'
             })
         )
-
         ConvertTo-HashTable -CimInstance $cimInstance
 
-        This creates a array om CimInstances of the class name MSFT_KeyValuePair
+        This creates a array of CimInstances using the class name MSFT_KeyValuePair
         and passes it to ConvertTo-HashTable which returns a hashtable.
 #>
 function ConvertTo-HashTable

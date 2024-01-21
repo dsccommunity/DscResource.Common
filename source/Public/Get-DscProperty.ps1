@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
         Returns DSC resource properties that is part of a class-based DSC resource.
@@ -6,7 +5,7 @@
     .DESCRIPTION
         Returns DSC resource properties that is part of a class-based DSC resource.
         The properties can be filtered using name, attribute, or if it has been
-        assigned a value.
+        assigned a non-null value.
 
     .PARAMETER InputObject
         The object that contain one or more key properties.
@@ -26,6 +25,9 @@
         Specifies to return only properties that has been assigned a non-null value.
         If left out all properties are returned regardless if there is a value
         assigned or not.
+
+    .OUTPUTS
+        System.Collections.Hashtable
 
     .EXAMPLE
         Get-DscProperty -InputObject $this

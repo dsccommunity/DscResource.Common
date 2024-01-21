@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
         Returns the environment variable PSModulePath from the specified target.
@@ -6,10 +5,14 @@
     .DESCRIPTION
         Returns the environment variable PSModulePath from the specified target.
         If more than one target is provided the return will contain all the
-        concatenation of all unique paths from the targets.
+        concatenation of all unique paths from the targets. If there are no paths
+        to return the command will return an empty string.
 
     .PARAMETER FromTarget
         Specifies the target to get the PSModulePath from.
+
+    .OUTPUTS
+        System.String
 
     .EXAMPLE
         Get-PSModulePath -FromTarget 'Session'

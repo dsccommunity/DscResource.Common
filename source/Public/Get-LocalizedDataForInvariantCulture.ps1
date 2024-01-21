@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
         Gets language-specific data when the culture is invariant.
