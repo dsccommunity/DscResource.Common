@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Tasks for automating documentation for the GitHub repository wiki.
+
 ### Changed
 
 - Updated the pipelines files for resolving dependencies.
