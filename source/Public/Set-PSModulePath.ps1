@@ -52,6 +52,7 @@ function Set-PSModulePath
         Justification = 'ShouldProcess is not supported in DSC resources.'
     )]
     [CmdletBinding(DefaultParameterSetName = 'Default')]
+    [OutputType([System.String])]
     param
     (
         [Parameter(Mandatory = $true, ParameterSetName = 'Default')]
