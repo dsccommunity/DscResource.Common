@@ -436,7 +436,7 @@ function Get-LocalizedData
     }
     else
     {
-        Write-Debug -Message ('Returning localized data.' -f $BindingVariable)
+        Write-Debug -Message 'Returning localized data.'
 
         return $localizedData
     }
