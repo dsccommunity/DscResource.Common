@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Tasks for automating documentation for the GitHub repository wiki.
+- Tasks for automating documentation for the GitHub repository wiki ([issue #110](https://github.com/dsccommunity/DscResource.Common/issues/110)).
 
 ### Changed
 
