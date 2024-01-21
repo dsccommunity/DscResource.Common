@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Assert-BoundParameter`
   - Fixed example in documentation that were referencing an invalid command name.
+- `Get-LocalizedData`
+  - One debug message was wrongly using a format operator ([issue #111](https://github.com/dsccommunity/DscResource.Common/issues/111).
 
 ## [0.16.0] - 2023-04-10
 
