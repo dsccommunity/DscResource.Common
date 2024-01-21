@@ -19,6 +19,7 @@ BuildWorkflow:
     - test
 
   build:
+    - Remove_BuiltModule_From_Session
     - Clean
     - Build_Module_ModuleBuilder
     - Build_NestedModules_ModuleBuilder
@@ -50,6 +51,11 @@ BuildWorkflow:
     - Publish_release_to_GitHub
     - publish_module_to_gallery
     - Publish_GitHub_Wiki_Content
+
+  Remove_BuiltModule_From_Session: |
+    {
+        Remove-Module -Name 'DscResource.Common' -ErrorAction SilentlyContinue
+    }
 
 ####################################################
 #       PESTER  Configuration                      #
