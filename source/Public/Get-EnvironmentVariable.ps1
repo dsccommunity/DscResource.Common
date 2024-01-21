@@ -1,16 +1,19 @@
-
 <#
     .SYNOPSIS
         Returns the value from an environment variable from a specified target.
 
     .DESCRIPTION
         Returns the value from an environment variable from a specified target.
+        This command returns `$null` if the environment variable does not exist.
 
     .PARAMETER Name
         Specifies the environment variable name.
 
     .PARAMETER FromTarget
         Specifies the target to return the value from. Defaults to 'Session'.
+
+    .OUTPUTS
+        System.String
 
     .EXAMPLE
         Get-EnvironmentVariable -Name 'PSModulePath'

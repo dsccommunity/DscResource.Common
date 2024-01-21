@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
         Creates and throws an object not found exception.
@@ -6,11 +5,17 @@
     .DESCRIPTION
         Creates and throws an object not found exception.
 
+    .OUTPUTS
+        None
+
     .PARAMETER Message
         The message explaining why this error is being thrown.
 
     .PARAMETER ErrorRecord
         The error record containing the exception that is causing this terminating error.
+
+    .OUTPUTS
+        None
 
     .EXAMPLE
         try
@@ -19,9 +24,11 @@
         }
         catch
         {
-            $errorMessage = $script:localizedData.PathNotFoundMessage -f $path
-            New-ObjectNotFoundException -Message $errorMessage -ErrorRecord $_
+            New-ObjectNotFoundException -Message 'COuld not get files' -ErrorRecord $_
         }
+
+        Creates and throws an object not found exception with the message 'Could not
+        get files' and includes the exception that caused this terminating error.
 #>
 function New-ObjectNotFoundException
 {

@@ -11,15 +11,17 @@
     .PARAMETER ErrorRecord
         The error record containing the exception that is causing this terminating error.
 
+    .OUTPUTS
+        None
+
     .EXAMPLE
-        if ($runFeature)
+        if ($notImplementedFeature)
         {
-            $errorMessage = $script:localizedData.FeatureMissing -f $path
-            New-NotImplementedException -Message $errorMessage -ErrorRecord $_
+            New-NotImplementedException -Message 'This feature is not implemented yet'
         }
 
-        Throws an not implemented exception if the variable $runFeature contains
-        a value.
+        Creates and throws an not implemented exception with the message 'This feature
+        is not implemented yet'
 #>
 function New-NotImplementedException
 {

@@ -1,15 +1,16 @@
-
 <#
     .SYNOPSIS
         Gets language-specific data into scripts and functions based on the UI culture
-        that is selected for the operating system.
-        Similar to Import-LocalizedData, with extra parameter 'DefaultUICulture'.
+        that is specified or that is selected for the operating system.
 
     .DESCRIPTION
         The Get-LocalizedData cmdlet dynamically retrieves strings from a subdirectory
         whose name matches the UI language set for the current user of the operating system.
         It is designed to enable scripts to display user messages in the UI language selected
         by the current user.
+
+        Optionally the `Get-LocalizedData` saves the hash table in the variable
+        that is specified by the value of the `BindingVariable` parameter.
 
         Get-LocalizedData imports data from .psd1 files in language-specific subdirectories
         of the script directory and saves them in a local variable that is specified in the
@@ -68,6 +69,10 @@
         when Import-LocalizedData saves the imported content in the BindingVariable, the
         imported data will replace the default text strings. If you are not specifying
         default text strings, you can select any variable name.
+
+        If the BindingVariable parameter is not specified, Import-LocalizedData returns
+        a hashtable of the text strings. The hash table is passed down the pipeline or
+        displayed at the command line.
 
     .PARAMETER UICulture
         Specifies an alternate UI culture. The default is the value of the $PsUICulture
@@ -156,6 +161,22 @@
         localized message is displayed.
 
         For more information, see about_Script_Internationalization.
+
+        This command should preferably be used at the top of each resource PowerShell
+        module script file (.psm1).
+
+        It will automatically look for a file in the folder for the current UI
+        culture, or default to the UI culture folder 'en-US'.
+
+        The localized strings file can be named either `<ScriptFileName>.psd1`,
+        e.g. `DSC_MyResource.psd1`, or suffixed with `strings`, e.g.
+        `DSC_MyResource.strings.psd1`.
+
+        Read more about localization in the section [Localization](https://dsccommunity.org/styleguidelines/localization/)
+        in the DSC Community style guideline.
+
+    .OUTPUTS
+        System.Collections.Hashtable
 
     .EXAMPLE
         $script:localizedData = Get-LocalizedData

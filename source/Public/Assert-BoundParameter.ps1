@@ -4,8 +4,24 @@
         mutually exclusive lists.
 
     .DESCRIPTION
-        Throws an error if there is a bound parameter that exists in both the
-        mutually exclusive lists.
+        This command asserts passed parameters. It takes a hashtable, normally
+        `$PSBoundParameters`. There are two parameter sets for this command.
+
+        >There is no built in logic to validate against parameters sets for DSC
+        >so this can be used instead to validate the parameters that were set in
+        >the configuration.
+
+        **MutuallyExclusiveParameters**
+
+        This parameter set takes two mutually exclusive lists of parameters.
+        If any of the parameters in the first list are specified, none of the
+        parameters in the second list can be specified.
+
+        **RequiredParameter**
+
+        Assert that required parameters has been specified, and throws an exception
+        if not. Optionally it can be specified that parameters are only required
+        if a specific parameter has been passed.
 
     .PARAMETER BoundParameterList
         The parameters that should be evaluated against the mutually exclusive
@@ -38,7 +54,6 @@
                 'Parameter2'
             )
         }
-
         Assert-BoundParameter @assertBoundParameterParameters
 
         This example throws an exception if `$PSBoundParameters` contains both
@@ -52,7 +67,8 @@
     .EXAMPLE
         Assert-BoundParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('Property2', 'Property3') -IfParameterPresent @('Property1')
 
-        Throws an exception if the parameter 'Property1' is specified and either of the required parameters are not.
+        Throws an exception if the parameter 'Property1' is specified and either
+        of the required parameters are not.
 #>
 function Assert-BoundParameter
 {

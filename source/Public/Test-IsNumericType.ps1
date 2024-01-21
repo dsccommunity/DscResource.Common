@@ -3,7 +3,19 @@
         Returns whether the specified object is of a numeric type.
 
     .DESCRIPTION
-        Returns whether the specified object is of a numeric type.
+        Returns whether the specified object is of a numeric type:
+
+        - [System.Byte]
+        - [System.Int16]
+        - [System.Int32]
+        - [System.Int64]
+        - [System.SByte]
+        - [System.UInt16]
+        - [System.UInt32]
+        - [System.UInt64]
+        - [System.Decimal]
+        - [System.Double]
+        - [System.Single]
 
     .PARAMETER Object
        The object to test if it is a numeric type.
@@ -11,12 +23,17 @@
     .EXAMPLE
         Test-IsNumericType -Object ([System.UInt32] 1)
 
-        Returns $true since the object passed is of a numeric type.
+        Returns `$true` since the object passed is of a numeric type.
+
+    .EXAMPLE
+        ([System.String] 'a') | Test-IsNumericType
+
+        Returns `$false` since the value is not a numeric type.
 
     .EXAMPLE
         ('a', 2, 'b') | Test-IsNumericType
 
-        Returns $true since one of the values in the array is of a numeric type.
+        Returns `$true` since one of the values in the array is of a numeric type.
 
     .OUTPUTS
         [System.Boolean]

@@ -2,12 +2,13 @@
     .SYNOPSIS
         Locates one or more certificates using the passed certificate selector parameters.
 
-        If more than one certificate is found matching the selector criteria, they will be
-        returned in order of descending expiration date.
-
     .DESCRIPTION
         A common function to find certificates based on multiple search filters, including,
         but not limited to: Thumbprint, Friendly Name, DNS Names, Key Usage, Issuers, etc.
+
+        Locates one or more certificates using the passed certificate selector parameters.
+        If more than one certificate is found matching the selector criteria, they will be
+        returned in order of descending expiration date.
 
     .PARAMETER Thumbprint
         The thumbprint of the certificate to find.
@@ -37,6 +38,9 @@
     .PARAMETER AllowExpired
         Allows expired certificates to be returned.
 
+    .OUTPUTS
+        System.Security.Cryptography.X509Certificates.X509Certificate2
+
     .EXAMPLE
         Find-Certificate -Thumbprint '1111111111111111111111111111111111111111'
 
@@ -53,25 +57,25 @@
         Return certificate(s) filtered on specific DNS Names.
 
     .EXAMPLE
-        find-certificate -Subject 'CN=contoso, DC=com'
+        Find-Certificate -Subject 'CN=contoso, DC=com'
 
         Return certificate(s) with specific subject.
 
     .EXAMPLE
-        find-certificate -Issuer 'CN=contoso-ca, DC=com' -AllowExpired $true
+        Find-Certificate -Issuer 'CN=contoso-ca, DC=com' -AllowExpired $true
 
         Return all certificates from specific issuer, including expired certificates.
 
     .EXAMPLE
-        Find-Certificate -EnhancedKeyUsage 'Server Authentication' -AllowExpired $true
+        Find-Certificate -EnhancedKeyUsage @('Client authentication','Server Authentication') -AllowExpired $true
 
-        Return all certificates that can be used for "Server Authentication", including expired certificates.
+        Return all certificates that can be used for server or client authentication,
+        including expired certificates.
 
     .EXAMPLE
         Find-Certificate -FriendlyName 'My IIS Site SSL Cert'
 
         Return certificate based on FriendlyName.
-
 #>
 function Find-Certificate
 {

@@ -1,9 +1,11 @@
 <#
     .SYNOPSIS
-        Assert if the specific module is available to be imported.
+        Assert if the specific module is available to be imported and optionally
+        import the module.
 
     .DESCRIPTION
-        Assert if the specific module is available to be imported.
+        Assert if the specific module is available to be imported and optionally
+        import the module.
 
     .PARAMETER ModuleName
         Specifies the name of the module to assert.
@@ -19,19 +21,21 @@
     .EXAMPLE
         Assert-Module -ModuleName 'DhcpServer'
 
-        This asserts that the module DhcpServer is available on the system.
+        This asserts that the module DhcpServer is available on the system. If it
+        is not an exception will be thrown.
 
     .EXAMPLE
         Assert-Module -ModuleName 'DhcpServer' -ImportModule
 
         This asserts that the module DhcpServer is available on the system and
-        imports it.
+        imports it. If the module is not available an exception will be thrown.
 
     .EXAMPLE
         Assert-Module -ModuleName 'DhcpServer' -ImportModule -Force
 
-        This asserts that the module DhcpServer is available on the system and
-        forcibly imports it.
+        This asserts that the module DhcpServer is available on the system and it
+        will be forcibly imported into the session (even if it was already in the
+        session). If the module is not available an exception will be thrown.
 #>
 function Assert-Module
 {

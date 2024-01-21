@@ -3,12 +3,20 @@
         Assert that the user has elevated the PowerShell session.
 
     .DESCRIPTION
-        Assert that the user has elevated the PowerShell session.
+        Assert that the user has elevated the PowerShell session. The command will
+        throw a statement-terminating error if the script is not run from an elevated
+        session.
 
     .EXAMPLE
         Assert-ElevatedUser
 
         Throws an exception if the user has not elevated the PowerShell session.
+
+    .EXAMPLE
+        `Assert-ElevatedUser -ErrorAction 'Stop'`
+
+        This example stops the entire script if it is not run from an
+        elevated PowerShell session.
 
     .OUTPUTS
         None.
