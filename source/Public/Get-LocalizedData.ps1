@@ -4,7 +4,7 @@
         that is specified or that is selected for the operating system.
 
     .DESCRIPTION
-        The Get-LocalizedData cmdlet dynamically retrieves strings from a subdirectory
+        The Get-LocalizedData command dynamically retrieves strings from a subdirectory
         whose name matches the UI language set for the current user of the operating system.
         It is designed to enable scripts to display user messages in the UI language selected
         by the current user.
@@ -14,7 +14,7 @@
 
         Get-LocalizedData imports data from .psd1 files in language-specific subdirectories
         of the script directory and saves them in a local variable that is specified in the
-        command. The cmdlet selects the subdirectory and file based on the value of the
+        command. The command selects the subdirectory and file based on the value of the
         $PSUICulture automatic variable. When you use the local variable in the script to
         display a user message, the message appears in the user's UI language.
 
@@ -22,7 +22,7 @@
         path, and file name, to add supported commands, and to suppress the error message that
         appears if the .psd1 files are not found.
 
-        The G-LocalizedData cmdlet supports the script internationalization
+        The G-LocalizedData command supports the script internationalization
         initiative that was introduced in Windows PowerShell 2.0. This initiative
         aims to better serve users worldwide by making it easy for scripts to display
         user messages in the UI language of the current user. For more information
@@ -83,7 +83,7 @@
         (within the base directory) from which Import-LocalizedData gets the .psd1 file
         for the script.
 
-        The cmdlet searches for a subdirectory with the same name as the value of the
+        The command searches for a subdirectory with the same name as the value of the
         UICulture parameter or the $PsUICulture automatic variable, such as de-DE or
         ar-SA. If it cannot find the directory, or the directory does not contain a .psd1
         file for the script, it searches for a subdirectory with the name of the language

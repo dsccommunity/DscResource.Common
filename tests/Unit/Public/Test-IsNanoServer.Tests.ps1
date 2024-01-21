@@ -37,7 +37,7 @@ BeforeAll {
     $PSDefaultParameterValues['Should:ModuleName'] = $script:moduleName
 
     <#
-        This mocks the Get-CimInstance on platforms where the cmdlet does not
+        This mocks the Get-CimInstance on platforms where the command does not
         exist, like Linux anc macOS.
     #>
     $stubModuleName = 'DscResource.Common.Stubs'

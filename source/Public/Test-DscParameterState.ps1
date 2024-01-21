@@ -6,8 +6,8 @@
         This function tests the parameter status of DSC resource parameters against
         the current values present on the system.
 
-        This cmdlet was designed to be used in a DSC resource from only _Test_.
-        The design pattern that uses the cmdlet `Test-DscParameterState` assumes that
+        This command was designed to be used in a DSC resource from only _Test_.
+        The design pattern that uses the command `Test-DscParameterState` assumes that
         LCM is used which always calls _Test_ before _Set_, or that there never
         is a need to evaluate the state in _Set_.
 

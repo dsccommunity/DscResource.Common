@@ -48,7 +48,7 @@ AfterAll {
 Describe 'Test-DscObjectHasProperty' {
     Context 'When the object contains the expected property' {
         BeforeAll {
-            # Use the Get-Verb cmdlet to just get a simple object fast
+            # Use the Get-Verb command to just get a simple object fast
             InModuleScope -ScriptBlock {
                 $script:testDscObject = (Get-Verb)[0]
             }
@@ -71,7 +71,7 @@ Describe 'Test-DscObjectHasProperty' {
 
     Context 'When the object does not contain the expected property' {
         BeforeAll {
-            # Use the Get-Verb cmdlet to just get a simple object fast
+            # Use the Get-Verb command to just get a simple object fast
             InModuleScope -ScriptBlock {
                 $script:testDscObject = (Get-Verb)[0]
             }

@@ -23,7 +23,7 @@
         }
 
     .NOTES
-        This function is used by the cmdlet Compare-ResourcePropertyState.
+        This function is used by the command Compare-ResourcePropertyState.
 #>
 function Test-DscPropertyState
 {
