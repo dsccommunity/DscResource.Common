@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Tasks for automating documentation for the GitHub repository wiki ([issue #110](https://github.com/dsccommunity/DscResource.Common/issues/110)).
+- `Set-PSModulePath`
+  - A new parameters set takes two parameters `FromTarget` and `ToTarget`
+    that can copy from omne target to the other.
+  - A new parameter `PassThru` that, if specified, returns the path that
+    was set.
 
 ### Changed
 
@@ -17,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Command documentation was moved from README to GitHub repository wiki.
 - Change the word cmdlet to command throughout in the documentation, code
   and localization strings.
+- A meta task now removes the built module from the session if it is imported.
 - `Get-LocalizedData`
   - Refactored to simplify execution and debugging. The command previously
     used a steppable pipeline (proxies `Import-LocalizedData`), that was
