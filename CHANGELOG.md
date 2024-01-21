@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated the pipelines files for resolving dependencies.
+- Command documentation was moved from README to GitHub repository wiki.
 - `Get-LocalizedData`
   - Refactored to simplify execution and debugging. The command previously
     used a steppable pipeline (proxies `Import-LocalizedData`), that was
