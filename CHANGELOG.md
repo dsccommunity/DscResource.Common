@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tasks for automating documentation for the GitHub repository wiki ([issue #110](https://github.com/dsccommunity/DscResource.Common/issues/110)).
 - `Set-PSModulePath`
   - A new parameters set takes two parameters `FromTarget` and `ToTarget`
-    that can copy from omne target to the other.
+    that can copy from omne target to the other ([issue #102](https://github.com/dsccommunity/DscResource.Common/issues/102)).
   - A new parameter `PassThru` that, if specified, returns the path that
     was set.
 
