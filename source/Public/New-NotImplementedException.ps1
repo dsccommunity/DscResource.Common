@@ -1,9 +1,9 @@
 <#
     .SYNOPSIS
-        Creates and throws an not implemented exception.
+        Creates and throws or returns an not implemented exception.
 
     .DESCRIPTION
-        Creates and throws an not implemented exception.
+        Creates and throws or returns an not implemented exception.
 
     .PARAMETER Message
         The message explaining why this error is being thrown.
@@ -11,8 +11,12 @@
     .PARAMETER ErrorRecord
         The error record containing the exception that is causing this terminating error.
 
+    .PARAMETER PassThru
+        If specified, returns the error record instead of throwing it.
+
     .OUTPUTS
         None
+        System.Management.Automation.ErrorRecord
 
     .EXAMPLE
         if ($notImplementedFeature)
@@ -21,7 +25,13 @@
         }
 
         Creates and throws an not implemented exception with the message 'This feature
-        is not implemented yet'
+        is not implemented yet'.
+
+    .EXAMPLE
+        $errorRecord = New-NotImplementedException -Message 'This feature is not implemented yet' -PassThru
+
+        Creates and returns an not implemented exception with the message 'This feature
+        is not implemented yet'.
 #>
 function New-NotImplementedException
 {
@@ -37,7 +47,11 @@ function New-NotImplementedException
         [Parameter()]
         [ValidateNotNull()]
         [System.Management.Automation.ErrorRecord]
-        $ErrorRecord
+        $ErrorRecord,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $PassThru
     )
 
     if ($null -eq $ErrorRecord)
@@ -61,7 +75,14 @@ function New-NotImplementedException
         )
     }
 
-    $errorRecordToThrow = New-Object @newObjectParameters
+    $errorRecord = New-Object @newObjectParameters
 
-    throw $errorRecordToThrow
+    if ($PassThru.IsPresent)
+    {
+        return $invalidOperationException
+    }
+    else
+    {
+        throw $errorRecord
+    }
 }

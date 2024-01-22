@@ -1,18 +1,22 @@
 <#
     .SYNOPSIS
-        Creates and throws an invalid operation exception.
+        Creates and throws or returns an invalid operation exception.
 
     .DESCRIPTION
-        Creates and throws an invalid operation exception.
+        Creates and throws or returns an invalid operation exception.
 
     .OUTPUTS
-        None
+        None. If the PassThru parameter is not specified the command throws an error record.
+        System.Management.Automation.ErrorRecord. If the PassThru parameter is specified the command returns an error record.
 
     .PARAMETER Message
         The message explaining why this error is being thrown.
 
     .PARAMETER ErrorRecord
         The error record containing the exception that is causing this terminating error.
+
+    .PARAMETER PassThru
+        If specified, returns the error record instead of throwing it.
 
     .EXAMPLE
         try
@@ -26,7 +30,12 @@
 
         Creates and throws an invalid operation exception with the message 'My error message'
         and includes the exception that caused this terminating error.
-#>
+
+    .EXAMPLE
+        $errorRecord = New-InvalidOperationException -Message 'My error message' -PassThru
+
+        Creates and returns an invalid operation exception with the message 'My error message'.
+    #>
 function New-InvalidOperationException
 {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -41,7 +50,11 @@ function New-InvalidOperationException
         [Parameter()]
         [ValidateNotNull()]
         [System.Management.Automation.ErrorRecord]
-        $ErrorRecord
+        $ErrorRecord,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $PassThru
     )
 
     if ($null -eq $ErrorRecord)
@@ -65,7 +78,14 @@ function New-InvalidOperationException
         )
     }
 
-    $errorRecordToThrow = New-Object @newObjectParameters
+    $errorRecordToReturn = New-Object @newObjectParameters
 
-    throw $errorRecordToThrow
+    if ($PassThru.IsPresent)
+    {
+        return $invalidOperationException
+    }
+    else
+    {
+        throw $errorRecordToReturn
+    }
 }

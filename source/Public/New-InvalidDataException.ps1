@@ -15,7 +15,7 @@
         The error message to assign to the exception.
 
     .EXAMPLE
-        New-InvalidDataException -ErrorId 'InvalidDataError' -ErrorMessage 'My error message'
+        New-InvalidDataException -ErrorId 'InvalidDataError' -Message 'My error message'
 
         Creates and throws an invalid data exception with the error id 'InvalidDataError'
         and with the message 'My error message'.
@@ -31,16 +31,19 @@ function New-InvalidDataException
         $ErrorId,
 
         [Parameter(Mandatory = $true)]
+        [Alias('ErrorMessage')]
         [System.String]
-        $ErrorMessage
+        $Message
     )
 
     $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidData
+
     $exception = New-Object `
-        -TypeName System.InvalidOperationException `
-        -ArgumentList $ErrorMessage
+        -TypeName 'System.InvalidOperationException' `
+        -ArgumentList $Message
+
     $errorRecord = New-Object `
-        -TypeName System.Management.Automation.ErrorRecord `
+        -TypeName 'System.Management.Automation.ErrorRecord' `
         -ArgumentList $exception, $ErrorId, $errorCategory, $null
 
     throw $errorRecord

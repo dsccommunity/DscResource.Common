@@ -1,9 +1,9 @@
 <#
     .SYNOPSIS
-        Creates and throws an object not found exception.
+        Creates and returns an exception.
 
     .DESCRIPTION
-        Creates and throws an object not found exception.
+        Creates and returns an exception.
 
     .OUTPUTS
         None
@@ -15,22 +15,28 @@
         The error record containing the exception that is causing this terminating error.
 
     .OUTPUTS
-        None
+        System.Management.Automation.ErrorRecord
+
+    .EXAMPLE
+        $errorRecord = New-Exception -Message 'An error occurred'
+
+        Creates and returns an exception with the message 'An error occurred'.
 
     .EXAMPLE
         try
         {
-            Get-ChildItem -Path $path
+            Get-ChildItem -Path $path -ErrorAction 'Stop'
         }
         catch
         {
-            New-ObjectNotFoundException -Message 'Could not get files' -ErrorRecord $_
+            $exception = New-Exception -Message 'Could not get files' -ErrorRecord $_
         }
 
-        Creates and throws an object not found exception with the message 'Could not
-        get files' and includes the exception that caused this terminating error.
+        Returns an exception with the message 'Could not get files' and includes
+        the exception that caused this terminating error.
+
 #>
-function New-ObjectNotFoundException
+function New-Exception
 {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
@@ -58,17 +64,5 @@ function New-ObjectNotFoundException
             -ArgumentList @($Message, $ErrorRecord.Exception)
     }
 
-    $newObjectParameters = @{
-        TypeName     = 'System.Management.Automation.ErrorRecord'
-        ArgumentList = @(
-            $exception.ToString(),
-            'MachineStateIncorrect',
-            'ObjectNotFound',
-            $null
-        )
-    }
-
-    $errorRecordToThrow = New-Object @newObjectParameters
-
-    throw $errorRecordToThrow
+    return $exception
 }

@@ -45,8 +45,20 @@ AfterAll {
     Remove-Module -Name $script:moduleName
 }
 
-Describe 'New-InvalidArgumentException' {
+Describe 'New-ArgumentException' {
     Context 'When calling with both the Message and ArgumentName parameter' {
+        It 'Should throw the correct error' {
+            $mockErrorMessage = 'Mocked error'
+            $mockArgumentName = 'MockArgument'
+
+            # Wildcard processing needed to handle differing Powershell 5/6/7 exception output
+            { New-ArgumentException -Message $mockErrorMessage -ArgumentName $mockArgumentName } |
+                Should -Throw -PassThru | Select-Object -ExpandProperty Exception |
+                    Should -BeLike ('{0}*Parameter*{1}*' -f $mockErrorMesssage, $mockArgumentName)
+        }
+    }
+
+    Context 'When using command alias New-InvalidArgumentException' {
         It 'Should throw the correct error' {
             $mockErrorMessage = 'Mocked error'
             $mockArgumentName = 'MockArgument'
@@ -55,6 +67,32 @@ Describe 'New-InvalidArgumentException' {
             { New-InvalidArgumentException -Message $mockErrorMessage -ArgumentName $mockArgumentName } |
                 Should -Throw -PassThru | Select-Object -ExpandProperty Exception |
                     Should -BeLike ('{0}*Parameter*{1}*' -f $mockErrorMesssage, $mockArgumentName)
+        }
+    }
+
+    Context 'When calling with the PassThru parameter' {
+        It 'Should return the correct error record' {
+            $mockErrorMessage = 'Mocked error'
+            $mockArgumentName = 'MockArgument'
+
+            $result = New-ArgumentException -Message $mockErrorMessage -ArgumentName $mockArgumentName -PassThru
+            $result | Should -BeOfType 'System.ArgumentException'
+            $result.Message | Should -Be ("{0} (Parameter '{1}')" -f $mockErrorMessage, $mockArgumentName)
+            $result.ParamName | Should -Be $mockArgumentName
+        }
+    }
+
+    Context 'When calling without the PassThru parameter' {
+        It 'Should throw the correct error' {
+            $mockErrorMessage = 'Mocked error'
+            $mockArgumentName = 'MockArgument'
+
+            $result = { New-ArgumentException -Message $mockErrorMessage -ArgumentName $mockArgumentName } |
+                Should -Throw -PassThru
+
+            $result | Should -BeOfType 'System.Management.Automation.ErrorRecord'
+            $result | Select-Object -ExpandProperty 'Exception' |
+                    Should -BeLike ('System.ArgumentException: {0}*Parameter*{1}*' -f $mockErrorMessage, $mockArgumentName)
         }
     }
 }

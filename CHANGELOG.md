@@ -15,6 +15,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     that can copy from omne target to the other ([issue #102](https://github.com/dsccommunity/DscResource.Common/issues/102)).
   - A new parameter `PassThru` that, if specified, returns the path that
     was set.
+- `New-Exception`
+  - New command that creates and returns an `[System.Exception]`.
+- `New-ArgumentException`
+  - Now takes a parameter `PassThru` that returns the error record that was
+    created (and does not throw).
+- `New-InvalidOperationException`
+  - Now takes a parameter `PassThru` that returns the error record that was
+    created (and does not throw) ([issue #98](https://github.com/dsccommunity/DscResource.Common/issues/98)).
+- `New-InvalidResultException`
+  - Now takes a parameter `PassThru` that returns the error record that was
+    created (and does not throw).
+- `New-NotImplementedException`
+  - Now takes a parameter `PassThru` that returns the error record that was
+    created (and does not throw).
 
 ### Changed
 
@@ -23,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change the word cmdlet to command throughout in the documentation, code
   and localization strings.
 - A meta task now removes the built module from the session if it is imported.
+- Wiki source file HOME was modified to not link to README for help after
+  command documentation now is in the wiki.
 - `Get-LocalizedData`
   - Refactored to simplify execution and debugging. The command previously
     used a steppable pipeline (proxies `Import-LocalizedData`), that was
@@ -30,6 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     It just made it more complex and harder to debug. There are more
     debug messages added to hopefully simplify solving some hard to find
     edge cases bugs.
+- `New-ArgumentException`
+  - Now has a command alias `New-InvalidArgumentException` and the command
+    was renamed to match the exception name.
+- `New-InvalidDataException`
+  - The parameter `Message` has a parameter alias `ErrorMessage` to make
+    the command have the same parameter names as the other `New-*Exception`
+    commands.
 
 ### Fixed
 
@@ -37,6 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed example in documentation that were referencing an invalid command name.
 - `Get-LocalizedData`
   - One debug message was wrongly using a format operator ([issue #111](https://github.com/dsccommunity/DscResource.Common/issues/111).
+- `New-ObjectNotFoundException`
+  - Updated typo in comment-based help.
 
 ## [0.16.0] - 2023-04-10
 
