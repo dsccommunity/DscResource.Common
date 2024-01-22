@@ -47,16 +47,7 @@ function New-ObjectNotFoundException
         $ErrorRecord
     )
 
-    if ($null -eq $ErrorRecord)
-    {
-        $exception = New-Object -TypeName 'System.Exception' `
-            -ArgumentList @($Message)
-    }
-    else
-    {
-        $exception = New-Object -TypeName 'System.Exception' `
-            -ArgumentList @($Message, $ErrorRecord.Exception)
-    }
+    $exception = New-Exception @PSBoundParameters
 
     $newObjectParameters = @{
         TypeName     = 'System.Management.Automation.ErrorRecord'
