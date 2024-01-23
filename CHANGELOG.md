@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     was set.
 - `New-Exception`
   - New command that creates and returns an `[System.Exception]`.
+- `New-ErrorRecord`
+  - New command that creates and returns an `[System.Management.Automation.ErrorRecord]`
+    ([issue #99](https://github.com/dsccommunity/DscResource.Common/issues/99)).
 - `New-ArgumentException`
   - Now takes a parameter `PassThru` that returns the error record that was
     created (and does not throw).
@@ -55,10 +58,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `New-ArgumentException`
   - Now has a command alias `New-InvalidArgumentException` and the command
     was renamed to match the exception name.
+  - Now uses the new command `New-ErrorRecord`.
 - `New-InvalidDataException`
   - The parameter `Message` has a parameter alias `ErrorMessage` to make
     the command have the same parameter names as the other `New-*Exception`
     commands.
+  - Now uses the new command `New-ErrorRecord`.
+- `New-InvalidOperationException`
+  - Now uses the new command `New-ErrorRecord`.
+- `New-InvalidResultException`
+  - Now uses the new command `New-ErrorRecord`.
+- `New-NotImplementedException`
+  - Now uses the new command `New-ErrorRecord`.
+- `New-ObjectNotFoundException`
+  - Now uses the new command `New-ErrorRecord`.
 
 ### Fixed
 

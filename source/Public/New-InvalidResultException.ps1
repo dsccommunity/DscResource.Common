@@ -55,17 +55,7 @@ function New-InvalidResultException
 
     $exception = New-Exception @PSBoundParameters
 
-    $newObjectParameters = @{
-        TypeName     = 'System.Management.Automation.ErrorRecord'
-        ArgumentList = @(
-            $exception.ToString(),
-            'MachineStateIncorrect',
-            'InvalidResult',
-            $null
-        )
-    }
+    $errorRecord = New-ErrorRecord -Exception $exception.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'InvalidResult'
 
-    $errorRecordToThrow = New-Object @newObjectParameters
-
-    throw $errorRecordToThrow
+    throw $errorRecord
 }

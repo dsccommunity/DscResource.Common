@@ -42,9 +42,7 @@ function New-InvalidDataException
         -TypeName 'System.InvalidOperationException' `
         -ArgumentList $Message
 
-    $errorRecord = New-Object `
-        -TypeName 'System.Management.Automation.ErrorRecord' `
-        -ArgumentList $exception, $ErrorId, $errorCategory, $null
+    $errorRecord = New-ErrorRecord -Exception $exception -ErrorId $ErrorId -ErrorCategory $errorCategory
 
     throw $errorRecord
 }

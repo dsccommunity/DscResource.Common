@@ -16,7 +16,7 @@
 
     .OUTPUTS
         None
-        System.Management.Automation.ErrorRecord
+        System.ArgumentException
 
     .EXAMPLE
         New-ArgumentException -ArgumentName 'Action' -Message 'My error message'
@@ -36,6 +36,7 @@ function New-ArgumentException
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     [Alias('New-InvalidArgumentException')]
+    [OutputType([System.ArgumentException])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -53,15 +54,10 @@ function New-ArgumentException
         $PassThru
     )
 
-    $argumentException = New-Object -TypeName 'ArgumentException' `
+    $argumentException = New-Object -TypeName 'System.ArgumentException' `
         -ArgumentList @($Message, $ArgumentName)
 
-    $newObjectParameters = @{
-        TypeName     = 'System.Management.Automation.ErrorRecord'
-        ArgumentList = @($argumentException, $ArgumentName, 'InvalidArgument', $null)
-    }
-
-    $errorRecord = New-Object @newObjectParameters
+    $errorRecord = New-ErrorRecord -Exception $argumentException -ErrorId $ArgumentName -ErrorCategory 'InvalidArgument'
 
     if ($PassThru.IsPresent)
     {
