@@ -80,7 +80,7 @@ function New-NotImplementedException
 
     if ($PassThru.IsPresent)
     {
-        return $invalidOperationException
+        return $notImplementedException
     }
     else
     {
