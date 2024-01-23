@@ -11,6 +11,10 @@
     .PARAMETER Exception
         Specifies the exception that caused the error.
 
+        If an error record is passed to parameter ErrorRecord and if the wrapped exception
+        in the error record contains a `[System.Management.Automation.ParentContainsErrorRecordException]`,
+        the new ErrorRecord should have this exception as its Exception instead.
+
     .PARAMETER ErrorCategory
         Specifies the category of the error.
 
@@ -40,6 +44,21 @@
 
         This example creates a new ErrorRecord with the specified parameters. Passing
         ErrorId that will be set as the FullyQualifiedErrorId in the error record.
+
+    .EXAMPLE
+        $existingErrorRecord = [System.Management.Automation.ErrorRecord]::new(
+            [System.Management.Automation.ParentContainsErrorRecordException]::new('Existing error'),
+            'ExistingErrorId',
+            [System.Management.Automation.ErrorCategory]::InvalidOperation,
+            $null
+        )
+        $newException = [System.Exception]::new('New error')
+        $newErrorRecord = New-ErrorRecord -ErrorRecord $existingErrorRecord -Exception $newException
+        $newErrorRecord.Exception.Message
+
+        This example first creates an emulated ErrorRecord that contain a `ParentContainsErrorRecordException`
+        which will be replaced by the new exception passed to New-ErrorRecord. The
+        result of `$newErrorRecord.Exception.Message` will be 'New error'.
 
     .INPUTS
         System.Management.Automation.ErrorRecord, System.Exception, System.Management.Automation.ErrorCategory, System.Object, System.String
