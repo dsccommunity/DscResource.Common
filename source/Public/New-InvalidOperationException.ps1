@@ -69,17 +69,7 @@ function New-InvalidOperationException
             -ArgumentList @($Message, $ErrorRecord.Exception)
     }
 
-    $newObjectParameters = @{
-        TypeName     = 'System.Management.Automation.ErrorRecord'
-        ArgumentList = @(
-            $invalidOperationException.ToString(),
-            'MachineStateIncorrect',
-            'InvalidOperation',
-            $null
-        )
-    }
-
-    $errorRecordToReturn = New-Object @newObjectParameters
+    $errorRecord = New-ErrorRecord -Exception $invalidOperationException.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'InvalidOperation'
 
     if ($PassThru.IsPresent)
     {
@@ -87,6 +77,6 @@ function New-InvalidOperationException
     }
     else
     {
-        throw $errorRecordToReturn
+        throw $errorRecord
     }
 }

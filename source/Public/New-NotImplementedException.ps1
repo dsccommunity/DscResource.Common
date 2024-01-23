@@ -66,17 +66,7 @@ function New-NotImplementedException
             -ArgumentList @($Message, $ErrorRecord.Exception)
     }
 
-    $newObjectParameters = @{
-        TypeName     = 'System.Management.Automation.ErrorRecord'
-        ArgumentList = @(
-            $notImplementedException.ToString(),
-            'MachineStateIncorrect',
-            'NotImplemented',
-            $null
-        )
-    }
-
-    $errorRecord = New-Object @newObjectParameters
+    $errorRecord = New-ErrorRecord -Exception $notImplementedException.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'NotImplemented'
 
     if ($PassThru.IsPresent)
     {
