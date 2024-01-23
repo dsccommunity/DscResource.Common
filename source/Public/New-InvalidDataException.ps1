@@ -11,7 +11,7 @@
     .PARAMETER ErrorId
         The error Id to assign to the exception.
 
-    .PARAMETER ErrorMessage
+    .PARAMETER Message
         The error message to assign to the exception.
 
     .EXAMPLE
