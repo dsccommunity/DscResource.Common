@@ -182,7 +182,8 @@ function Compare-DscParameterState
     #region CheckType of object
     $types = 'System.Management.Automation.PSBoundParametersDictionary',
         'System.Collections.Hashtable',
-        'Microsoft.Management.Infrastructure.CimInstance'
+        'Microsoft.Management.Infrastructure.CimInstance',
+        'System.Collections.Specialized.OrderedDictionary'
 
     if ($DesiredValues.GetType().FullName -notin $types)
     {

@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `New-NotImplementedException`
   - Now takes a parameter `PassThru` that returns the error record that was
     created (and does not throw).
+- `Compare-DscParameterState`
+  - Add support for the type `[System.Collections.Specialized.OrderedDictionary]`
+    passed to parameters `CurrentValues` and `DesiredValues` ([issue #57](https://github.com/dsccommunity/DscResource.Common/issues/57)).
 
 ### Changed
 

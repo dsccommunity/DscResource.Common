@@ -2636,4 +2636,104 @@ Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
             }
         }
     }
+
+    Context 'When using an ordered dictionary' {
+        Context 'When some values does not match' {
+            BeforeAll {
+                $currentValues = [ordered]@{
+                    String = 'This is a string'
+                    Int = 1
+                    Bool = $true
+                }
+                $desiredValues = [ordered]@{
+                    String = 'This is a string'
+                    Int = 99
+                    Bool = $false
+                }
+            }
+
+            BeforeEach {
+                $verbose = $true
+            }
+
+            It 'Should not throw exception' {
+                { $script:result = Compare-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -IncludeInDesiredState `
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return non-null result' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
+            It 'Should return $true for String in property InDesiredState' {
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }).InDesiredState | Should -BeTrue
+            }
+
+            It 'Should return $false for Int in property InDesiredState' {
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeFalse
+            }
+
+            It 'Should return $true for Bool in property InDesiredState' {
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).InDesiredState | Should -BeFalse
+            }
+        }
+
+        Context 'When all values match' {
+            BeforeAll {
+                $currentValues = [ordered]@{
+                    String = 'This is a string'
+                    Int = 99
+                    Bool = $true
+                }
+                $desiredValues = [ordered]@{
+                    String = 'This is a string'
+                    Int = 99
+                    Bool = $true
+                }
+            }
+
+            BeforeEach {
+                $verbose = $true
+            }
+
+            It 'Should not throw exception' {
+                { $script:result = Compare-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -IncludeInDesiredState `
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return non-null result' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
+            It 'Should return $true for String in property InDesiredState' {
+                $script:result.Where({
+                    $_.Property -eq 'String'
+                }).InDesiredState | Should -BeTrue
+            }
+
+            It 'Should return $false for Int in property InDesiredState' {
+                $script:result.Where({
+                    $_.Property -eq 'Int'
+                }).InDesiredState | Should -BeTrue
+            }
+
+            It 'Should return $true for Bool in property InDesiredState' {
+                $script:result.Where({
+                    $_.Property -eq 'Bool'
+                }).InDesiredState | Should -BeTrue
+            }
+        }
+    }
 }
