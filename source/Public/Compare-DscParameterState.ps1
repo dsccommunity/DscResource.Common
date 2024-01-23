@@ -338,7 +338,7 @@ function Compare-DscParameterState
         }
         #endregion check same value
         #region Check if the DesiredValuesClean has the key and if it doesn't have, it's not necessary to check his value
-        if ($desiredValuesClean.GetType().Name -in 'HashTable', 'PSBoundParametersDictionary')
+        if ($desiredValuesClean.GetType().Name -in 'HashTable', 'PSBoundParametersDictionary', 'OrderedDictionary')
         {
             $checkDesiredValue = $desiredValuesClean.ContainsKey($key)
         }
@@ -459,7 +459,7 @@ function Compare-DscParameterState
                         }
                     }
 
-                    if ($desiredType -eq [System.Collections.Hashtable] -and $currentType -eq [System.Collections.Hashtable])
+                    if (($desiredType -eq [System.Collections.Hashtable] -or $desiredType -eq [System.Collections.Specialized.OrderedDictionary]) -and ($currentType -eq [System.Collections.Hashtable]-or $currentType -eq [System.Collections.Specialized.OrderedDictionary]))
                     {
                         $param = @{} + $PSBoundParameters
                         $param.CurrentValues = $currentArrayValues[$i]
@@ -495,10 +495,9 @@ function Compare-DscParameterState
                         continue
                     }
                 }
-
             }
         }
-        elseif ($desiredType -eq [System.Collections.Hashtable] -and $currentType -eq [System.Collections.Hashtable])
+        elseif (($desiredType -eq [System.Collections.Hashtable] -or $desiredType -eq [System.Collections.Specialized.OrderedDictionary]) -and ($currentType -eq [System.Collections.Hashtable]-or $currentType -eq [System.Collections.Specialized.OrderedDictionary]))
         {
             $param = @{} + $PSBoundParameters
             $param.CurrentValues = $currentValue
