@@ -77,7 +77,18 @@ Describe 'New-ArgumentException' {
 
             $result = New-ArgumentException -Message $mockErrorMessage -ArgumentName $mockArgumentName -PassThru
             $result | Should -BeOfType 'System.ArgumentException'
-            $result.Message | Should -Be ("{0} (Parameter '{1}')" -f $mockErrorMessage, $mockArgumentName)
+            <#
+                There is a difference between how Windows PowerShell and PowerShell
+                outputs this error message. The regular expression handles both cases.
+
+                Windows PowerShell message:
+                    Mocked error
+                    Parameter name: MockArgument
+
+                PowerShell message:
+                    Mocked error (Parameter 'MockArgument')
+            #>
+            $result.Message | Should -Match ("{0}\r?\n?.*\(?Parameter (?:name: )?'?{1}'?\)?" -f $mockErrorMessage, $mockArgumentName)
             $result.ParamName | Should -Be $mockArgumentName
         }
     }
