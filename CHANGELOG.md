@@ -32,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Compare-DscParameterState`
   - Add support for the type `[System.Collections.Specialized.OrderedDictionary]`
     passed to parameters `CurrentValues` and `DesiredValues` ([issue #57](https://github.com/dsccommunity/DscResource.Common/issues/57)).
+  - Add support for `DesiredValues` (and `CurrentValues`) to pass a value,
+    e.g a hashtable, that includes a property with the type `[System.Collections.Specialized.OrderedDictionary]`
+    or an array of `[System.Collections.Specialized.OrderedDictionary]` ([issue #57](https://github.com/dsccommunity/DscResource.Common/issues/57)).
 
 ### Changed
 
