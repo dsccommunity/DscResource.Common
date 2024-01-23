@@ -7,7 +7,7 @@
 
     .OUTPUTS
         None. If the PassThru parameter is not specified the command throws an error record.
-        System.Management.Automation.ErrorRecord. If the PassThru parameter is specified the command returns an error record.
+        System.InvalidOperationException. If the PassThru parameter is specified the command returns an error record.
 
     .PARAMETER Message
         The message explaining why this error is being thrown.
@@ -40,6 +40,7 @@ function New-InvalidOperationException
 {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
+    [OutputType([System.InvalidOperationException])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -59,12 +60,12 @@ function New-InvalidOperationException
 
     if ($null -eq $ErrorRecord)
     {
-        $invalidOperationException = New-Object -TypeName 'InvalidOperationException' `
+        $invalidOperationException = New-Object -TypeName 'System.InvalidOperationException' `
             -ArgumentList @($Message)
     }
     else
     {
-        $invalidOperationException = New-Object -TypeName 'InvalidOperationException' `
+        $invalidOperationException = New-Object -TypeName 'System.InvalidOperationException' `
             -ArgumentList @($Message, $ErrorRecord.Exception)
     }
 

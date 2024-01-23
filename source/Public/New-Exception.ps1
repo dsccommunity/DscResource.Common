@@ -15,7 +15,7 @@
         The error record containing the exception that is causing this terminating error.
 
     .OUTPUTS
-        System.Management.Automation.ErrorRecord
+        System.Exception
 
     .EXAMPLE
         $errorRecord = New-Exception -Message 'An error occurred'
@@ -40,6 +40,7 @@ function New-Exception
 {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
+    [OutputType([System.Exception])]
     param
     (
         [Parameter(Mandatory = $true)]

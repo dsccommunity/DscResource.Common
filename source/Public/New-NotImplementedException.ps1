@@ -16,7 +16,7 @@
 
     .OUTPUTS
         None
-        System.Management.Automation.ErrorRecord
+        System.NotImplementedException
 
     .EXAMPLE
         if ($notImplementedFeature)
@@ -37,6 +37,7 @@ function New-NotImplementedException
 {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
+    [OutputType([System.NotImplementedException])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -56,19 +57,19 @@ function New-NotImplementedException
 
     if ($null -eq $ErrorRecord)
     {
-        $invalidOperationException = New-Object -TypeName 'NotImplementedException' `
+        $notImplementedException = New-Object -TypeName 'System.NotImplementedException' `
             -ArgumentList @($Message)
     }
     else
     {
-        $invalidOperationException = New-Object -TypeName 'NotImplementedException' `
+        $notImplementedException = New-Object -TypeName 'System.NotImplementedException' `
             -ArgumentList @($Message, $ErrorRecord.Exception)
     }
 
     $newObjectParameters = @{
         TypeName     = 'System.Management.Automation.ErrorRecord'
         ArgumentList = @(
-            $invalidOperationException.ToString(),
+            $notImplementedException.ToString(),
             'MachineStateIncorrect',
             'NotImplemented',
             $null
