@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     was set.
 - `New-Exception`
   - New command that creates and returns an `[System.Exception]`.
+- `New-ErrorRecord`
+  - New command that creates and returns an `[System.Management.Automation.ErrorRecord]`
+    ([issue #99](https://github.com/dsccommunity/DscResource.Common/issues/99)).
 - `New-ArgumentException`
   - Now takes a parameter `PassThru` that returns the error record that was
     created (and does not throw).
