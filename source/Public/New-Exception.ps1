@@ -3,7 +3,7 @@
         Creates and returns an exception.
 
     .DESCRIPTION
-        Creates and returns an exception.
+        Creates an exception that will be returned.
 
     .OUTPUTS
         None
