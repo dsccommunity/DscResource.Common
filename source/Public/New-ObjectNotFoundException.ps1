@@ -24,7 +24,7 @@
         }
         catch
         {
-            New-ObjectNotFoundException -Message 'COuld not get files' -ErrorRecord $_
+            New-ObjectNotFoundException -Message 'Could not get files' -ErrorRecord $_
         }
 
         Creates and throws an object not found exception with the message 'Could not
@@ -47,16 +47,7 @@ function New-ObjectNotFoundException
         $ErrorRecord
     )
 
-    if ($null -eq $ErrorRecord)
-    {
-        $exception = New-Object -TypeName 'System.Exception' `
-            -ArgumentList @($Message)
-    }
-    else
-    {
-        $exception = New-Object -TypeName 'System.Exception' `
-            -ArgumentList @($Message, $ErrorRecord.Exception)
-    }
+    $exception = New-Exception @PSBoundParameters
 
     $newObjectParameters = @{
         TypeName     = 'System.Management.Automation.ErrorRecord'

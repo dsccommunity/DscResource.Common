@@ -71,4 +71,31 @@ Describe 'New-InvalidOperationException' {
                         $mockErrorMessage, $mockExceptionErrorMessage)
         }
     }
+
+    Context 'When calling with Message and PassThru parameters' {
+        It 'Should return the correct error record' {
+            $mockErrorMessage = 'Mocked error'
+
+            $result = New-InvalidOperationException -Message $mockErrorMessage -PassThru
+
+            $result | Should -BeOfType 'System.InvalidOperationException'
+            $result.Message | Should -Be $mockErrorMessage
+        }
+    }
+
+    Context 'When calling with Message, ErrorRecord and PassThru parameters' {
+        It 'Should return the correct error record' {
+            $mockErrorMessage = 'Mocked error'
+            $mockExceptionErrorMessage = 'Mocked exception error message'
+
+            $mockException = New-Object -TypeName 'System.Exception' -ArgumentList $mockExceptionErrorMessage
+            $mockErrorRecord = New-Object -TypeName 'System.Management.Automation.ErrorRecord' `
+                -ArgumentList $mockException, $null, 'InvalidResult', $null
+
+            $result = New-InvalidOperationException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord -PassThru
+
+            $result | Should -BeOfType 'System.InvalidOperationException'
+            $result.Message | Should -Be $mockErrorMessage
+        }
+    }
 }

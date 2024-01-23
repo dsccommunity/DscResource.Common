@@ -1,9 +1,9 @@
 <#
     .SYNOPSIS
-        Creates and throws an invalid argument exception.
+        Creates and throws or returns an invalid argument exception.
 
     .DESCRIPTION
-        Creates and throws an invalid argument exception.
+        Creates and throws or returns an invalid argument exception.
 
     .PARAMETER Message
         The message explaining why this error is being thrown.
@@ -11,19 +11,31 @@
     .PARAMETER ArgumentName
         The name of the invalid argument that is causing this error to be thrown.
 
+    .PARAMETER PassThru
+        If specified, returns the error record instead of throwing it.
+
     .OUTPUTS
         None
+        System.Management.Automation.ErrorRecord
 
     .EXAMPLE
-        New-InvalidArgumentException -ArgumentName 'Action' -Message 'My error message'
+        New-ArgumentException -ArgumentName 'Action' -Message 'My error message'
 
         Creates and throws an invalid argument exception for (parameter) 'Action'
         with the message 'My error message'.
+
+    .EXAMPLE
+        $errorRecord = New-ArgumentException -ArgumentName 'Action' -Message 'My error message' -PassThru
+
+        Creates an invalid argument exception for (parameter) 'Action'
+        with the message 'My error message' and returns the exception.
 #>
-function New-InvalidArgumentException
+
+function New-ArgumentException
 {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
+    [Alias('New-InvalidArgumentException')]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -34,7 +46,11 @@ function New-InvalidArgumentException
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [System.String]
-        $ArgumentName
+        $ArgumentName,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $PassThru
     )
 
     $argumentException = New-Object -TypeName 'ArgumentException' `
@@ -47,5 +63,12 @@ function New-InvalidArgumentException
 
     $errorRecord = New-Object @newObjectParameters
 
-    throw $errorRecord
+    if ($PassThru.IsPresent)
+    {
+        return $argumentException
+    }
+    else
+    {
+        throw $errorRecord
+    }
 }

@@ -71,4 +71,21 @@ Describe 'New-NotImplementedException' {
                         $mockErrorMessage, $mockExceptionErrorMessage)
         }
     }
+
+    Context 'When called with PassThru parameter' {
+        It 'Should return the correct error record' {
+            $mockErrorMessage = 'Mocked error'
+            $mockExceptionErrorMessage = 'Mocked exception error message'
+
+            $mockException = New-Object -TypeName System.Exception -ArgumentList $mockExceptionErrorMessage
+            $mockErrorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord `
+                -ArgumentList $mockException, $null, 'InvalidResult', $null
+
+            $result = New-NotImplementedException -Message $mockErrorMessage -ErrorRecord $mockErrorRecord -PassThru
+
+            $result | Should -BeOfType System.NotImplementedException
+            $result.Message | Should -Be $mockErrorMessage
+        }
+    }
+
 }
