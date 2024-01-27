@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Get-PSModulePath`
+  - Can now return the individual module path for different scopes when
+    using the parameter `-Scope`. If no parameter is specified the command
+    return the path for the scope CurrentUser.
+
+### Fixed
+
+- `Get-PSModulePath`
+  - Was using the wrong path separator on Linux and macOS.
+
 ## [0.17.0] - 2024-01-23
 
 ### Added
