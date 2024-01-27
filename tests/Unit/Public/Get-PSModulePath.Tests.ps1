@@ -189,7 +189,7 @@ Describe 'Get-PSModulePath' {
         }
 
         Context 'When Scope is AllUsers' {
-            It 'Should return correct path on Linux or MacOS' -Skip:($IsWindows) {
+            It 'Should return correct path on Linux or MacOS' -Skip:($IsWindows -or -not $IsCoreCLR) {
                 $result = Get-PSModulePath -Scope 'AllUsers'
 
                 $result | Should -Be '/usr/local/share/powershell/Modules'
