@@ -98,8 +98,6 @@ function Test-ModuleExist
 
         $modulesToEvaluate = $availableModules |
             Where-Object -FilterScript {
-                Write-Debug -Message "Module: $($_.Name), ModulePath: $($_.Path), SpecifiedPath: $modulePath."
-
                 $_.Path -match [System.Text.RegularExpressions.Regex]::Escape($modulePath)
             }
     }
@@ -116,8 +114,6 @@ function Test-ModuleExist
 
         $modulesToEvaluate = $modulesToEvaluate |
             Where-Object -FilterScript {
-                Write-Debug -Message "Module: $($_.Name), ModuleVersion: $($_.Version), SpecifiedVersion: $moduleVersion."
-
                 $_.Version -eq $moduleVersion
             }
 
@@ -127,8 +123,6 @@ function Test-ModuleExist
 
             $modulesToEvaluate = $modulesToEvaluate |
                 Where-Object -FilterScript {
-                    Write-Debug -Message "Module: $($_.Name), ModulePrerelease: $($_.PrivateData.PSData.Prerelease), SpecifiedPrerelease: $modulePrerelease."
-
                     $_.PrivateData.PSData.Prerelease -eq $modulePrerelease
                 }
         }
