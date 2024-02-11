@@ -228,7 +228,7 @@ Describe 'Test-ModuleExist' {
             }
 
             It 'Should return $false' {
-                Test-ModuleExist -Name 'TestModule' -Path (Get-PSModulePath -Scope 'CurrentUser') -Verbose | Should -BeFalse
+                Test-ModuleExist -Name 'TestModule' -Scope 'CurrentUser' -Verbose | Should -BeFalse
             }
         }
 
@@ -243,7 +243,7 @@ Describe 'Test-ModuleExist' {
             }
 
             It 'Should return $true' {
-                Test-ModuleExist -Name 'TestModule' -Path (Get-PSModulePath -Scope 'CurrentUser') -Verbose | Should -BeTrue
+                Test-ModuleExist -Name 'TestModule' -Scope 'CurrentUser' -Verbose | Should -BeTrue
             }
         }
     }
@@ -260,7 +260,7 @@ Describe 'Test-ModuleExist' {
             }
 
             It 'Should return $false' {
-                Test-ModuleExist -Name 'TestModule' -Path (Get-PSModulePath -Scope 'AllUsers') -Verbose | Should -BeFalse
+                Test-ModuleExist -Name 'TestModule' -Scope 'AllUsers' -Verbose | Should -BeFalse
             }
         }
 
@@ -275,7 +275,7 @@ Describe 'Test-ModuleExist' {
             }
 
             It 'Should return $true' {
-                Test-ModuleExist -Name 'TestModule' -Path (Get-PSModulePath -Scope 'AllUsers') -Verbose | Should -BeTrue
+                Test-ModuleExist -Name 'TestModule' -Scope 'AllUsers' -Verbose | Should -BeTrue
             }
         }
     }
