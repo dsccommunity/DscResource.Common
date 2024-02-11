@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Can now return the individual module path for different scopes when
     using the parameter `-Scope`. If no parameter is specified the command
     return the path for the scope CurrentUser.
+- `Test-ModuleExist`
+  - Checks if a PowerShell module with a specified name is available in a
+    PSModulePath.
 
 ### Fixed
 
