@@ -94,8 +94,12 @@ function Test-ModuleExist
 
     if ($modulePath)
     {
+        Write-Verbose -Message "Filtering modules by path '$modulePath'."
+
         $modulesToEvaluate = $availableModules |
             Where-Object -FilterScript {
+                Write-Debug -Message "Module: $($_.Name), ModulePath: $($_.Path), SpecifiedPath: $modulePath."
+
                 $_.Path -match [System.Text.RegularExpressions.Regex]::Escape($modulePath)
             }
     }
@@ -104,21 +108,31 @@ function Test-ModuleExist
         $modulesToEvaluate = $availableModules
     }
 
-    if ($PSBoundParameters.Version)
+    if ($modulesToEvaluate -and $PSBoundParameters.Version)
     {
         $moduleVersion, $modulePrerelease = $Version -split '-'
 
+        Write-Verbose -Message "Filtering modules by version '$moduleVersion'."
+
         $modulesToEvaluate = $modulesToEvaluate |
             Where-Object -FilterScript {
-                $_.Version -eq $Version
+                Write-Debug -Message "Module: $($_.Name), ModuleVersion: $($_.Version), SpecifiedVersion: $moduleVersion."
+
+                $_.Version -eq $moduleVersion
             }
 
-        if ($modulePrerelease)
+        if ($modulesToEvaluate -and $modulePrerelease)
         {
+            Write-Verbose -Message "Filtering modules by prerelease '$modulePrerelease'."
+
             $modulesToEvaluate = $modulesToEvaluate |
-                Where-Object -FilterScript { $_.PrivateData.PSData.Prerelease -eq $modulePrerelease }
+                Where-Object -FilterScript {
+                    Write-Debug -Message "Module: $($_.Name), ModulePrerelease: $($_.PrivateData.PSData.Prerelease), SpecifiedPrerelease: $modulePrerelease."
+
+                    $_.PrivateData.PSData.Prerelease -eq $modulePrerelease
+                }
         }
     }
 
-    return ($modulesToEvaluate.Count -gt 0)
+    return ($modulesToEvaluate -and $modulesToEvaluate.Count -gt 0)
 }
