@@ -106,7 +106,7 @@ Describe 'Test-ModuleExist' {
 
     Context 'When checking if a module with a specific preview version exists on the machine' {
         Context 'When module is unavailable' {
-            Context 'When the module exist with the wrong prerelease string' {
+            Context 'When the module exists but has a different prerelease string' {
                 BeforeAll {
                     Mock -CommandName Get-Module -MockWith {
                         return @{
@@ -126,7 +126,7 @@ Describe 'Test-ModuleExist' {
                 }
             }
 
-            Context 'When the module exist with an empty prerelease string' {
+            Context 'When the module exists but has an empty prerelease string' {
                 BeforeAll {
                     Mock -CommandName Get-Module -MockWith {
                         return @{
@@ -146,7 +146,7 @@ Describe 'Test-ModuleExist' {
                 }
             }
 
-            Context 'When the module exist with no prerelease string' {
+            Context 'When the module exists with no prerelease string' {
                 BeforeAll {
                     Mock -CommandName Get-Module -MockWith {
                         return @{
@@ -183,7 +183,7 @@ Describe 'Test-ModuleExist' {
         }
     }
 
-    Context 'When checking if a module with a specific path exist' {
+    Context 'When checking if a module with a specific path exists' {
         Context 'When module is unavailable' {
             BeforeAll {
                 Mock -CommandName Get-Module -MockWith {
@@ -216,7 +216,7 @@ Describe 'Test-ModuleExist' {
         }
     }
 
-    Context 'When checking if a module in Scope CurrentUser exist' {
+    Context 'When checking if a module in Scope CurrentUser exists' {
         Context 'When module is unavailable' {
             BeforeAll {
                 Mock -CommandName Get-Module -MockWith {
@@ -248,7 +248,7 @@ Describe 'Test-ModuleExist' {
         }
     }
 
-    Context 'When checking if a module in Scope AllUsers exist' {
+    Context 'When checking if a module in Scope AllUsers exists' {
         Context 'When module is unavailable' {
             BeforeAll {
                 Mock -CommandName Get-Module -MockWith {

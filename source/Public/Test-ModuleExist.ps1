@@ -12,7 +12,7 @@
         See also `Assert-Module`.
 
     .PARAMETER Name
-        The name of the module to check if available.
+        The name of the module to check is available.
 
     .PARAMETER Scope
         The scope where the module should be available. This parameter is used to
@@ -20,7 +20,8 @@
 
     .PARAMETER Path
         The path where the module should be available. This parameter is used to
-        filter the modules based on the path.
+        filter the modules based on the path. This could be a full path or part
+        of a path. In both cases it must match one of the PSModulePath paths.
 
     .PARAMETER Version
         The version of the module. This parameter is used to filter the modules
