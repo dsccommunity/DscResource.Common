@@ -1,11 +1,11 @@
 <#
     .SYNOPSIS
         Checks if a PowerShell module with a specified name is available in a
-        PSModulePath.
+        `$env:PSModulePath`.
 
     .DESCRIPTION
         The Test-ModuleExist function checks if a PowerShell module with the specified
-        name is available in a PSModulePath. It can also filter the modules based on
+        name is available in a `$env:PSModulePath`. It can also filter the modules based on
         the scope or folder path. Additionally, it can filter the modules based on
         a specific version.
 
@@ -20,8 +20,8 @@
 
     .PARAMETER Path
         The path where the module should be available. This parameter is used to
-        filter the modules based on the path. This could be a full path or part
-        of a path. In both cases it must match one of the PSModulePath paths.
+        filter the modules based on the path. The specified path must match (fully
+        or partially) one of the `$env:PSModulePath` paths.
 
     .PARAMETER Version
         The version of the module. This parameter is used to filter the modules
@@ -36,6 +36,14 @@
         Test-ModuleExist -Name 'MyModule' -Path 'C:\Modules'
 
         Checks if a module named 'MyModule' exists in the specified path.
+
+    .EXAMPLE
+        Test-ModuleExist -Name 'MyModule' -Path 'local/share/powershell/Module'
+
+        Checks if a module named 'MyModule' exists in a `$env:PSModulePath` that
+        matches the specified path. If for example 'MyModule' exist in the path
+        `/home/username/.local/share/powershell/Module` it returns `$true`.
+
 
     .EXAMPLE
         Test-ModuleExist -Name 'MyModule' -Version '1.0.0'
