@@ -5,7 +5,10 @@
 
     .DESCRIPTION
         Assert if the specific module is available to be imported and optionally
-        import the module.
+        import the module. If the module is not available an exception will be
+        thrown.
+
+        See also `Test-ModuleExist`.
 
     .PARAMETER ModuleName
         Specifies the name of the module to assert.
