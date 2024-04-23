@@ -255,7 +255,7 @@ function Get-LocalizedData
 
         $FileName = $file.BaseName
 
-        $PSBoundParameters.Add('FileName', $file.Name)
+        $null = $PSBoundParameters.Add('FileName', $file.Name)
 
         Write-Debug -Message ('Looking for resolved file with base name: ''{0}''.' -f $FileName)
     }
@@ -268,7 +268,7 @@ function Get-LocalizedData
     {
         $callingScriptRoot = $MyInvocation.PSScriptRoot
 
-        $PSBoundParameters.Add('BaseDirectory', $callingScriptRoot)
+        $null = $PSBoundParameters.Add('BaseDirectory', $callingScriptRoot)
     }
 
     # If UICulture wasn't specified use the OS configured one, otherwise use the one specified.
@@ -423,7 +423,7 @@ function Get-LocalizedData
         $PSBoundParameters.Keys.ForEach({
             if ($_ -notin $getLocalizedDataForInvariantCultureParameters.Parameters.Keys)
             {
-                $PSBoundParameters.Remove($_)
+                $null = $PSBoundParameters.Remove($_)
             }
         })
 
@@ -437,7 +437,7 @@ function Get-LocalizedData
         Write-Debug ('Calling Microsoft.PowerShell.Utility\Import-LocalizedData using parameters: {0}' -f ($PSBoundParameters | Out-String))
 
         # Removes the parameter DefaultUICulture so that isn't used when calling Import-LocalizedData.
-        $PSBoundParameters.Remove('DefaultUICulture')
+        $null = $PSBoundParameters.Remove('DefaultUICulture')
 
         $localizedData = Microsoft.PowerShell.Utility\Import-LocalizedData @PSBoundParameters
     }
@@ -462,3 +462,4 @@ function Get-LocalizedData
         return $localizedData
     }
 }
+

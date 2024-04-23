@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Get-PSModulePath`
   - Was using the wrong path separator on Linux and macOS.
+- `Get-LocalizedData`
+  - Wrongly returned one or more boolean values in addition to
+    the localized string array. This was becuase the return value
+    was not handled when calling `Add()` and `Remove()` methods of
+    `$PSBoundParameters` so it was returned to the pipeline.
 
 ## [0.17.0] - 2024-01-23
 
