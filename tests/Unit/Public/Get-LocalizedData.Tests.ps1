@@ -46,6 +46,13 @@ AfterAll {
 }
 
 Describe 'Get-LocalizedData' -Tag 'GetLocalizedData' {
+    Context 'When returning localized data from a file' {
+        It 'Should return an hashtable' {
+            $result = Get-LocalizedData -FileName 'DscResource.Common.strings.psd1' -BaseDirectory "$PSScriptRoot/../../../output/builtModule/DscResource.Common/**/en-US" -DefaultUICulture 'en-US' -ErrorAction 'Stop'
+            $result | Should -BeOfType 'Hashtable'
+        }
+    }
+
     Context 'When specifying a specific filename' {
         BeforeAll {
             New-Item -Force -Path 'TestDrive:\ar-SA' -ItemType Directory
