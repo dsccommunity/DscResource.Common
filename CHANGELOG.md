@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Public command:
+  - `Get-UserName` - get current user name cross platform.
+
+### Fixed
+
+- `Get-PSModulePath`
+  - Throws an exception if the My Documents folder cannot be found when
+    calling the command with the scope `CurrentUser` ([issue #122](https://github.com/dsccommunity/DscResource.Common/issues/122)).
+
 ## [0.17.1] - 2024-04-23
 
 ### Added
@@ -25,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Was using the wrong path separator on Linux and macOS.
 - `Get-LocalizedData`
   - Wrongly returned one or more boolean values in addition to
-    the localized string array. This was becuase the return value
+    the localized string array. This was because the return value
     was not handled when calling `Add()` and `Remove()` methods of
     `$PSBoundParameters` so it was returned to the pipeline.
 

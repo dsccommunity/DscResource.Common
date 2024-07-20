@@ -131,6 +131,19 @@ function Get-PSModulePath
                 {
                     $documentsFolder = [Environment]::GetFolderPath('MyDocuments')
 
+                    # When the $documentsFolder is null or empty string the folder does not exist.
+                    if ([System.String]::IsNullOrEmpty($documentsFolder))
+                    {
+                        $PSCmdlet.ThrowTerminatingError(
+                            [System.Management.Automation.ErrorRecord]::new(
+                                ($script:localizedData.PSModulePath_MissingMyDocumentsPath -f (Get-UserName)),
+                                'MissingMyDocumentsPath',
+                                [System.Management.Automation.ErrorCategory]::ResourceUnavailable,
+                                (Get-UserName)
+                            )
+                        )
+                    }
+
                     if ($IsCoreCLR)
                     {
                         Join-Path -Path $documentsFolder -ChildPath 'PowerShell/Modules'
