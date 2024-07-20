@@ -47,4 +47,7 @@ ConvertFrom-StringData @'
     ## Find-Certificate
     CertificatePathError = Certificate Path '{0}' is not valid. (DRC0046)
     SearchingForCertificateUsingFilters = Looking for certificate in Store '{0}' using filter '{1}'. (DRC0047)
+
+    ## Get-PSModulePath
+    PSModulePath_MissingMyDocumentsPath = The My Documents folder does not exist for user '{0}'. (DRC0048)
 '@

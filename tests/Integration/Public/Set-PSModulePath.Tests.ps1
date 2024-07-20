@@ -1,6 +1,6 @@
 BeforeDiscovery {
     # Determines if we should skip tests.
-    if ($isWindows -or $PSEdition -eq 'Desktop')
+    if ($IsWindows -or $PSEdition -eq 'Desktop')
     {
         $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 
