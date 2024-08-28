@@ -2,7 +2,7 @@ TOPIC
     about_DscResource.Common
 
 SHORT DESCRIPTION
-    Common functions used in DSC tesources.
+    Common functions used in DSC resources.
 
 LONG DESCRIPTION
     This module contains common functions that are used in DSC resources.
@@ -15,7 +15,7 @@ NOTE:
     writing code, sharing opinions, and provided feedback.
 
 TROUBLESHOOTING NOTE:
-    Go to the Github repository for read about issues, submit a new issue, and read
+    Go to the Github repository to read about issues, submit a new issue, and read
     about new releases. https://github.com/dsccommunity/DscResource.Common
 
 SEE ALSO

@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Get-PSModulePath`
   - Throws an exception if the My Documents folder cannot be found when
     calling the command with the scope `CurrentUser` ([issue #122](https://github.com/dsccommunity/DscResource.Common/issues/122)).
+- Update build process to pin GitVersion to 5.* to resolve errors
+  (https://github.com/gaelcolas/Sampler/issues/477).
 
 ## [0.17.1] - 2024-04-23
 
