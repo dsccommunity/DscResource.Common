@@ -34,7 +34,7 @@ function Assert-ElevatedUser
     [CmdletBinding()]
     param (
         [Parameter()]
-        [ValidateNotNullOrWhiteSpace()]
+        [ValidateNotNullOrEmpty()]
         [System.String]
         $ErrorMessage = $script:localizedData.ElevatedUser_UserNotElevated
     )
