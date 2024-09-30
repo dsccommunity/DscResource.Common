@@ -7,8 +7,16 @@
         throw a statement-terminating error if the script is not run from an elevated
         session.
 
+    .PARAMETER ErrorMessage
+        The error message to assign to the exception.
+
     .EXAMPLE
         Assert-ElevatedUser
+
+        Throws an exception if the user has not elevated the PowerShell session.
+
+    .EXAMPLE
+        Assert-ElevatedUser -ErrorMessage 'A custom error message to throw'
 
         Throws an exception if the user has not elevated the PowerShell session.
 
@@ -24,7 +32,12 @@
 function Assert-ElevatedUser
 {
     [CmdletBinding()]
-    param ()
+    param (
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [System.String]
+        $ErrorMessage = $script:localizedData.ElevatedUser_UserNotElevated
+    )
 
     $isElevated = $false
 
@@ -43,7 +56,7 @@ function Assert-ElevatedUser
     {
         $PSCmdlet.ThrowTerminatingError(
             [System.Management.Automation.ErrorRecord]::new(
-                $script:localizedData.ElevatedUser_UserNotElevated,
+                $ErrorMessage,
                 'UserNotElevated',
                 [System.Management.Automation.ErrorCategory]::InvalidOperation,
                 'Command parameters'

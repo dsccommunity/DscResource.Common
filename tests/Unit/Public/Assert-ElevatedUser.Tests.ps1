@@ -63,16 +63,33 @@ Describe 'Assert-ElevatedUser' -Tag 'Public' {
         }
     }
 
-    It 'Should throw the correct error' -Skip:$mockIsElevated {
-        $mockErrorMessage = InModuleScope -ScriptBlock {
-            $script:localizedData.ElevatedUser_UserNotElevated
+    Context 'When not supplying an error message' {
+        It 'Should throw the correct error' -Skip:$mockIsElevated {
+            $mockErrorMessage = InModuleScope -ScriptBlock {
+                $script:localizedData.ElevatedUser_UserNotElevated
+            }
+
+            { Assert-ElevatedUser } | Should -Throw -ExpectedMessage $mockErrorMessage
         }
 
-        { Assert-ElevatedUser } | Should -Throw -ExpectedMessage $mockErrorMessage
+        It 'Should not throw an exception' -Skip:(-not $mockIsElevated) {
+            { Assert-ElevatedUser } | Should -Not -Throw
+        }
     }
 
-    It 'Should not throw an exception' -Skip:(-not $mockIsElevated) {
-        { Assert-ElevatedUser } | Should -Not -Throw
+    Context 'When supplying a custom error message' {
+        BeforeAll {
+            $mockCustomMessage = 'This is a custom error message'
+        }
+
+        It 'Should throw the correct error' -Skip:$mockIsElevated {
+            { Assert-ElevatedUser -ErrorMessage $mockCustomMessage } | Should -Throw -ExpectedMessage $mockCustomMessage
+        }
+
+
+        It 'Should not throw an exception' -Skip:(-not $mockIsElevated) {
+            { Assert-ElevatedUser -ErrorMessage $mockCustomMessage} | Should -Not -Throw
+        }
     }
 
     Context 'When on Linux or macOS' {
