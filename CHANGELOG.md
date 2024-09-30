@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Assert-ElevatedUser`
   - Add new parameter `ErrorMessage` to allow custom error messages.
+- `ConvertTo-CimInstance`
+  - Add parameters for `ClassName` and `Namespace` for custom values. Fixes [#128](https://github.com/dsccommunity/DscResource.Common/issues/128)
 
 ### Fixed
 

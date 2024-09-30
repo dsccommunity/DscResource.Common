@@ -10,6 +10,16 @@
     .PARAMETER Hashtable
         A hashtable with the values to convert.
 
+    .PARAMETER ClassName
+        The ClassName of the CimInstance to create.
+
+        Default value is to 'MSFT_KeyValuePair'.
+
+    .PARAMETER Namespace
+        The Namespace of the CimInstance to create.
+
+        Default value is to 'root/microsoft/Windows/DesiredStateConfiguration'.
+
     .OUTPUTS
         System.Object[]
 
@@ -29,16 +39,26 @@ function ConvertTo-CimInstance
     [OutputType([System.Object[]])]
     param
     (
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'Hashtable')]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [System.Collections.Hashtable]
-        $Hashtable
+        $Hashtable,
+
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [System.String]
+        $ClassName = 'MSFT_KeyValuePair',
+
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [System.String]
+        $Namespace = 'root/microsoft/Windows/DesiredStateConfiguration'
     )
 
     process
     {
         foreach ($item in $Hashtable.GetEnumerator())
         {
-            New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
+            New-CimInstance -ClassName $ClassName -Namespace $Namespace -Property @{
                 Key   = $item.Key
                 Value = if ($item.Value -is [array])
                 {
