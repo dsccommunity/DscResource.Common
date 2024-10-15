@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Unit Tests
+  - Updated path to `build.ps1` in BeforeDiscovery block.
+- `Assert-Module`
+  - Added `SkipEditionCheck` for PS6+. Fixes [#131](https://github.com/dsccommunity/DscResource.Common/issues/131).
+
 ## [0.17.2] - 2024-07-20
 
 ### Added

@@ -64,7 +64,18 @@ function Assert-Module
     #>
     if (-not (Get-Module -Name $ModuleName))
     {
-        if (-not (Get-Module -Name $ModuleName -ListAvailable))
+        $getModuleParameters = @{
+            Name = $ModuleName
+            ListAvailable = $true
+        }
+
+        # Add skip edition check for PSCore. Issue #131
+        if ($PSVersionTable.PSVersion.Major -gt 5)
+        {
+            $getModuleParameters.SkipEditionCheck = $true
+        }
+
+        if (-not (Get-Module @getModuleParameters))
         {
             $errorMessage = $script:localizedData.ModuleNotFound -f $ModuleName
             New-ObjectNotFoundException -Message $errorMessage

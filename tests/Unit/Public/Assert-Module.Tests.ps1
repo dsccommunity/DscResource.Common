@@ -10,7 +10,7 @@ BeforeDiscovery {
             if (-not (Get-Module -Name 'DscResource.Test' -ListAvailable))
             {
                 # Redirect all streams to $null, except the error stream (stream 2)
-                & "$PSScriptRoot/../../build.ps1" -Tasks 'noop' 2>&1 4>&1 5>&1 6>&1 > $null
+                & "$PSScriptRoot/../../../build.ps1" -Tasks 'noop' 2>&1 4>&1 5>&1 6>&1 > $null
             }
 
             # If the dependencies has not been resolved, this will throw an error.
@@ -105,7 +105,7 @@ Describe 'Assert-Module' {
             }
         }
 
-        Context 'When module is not present in the session' {
+        Context 'When module is not present in the session PS5' -Skip:($PSVersionTable.PSVersion.Major -gt 5) {
             BeforeAll {
                 Mock -CommandName Import-Module
                 Mock -CommandName Get-Module -MockWith {
@@ -120,6 +120,36 @@ Describe 'Assert-Module' {
                     }
                 } -ParameterFilter {
                     $ListAvailable -eq $true
+                }
+            }
+
+            Context 'When module should be imported' {
+                It 'Should not throw an error' {
+                    { Assert-Module -ModuleName 'TestModule' -ImportModule } | Should -Not -Throw
+                }
+
+                It 'Should call the expected mocks' {
+                    Should -Invoke -CommandName Import-Module -Exactly -Times 1 -Scope Context
+                }
+            }
+        }
+
+        Context 'When module is not present in the session PS6+' -Skip:($PSVersionTable.PSVersion.Major -lt 6) {
+            BeforeAll {
+                Mock -CommandName Import-Module
+                Mock -CommandName Get-Module -MockWith {
+                    return $null
+                } -ParameterFilter {
+                    $ListAvailable -eq $false
+                }
+
+                Mock -CommandName Get-Module -MockWith {
+                    return @{
+                        Name = 'TestModule'
+                    }
+                } -ParameterFilter {
+                    $ListAvailable -eq $true -and
+                    $SkipEditionCheck -eq $true
                 }
             }
 
