@@ -32,9 +32,7 @@ function Set-DscMachineRebootRequired
     #>
     [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
     [CmdletBinding()]
-    param
-    (
-    )
+    param ()
 
     $global:DSCMachineStatus = 1
 }

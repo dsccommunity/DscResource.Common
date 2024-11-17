@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added Indented.AnalyzerRules and config
+- Use prerelease DscResource.ScriptAnalyzer
+
+### Changed
+
+- Move docs generation to separate task.
+- Remove build.yml config not required.
+
+### Fixed
+
+- Fixed HQRM scriptanalyzer errors
+
 ## [0.19.0] - 2024-10-15
 
 ### Changed
