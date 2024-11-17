@@ -32,7 +32,8 @@
 function Assert-ElevatedUser
 {
     [CmdletBinding()]
-    param (
+    param
+    (
         [Parameter()]
         [ValidateNotNullOrEmpty()]
         [System.String]
