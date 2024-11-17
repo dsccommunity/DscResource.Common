@@ -24,16 +24,17 @@ BuildWorkflow:
     - Build_Module_ModuleBuilder
     - Build_NestedModules_ModuleBuilder
     - Create_changelog_release_output
-    - Generate_Wiki_Content
+
+  docs:
     - Generate_Conceptual_Help
-    - Generate_Markdown_For_Public_Commands
-    - Generate_External_Help_File_For_Public_Commands
-    - Clean_Markdown_Of_Public_Commands
+    - Generate_Wiki_Content
     - Generate_Wiki_Sidebar
     - Clean_Markdown_Metadata
+    - Package_Wiki_Content
 
   pack:
     - build
+    - docs
     - package_module_nupkg
 
   hqrmtest:
