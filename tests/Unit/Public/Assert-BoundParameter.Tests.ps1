@@ -10,7 +10,7 @@ BeforeDiscovery {
             if (-not (Get-Module -Name 'DscResource.Test' -ListAvailable))
             {
                 # Redirect all streams to $null, except the error stream (stream 2)
-                & "$PSScriptRoot/../../../build.ps1" -Tasks 'noop' 2>&1 4>&1 5>&1 6>&1 > $null
+                & "$PSScriptRoot/../../../build.ps1" -Tasks 'noop' 3>&1 4>&1 5>&1 6>&1 > $null
             }
 
             # If the dependencies has not been resolved, this will throw an error.
@@ -48,14 +48,14 @@ AfterAll {
 Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
     It 'Should have the correct parameters in parameter set <MockParameterSetName>' -ForEach @(
         @{
-            MockParameterSetName = 'MutuallyExclusiveParameters'
+            MockParameterSetName   = 'MutuallyExclusiveParameters'
             # cSpell: disable-next
             MockExpectedParameters = '-BoundParameterList <hashtable> -MutuallyExclusiveList1 <string[]> -MutuallyExclusiveList2 <string[]> [<CommonParameters>]'
         }
         @{
-            MockParameterSetName = 'RequiredParameter'
+            MockParameterSetName   = 'RequiredParameter'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-IfParameterPresent <string[]>] [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-RequiredBehavior <BoundParameterBehavior>] [-IfParameterPresent <string[]>] [<CommonParameters>]'
         }
     ) {
         InModuleScope -Parameters $_ -ScriptBlock {
@@ -63,16 +63,16 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 Where-Object -FilterScript {
                     $_.Name -eq $mockParameterSetName
                 } |
-                Select-Object -Property @(
-                    @{
-                        Name = 'ParameterSetName'
-                        Expression = { $_.Name }
-                    },
-                    @{
-                        Name = 'ParameterListAsString'
-                        Expression = { $_.ToString() }
-                    }
-                )
+                    Select-Object -Property @(
+                        @{
+                            Name       = 'ParameterSetName'
+                            Expression = { $_.Name }
+                        },
+                        @{
+                            Name       = 'ParameterListAsString'
+                            Expression = { $_.ToString() }
+                        }
+                    )
 
             $result.ParameterSetName | Should -Be $MockParameterSetName
             $result.ParameterListAsString | Should -Be $MockExpectedParameters
@@ -84,7 +84,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
             It 'Should not throw an error' {
                 {
                     $assertBoundParameterParameters = @{
-                        BoundParameterList = @{}
+                        BoundParameterList     = @{}
                         MutuallyExclusiveList1 = @('a')
                         MutuallyExclusiveList2 = @('b')
                     }
@@ -98,7 +98,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
             It 'Should not throw an error' {
                 {
                     $assertBoundParameterParameters = @{
-                        BoundParameterList = @{
+                        BoundParameterList     = @{
                             param1 = 'value1'
                         }
                         MutuallyExclusiveList1 = @('a')
@@ -114,7 +114,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
             It 'Should not throw an error' {
                 {
                     $assertBoundParameterParameters = @{
-                        BoundParameterList = @{
+                        BoundParameterList     = @{
                             param1 = 'value1'
                             param2 = 'value2'
                         }
@@ -131,7 +131,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
             It 'Should not throw an error' {
                 {
                     $assertBoundParameterParameters = @{
-                        BoundParameterList = @{
+                        BoundParameterList     = @{
                             param1 = 'value1'
                         }
                         MutuallyExclusiveList1 = @('param1')
@@ -151,9 +151,54 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
             It 'Should not throw an error' {
                 InModuleScope -ScriptBlock {
                     { Assert-BoundParameter -BoundParameterList @{
-                        Parameter1 = 'Value1'
-                    } -RequiredParameter 'Parameter1' } |
+                            Parameter1 = 'Value1'
+                        } -RequiredParameter 'Parameter1' } |
                         Should -Not -Throw
+                }
+            }
+        }
+
+        Context 'When the required parameter is present in AtLeastOnce behavior' {
+            BeforeAll {
+                Mock -CommandName Assert-RequiredCommandParameter
+            }
+
+            It 'Should not throw an error' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        BoundParameterList = @{
+                            Parameter1 = 'Value1'
+                        }
+                        RequiredParameter  = @( 'Parameter1', 'Parameter2')
+                        RequiredBehavior   = 'AtLeastOnce'
+                    }
+
+                    { Assert-BoundParameter @testParams } | Should -Not -Throw
+                }
+            }
+        }
+
+        Context 'When the required parameter is present and IfParameter is supplied in AtLeastOnce behavior' {
+            BeforeAll {
+                Mock -CommandName Assert-RequiredCommandParameter
+            }
+
+            It 'Should not throw an error' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        BoundParameterList = @{
+                            Parameter1 = 'Value1'
+                        }
+                        RequiredParameter  = @( 'Parameter1', 'Parameter2')
+                        IfParameterPresent = @('Parameter1')
+                        RequiredBehavior   = 'AtLeastOnce'
+                    }
+
+                    { Assert-BoundParameter @testParams } | Should -Not -Throw
                 }
             }
         }
@@ -170,7 +215,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
 
                 {
                     $assertBoundParameterParameters = @{
-                        BoundParameterList = @{
+                        BoundParameterList     = @{
                             param1 = 'value1'
                             param2 = 'value1'
                         }
@@ -193,14 +238,14 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
 
                 {
                     $assertBoundParameterParameters = @{
-                        BoundParameterList = @{
+                        BoundParameterList     = @{
                             param1 = 'value1'
                             param2 = 'value2'
                             param3 = 'value3'
                             param4 = 'value4'
                         }
-                        MutuallyExclusiveList1 = @('param1','param2')
-                        MutuallyExclusiveList2 = @('param3','param4')
+                        MutuallyExclusiveList1 = @('param1', 'param2')
+                        MutuallyExclusiveList2 = @('param3', 'param4')
                     }
 
                     Assert-BoundParameter @assertBoundParameterParameters
@@ -219,6 +264,35 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 InModuleScope -ScriptBlock {
                     { Assert-BoundParameter -BoundParameterList @{} -RequiredParameter 'Parameter1' } |
                         Should -Throw -ExpectedMessage '*Mocked error*'
+                }
+            }
+        }
+
+        Context 'When the required parameter is missing in AtLeastOnce behavior' {
+            BeforeAll {
+                Mock -CommandName Assert-RequiredCommandParameter
+            }
+
+            It 'Should throw the correct error' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $requiredParams = @( 'Parameter3', 'Parameter4')
+
+                    $testParams = @{
+                        BoundParameterList = @{
+                            Parameter1 = 'Value1'
+                            Parameter2 = 'Value1'
+                        }
+                        RequiredParameter  = $requiredParams
+                        RequiredBehavior   = 'AtLeastOnce'
+                    }
+
+                    $errorRecord = Get-InvalidArgumentRecord -ArgumentName 'RequiredParameter' -Message (
+                        $script:localizedData.MustAssignOnePermissionProperty -f ($requiredParams -join "','")
+                    )
+
+                    { Assert-BoundParameter @testParams } | Should -Throw -ExpectedMessage $errorRecord
                 }
             }
         }

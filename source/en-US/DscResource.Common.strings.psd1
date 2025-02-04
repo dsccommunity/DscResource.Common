@@ -50,4 +50,7 @@ ConvertFrom-StringData @'
 
     ## Get-PSModulePath
     PSModulePath_MissingMyDocumentsPath = The My Documents folder does not exist for user '{0}'. (DRC0048)
+
+    ## Assert-BoundParameter
+    MustAssignOnePermissionProperty = At least one of the properties '{0}' must be specified. (DRC0049)
 '@

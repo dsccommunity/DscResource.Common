@@ -39,6 +39,9 @@
     .PARAMETER RequiredParameter
        One or more parameter names that is required to have been specified.
 
+    .PARAMETER RequiredBehavior
+       Whether RequiredParameter requires all or at least one parameter to be present.
+
     .PARAMETER IfParameterPresent
        One or more parameter names that if specified will trigger the evaluation.
        If neither of the parameter names has been specified the evaluation of required
@@ -93,6 +96,10 @@ function Assert-BoundParameter
         $RequiredParameter,
 
         [Parameter(ParameterSetName = 'RequiredParameter')]
+        [BoundParameterBehavior]
+        $RequiredBehavior = [BoundParameterBehavior]::All,
+
+        [Parameter(ParameterSetName = 'RequiredParameter')]
         [System.String[]]
         $IfParameterPresent
     )
@@ -108,7 +115,7 @@ function Assert-BoundParameter
             {
                 $errorMessage = `
                     $script:localizedData.ParameterUsageWrong `
-                        -f ($MutuallyExclusiveList1 -join "','"), ($MutuallyExclusiveList2 -join "','")
+                    -f ($MutuallyExclusiveList1 -join "','"), ($MutuallyExclusiveList2 -join "','")
 
                 New-InvalidArgumentException -ArgumentName 'Parameters' -Message $errorMessage
             }
@@ -118,7 +125,44 @@ function Assert-BoundParameter
 
         'RequiredParameter'
         {
-            Assert-RequiredCommandParameter @PSBoundParameters
+            switch ($RequiredBehavior)
+            {
+                All
+                {
+                    Assert-RequiredCommandParameter @PSBoundParameters
+                    break
+                }
+
+                AtLeastOnce
+                {
+                    # check if IfParameterPresent
+                    if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
+                    {
+                        $hasIfParameterPresent = $BoundParameterList.Keys.Where( { $_ -in $IfParameterPresent } )
+
+                        if (-not $hasIfParameterPresent)
+                        {
+                            # TODO: need to throw exception
+                            break
+                        }
+                    }
+
+
+                    # Get all assigned properties.
+                    $requiredProperty = $BoundParameterList.Keys.Where({ $_ -in $RequiredParameter })
+
+                    # Must include any of the properties.
+                    if ([System.String]::IsNullOrEmpty($requiredProperty))
+                    {
+                        $requiredParameterString = ($RequiredParameter -join "','")
+                        $errorMessage = ($script:localizedData.MustAssignOnePermissionProperty -f $requiredParameterString)
+
+                        New-InvalidArgumentException -ArgumentName 'RequiredParameter' -Message $errorMessage
+                    }
+
+                    break
+                }
+            }
 
             break
         }
