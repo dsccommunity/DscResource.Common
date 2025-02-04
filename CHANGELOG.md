@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Move docs generation to separate task.
 - Remove build.yml config not required.
+- `Assert-BoundParameter`
+  - Add additional functionality to RequiredParameterSet to either match all
+  required parameters or one or more.
 
 ### Fixed
 
