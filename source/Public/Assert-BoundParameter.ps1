@@ -129,6 +129,8 @@ function Assert-BoundParameter
             {
                 All
                 {
+                    $null = $PSBoundParameters.Remove('RequiredBehavior')
+
                     Assert-RequiredCommandParameter @PSBoundParameters
                     break
                 }
