@@ -147,15 +147,13 @@ function Assert-BoundParameter
                         }
                     }
 
-
                     # Get all assigned properties.
                     $requiredProperty = $BoundParameterList.Keys.Where({ $_ -in $RequiredParameter })
 
                     # Must include any of the properties.
                     if ([System.String]::IsNullOrEmpty($requiredProperty))
                     {
-                        $requiredParameterString = ($RequiredParameter -join "','")
-                        $errorMessage = ($script:localizedData.MustAssignOnePermissionProperty -f $requiredParameterString)
+                        $errorMessage = ($script:localizedData.MustAssignOnePermissionProperty -f ($RequiredParameter -join "','"))
 
                         New-InvalidArgumentException -ArgumentName 'RequiredParameter' -Message $errorMessage
                     }
