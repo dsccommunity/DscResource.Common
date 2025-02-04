@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove build.yml config not required.
 - `Assert-BoundParameter`
   - Add additional functionality to RequiredParameterSet to either match all
-  required parameters or one or more.
+  required parameters or one or more. Fixes [#136](https://github.com/dsccommunity/DscResource.Common/issues/136).
 
 ### Fixed
 
