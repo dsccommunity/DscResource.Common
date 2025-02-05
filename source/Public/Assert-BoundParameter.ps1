@@ -125,45 +125,7 @@ function Assert-BoundParameter
 
         'RequiredParameter'
         {
-            switch ($RequiredBehavior)
-            {
-                All
-                {
-                    $null = $PSBoundParameters.Remove('RequiredBehavior')
-
-                    Assert-RequiredCommandParameter @PSBoundParameters
-                    break
-                }
-
-                AtLeastOnce
-                {
-                    # check if IfParameterPresent
-                    if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
-                    {
-                        $hasIfParameterPresent = $BoundParameterList.Keys.Where( { $_ -in $IfParameterPresent } )
-
-                        if (-not $hasIfParameterPresent)
-                        {
-                            # TODO: need to throw exception
-                            break
-                        }
-                    }
-
-                    # Get all assigned properties.
-                    $requiredProperty = $BoundParameterList.Keys.Where({ $_ -in $RequiredParameter })
-
-                    # Must include any of the properties.
-                    if ([System.String]::IsNullOrEmpty($requiredProperty))
-                    {
-                        $errorMessage = ($script:localizedData.MustAssignOnePermissionProperty -f ($RequiredParameter -join "','"))
-
-                        New-InvalidArgumentException -ArgumentName 'RequiredParameter' -Message $errorMessage
-                    }
-
-                    break
-                }
-            }
-
+            Assert-RequiredCommandParameter @PSBoundParameters
             break
         }
     }
