@@ -26,6 +26,11 @@
         Throws an exception if either of the two parameters are not specified.
 
     .EXAMPLE
+        Assert-RequiredCommandParameter -BoundParameter $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange') -RequiredBehavior 'AtLeastOnce'
+
+        Throws an exception if at least one of the two parameters are not specified.
+
+    .EXAMPLE
         Assert-RequiredCommandParameter -BoundParameter $PSBoundParameters -RequiredParameter @('Property2', 'Property3') -IfParameterPresent @('Property1')
 
         Throws an exception if the parameter 'Property1' is specified and either of the required parameters are not.

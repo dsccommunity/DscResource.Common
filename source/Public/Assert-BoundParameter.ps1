@@ -72,6 +72,11 @@
 
         Throws an exception if the parameter 'Property1' is specified and either
         of the required parameters are not.
+
+    .EXAMPLE
+        Assert-BoundParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange') -RequiredBehavior 'AtLeastOnce'
+
+        Throws an exception if at least once of the two parameters are not specified.
 #>
 function Assert-BoundParameter
 {
