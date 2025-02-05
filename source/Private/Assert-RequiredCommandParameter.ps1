@@ -12,6 +12,9 @@
     .PARAMETER RequiredParameter
        One or more parameter names that is required to have been specified.
 
+    .PARAMETER RequiredBehavior
+       Whether RequiredParameter requires all or at least one parameter to be present.
+
     .PARAMETER IfParameterPresent
        One or more parameter names that if specified will trigger the evaluation.
        If neither of the parameter names has been specified the evaluation of required
@@ -44,6 +47,10 @@ function Assert-RequiredCommandParameter
         $RequiredParameter,
 
         [Parameter()]
+        [BoundParameterBehavior]
+        $RequiredBehavior,
+
+        [Parameter()]
         [System.String[]]
         $IfParameterPresent
     )
@@ -62,28 +69,69 @@ function Assert-RequiredCommandParameter
 
     if ($evaluateRequiredParameter)
     {
-        foreach ($parameter in $RequiredParameter)
+        switch ($RequiredBehavior)
         {
-             if ($parameter -notin $BoundParameterList.Keys)
-             {
-                $errorMessage = if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
+            All
+            {
+                foreach ($parameter in $RequiredParameter)
                 {
-                    $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f ($RequiredParameter -join ''', '''), ($IfParameterPresent -join ''', ''')
-                }
-                else
-                {
-                    $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSet -f ($RequiredParameter -join ''', ''')
+                    if ($parameter -notin $BoundParameterList.Keys)
+                    {
+                        $errorMessage = if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
+                        {
+
+                            $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f ($RequiredParameter -join ''', '''), ($IfParameterPresent -join ''', ''')
+                        }
+                        else
+                        {
+                            $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSet -f ($RequiredParameter -join ''', ''')
+                        }
+
+                        $PSCmdlet.ThrowTerminatingError(
+                            [System.Management.Automation.ErrorRecord]::new(
+                                $errorMessage,
+                                'ARCP0001', # cspell: disable-line
+                                [System.Management.Automation.ErrorCategory]::InvalidOperation,
+                                'Command parameters'
+                            )
+                        )
+                    }
                 }
 
-                $PSCmdlet.ThrowTerminatingError(
-                    [System.Management.Automation.ErrorRecord]::new(
-                        $errorMessage,
-                        'ARCP0001', # cspell: disable-line
-                        [System.Management.Automation.ErrorCategory]::InvalidOperation,
-                        'Command parameters'
+                break
+            }
+
+            AtLeastOnce
+            {
+                # Get all assigned properties.
+                $requiredProperty = $BoundParameterList.Keys.Where({ $_ -in $RequiredParameter })
+
+                # Must include any of the properties.
+                if ([System.String]::IsNullOrEmpty($requiredProperty))
+                {
+                    $errorMessage = if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
+                    {
+
+                        $script:localizedData.RequiredCommandParameter_SpecificParametersAtLeastOneMustBeSetWhenParameterExist -f ($RequiredParameter -join ''', '''), ($IfParameterPresent -join ''', ''')
+                    }
+                    else
+                    {
+                        $script:localizedData.RequiredCommandParameter_SpecificParametersAtLeastOneMustBeSet -f ($RequiredParameter -join ''', ''')
+                    }
+
+                    $PSCmdlet.ThrowTerminatingError(
+                        [System.Management.Automation.ErrorRecord]::new(
+                            $errorMessage,
+                            'ARCP0002', # cspell: disable-line
+                            [System.Management.Automation.ErrorCategory]::InvalidOperation,
+                            'Command parameters'
+                        )
                     )
-                )
-             }
+                }
+
+                break
+            }
         }
+
     }
 }

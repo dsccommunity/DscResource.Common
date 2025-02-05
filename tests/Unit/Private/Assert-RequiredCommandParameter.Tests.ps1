@@ -49,10 +49,17 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
     Context 'When required parameter is missing' {
         It 'Should throw the correct error' {
             InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
                 $mockErrorMessage = $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSet -f 'Parameter1'
 
-                { Assert-RequiredCommandParameter -BoundParameterList @{} -RequiredParameter 'Parameter1' } |
-                    Should -Throw -ExpectedMessage $mockErrorMessage
+                $testParams = @{
+                    BoundParameterList = @{}
+                    RequiredParameter  = 'Parameter1'
+                    RequiredBehavior   = 'All'
+                }
+
+                { Assert-RequiredCommandParameter @testParams } | Should -Throw -ExpectedMessage $mockErrorMessage
             }
         }
     }
@@ -60,19 +67,34 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
     Context 'When the required parameter is present' {
         It 'Should not throw an error' {
             InModuleScope -ScriptBlock {
-                { Assert-RequiredCommandParameter -BoundParameterList @{
-                    Parameter1 = 'Value1'
-                } -RequiredParameter 'Parameter1' } |
-                    Should -Not -Throw
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    BoundParameterList = @{
+                        Parameter1 = 'Value1'
+                    }
+                    RequiredParameter  = 'Parameter1'
+                    RequiredBehavior   = 'All'
+                }
             }
+
+            { Assert-RequiredCommandParameter @testParams | Should -Not -Throw }
         }
     }
 
     Context 'When both required parameter and parameter in IfParameterPresent is not present' {
         It 'Should not throw an error' {
             InModuleScope -ScriptBlock {
-                { Assert-RequiredCommandParameter -BoundParameterList @{} -RequiredParameter 'Parameter1' -IfParameterPresent 'Parameter2' } |
-                    Should -Not -Throw
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    BoundParameterList = @{}
+                    RequiredParameter  = 'Parameter1'
+                    RequiredBehavior   = 'All'
+                    IfParameterPresent = 'Parameter2'
+                }
+
+                { Assert-RequiredCommandParameter @testParams } | Should -Not -Throw
             }
         }
     }
@@ -80,13 +102,20 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
     Context 'When the required parameter is not present and parameter in IfParameterPresent is present' {
         It 'Should throw the correct error' {
             InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
                 $mockErrorMessage = $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f 'Parameter1', 'Parameter2'
 
-                {
-                    Assert-RequiredCommandParameter -BoundParameterList @{
+                $testParams = @{
+                    BoundParameterList = @{
                         Parameter2 = 'Value2'
-                    } -RequiredParameter 'Parameter1' -IfParameterPresent 'Parameter2'
-                } | Should -Throw -ExpectedMessage $mockErrorMessage
+                    }
+                    RequiredParameter  = 'Parameter1'
+                    RequiredBehavior   = 'All'
+                    IfParameterPresent = 'Parameter2'
+                }
+
+                { Assert-RequiredCommandParameter @testParams } | Should -Throw -ExpectedMessage $mockErrorMessage
             }
         }
     }
@@ -94,14 +123,21 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
     Context 'When the parameters in IfParameterPresent is present and the required parameters are not present' {
         It 'Should throw the correct error' {
             InModuleScope -ScriptBlock {
+                Set-StrictMode -Version 1.0
+
                 $mockErrorMessage = $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f "Parameter3', 'Parameter4", "Parameter1', 'Parameter2"
 
-                {
-                    Assert-RequiredCommandParameter -BoundParameterList @{
+                $testParams = @{
+                    BoundParameterList = @{
                         Parameter1 = 'Value1'
                         Parameter2 = 'Value2'
-                    } -RequiredParameter @('Parameter3', 'Parameter4') -IfParameterPresent @('Parameter1', 'Parameter2')
-                } | Should -Throw -ExpectedMessage $mockErrorMessage
+                    }
+                    RequiredParameter  = @('Parameter3', 'Parameter4')
+                    RequiredBehavior   = 'All'
+                    IfParameterPresent = @('Parameter1', 'Parameter2')
+                }
+
+                { Assert-RequiredCommandParameter @testParams } | Should -Throw -ExpectedMessage $mockErrorMessage
             }
         }
     }
@@ -109,12 +145,19 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
     Context 'When the parameters in IfParameterPresent is present and required parameters are present' {
         It 'Should throw the correct error' {
             InModuleScope -ScriptBlock {
-                {
-                    Assert-RequiredCommandParameter -BoundParameterList @{
+                Set-StrictMode -Version 1.0
+
+                $testParams = @{
+                    BoundParameterList = @{
                         Parameter1 = 'Value1'
                         Parameter2 = 'Value2'
-                    } -RequiredParameter @('Parameter1', 'Parameter2') -IfParameterPresent @('Parameter1', 'Parameter2')
-                } | Should -Not -Throw
+                    }
+                    RequiredParameter  = @('Parameter1', 'Parameter2')
+                    RequiredBehavior   = 'All'
+                    IfParameterPresent = @('Parameter1', 'Parameter2')
+                }
+
+                { Assert-RequiredCommandParameter @testParams } | Should -Not -Throw
             }
         }
     }
