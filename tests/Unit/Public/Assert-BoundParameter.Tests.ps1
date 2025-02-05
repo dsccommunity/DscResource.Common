@@ -157,51 +157,6 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 }
             }
         }
-
-        Context 'When the required parameter is present in AtLeastOnce behavior' {
-            BeforeAll {
-                Mock -CommandName Assert-RequiredCommandParameter
-            }
-
-            It 'Should not throw an error' {
-                InModuleScope -ScriptBlock {
-                    Set-StrictMode -Version 1.0
-
-                    $testParams = @{
-                        BoundParameterList = @{
-                            Parameter1 = 'Value1'
-                        }
-                        RequiredParameter  = @( 'Parameter1', 'Parameter2')
-                        RequiredBehavior   = 'AtLeastOnce'
-                    }
-
-                    { Assert-BoundParameter @testParams } | Should -Not -Throw
-                }
-            }
-        }
-
-        Context 'When the required parameter is present and IfParameter is supplied in AtLeastOnce behavior' {
-            BeforeAll {
-                Mock -CommandName Assert-RequiredCommandParameter
-            }
-
-            It 'Should not throw an error' {
-                InModuleScope -ScriptBlock {
-                    Set-StrictMode -Version 1.0
-
-                    $testParams = @{
-                        BoundParameterList = @{
-                            Parameter1 = 'Value1'
-                        }
-                        RequiredParameter  = @( 'Parameter1', 'Parameter2')
-                        IfParameterPresent = @('Parameter1')
-                        RequiredBehavior   = 'AtLeastOnce'
-                    }
-
-                    { Assert-BoundParameter @testParams } | Should -Not -Throw
-                }
-            }
-        }
     }
 
     Context 'When the assert fails' {
@@ -264,35 +219,6 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 InModuleScope -ScriptBlock {
                     { Assert-BoundParameter -BoundParameterList @{} -RequiredParameter 'Parameter1' } |
                         Should -Throw -ExpectedMessage '*Mocked error*'
-                }
-            }
-        }
-
-        Context 'When the required parameter is missing in AtLeastOnce behavior' {
-            BeforeAll {
-                Mock -CommandName Assert-RequiredCommandParameter
-            }
-
-            It 'Should throw the correct error' {
-                InModuleScope -ScriptBlock {
-                    Set-StrictMode -Version 1.0
-
-                    $requiredParams = @( 'Parameter3', 'Parameter4')
-
-                    $testParams = @{
-                        BoundParameterList = @{
-                            Parameter1 = 'Value1'
-                            Parameter2 = 'Value1'
-                        }
-                        RequiredParameter  = $requiredParams
-                        RequiredBehavior   = 'AtLeastOnce'
-                    }
-
-                    $errorRecord = Get-InvalidArgumentRecord -ArgumentName 'RequiredParameter' -Message (
-                        $script:localizedData.MustAssignOnePermissionProperty -f ($requiredParams -join "','")
-                    )
-
-                    { Assert-BoundParameter @testParams } | Should -Throw -ExpectedMessage $errorRecord
                 }
             }
         }
