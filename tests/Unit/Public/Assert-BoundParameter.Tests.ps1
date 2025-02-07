@@ -145,15 +145,44 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
 
         Context 'When the required parameter is present' {
             BeforeAll {
-                Mock -CommandName Assert-RequiredCommandParameter
+                Mock -CommandName Assert-RequiredCommandParameter -ParameterFilter {
+                    $RequiredBehavior -eq 'All'
+                }
+            }
+
+            It 'Should pass the correct value for ''RequiredBehavior''' {
+                InModuleScope -ScriptBlock {
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        BoundParameterList = @{
+                            Parameter1 = 'Value1'
+                        }
+
+                        RequiredParameter  = 'Parameter1'
+                    }
+
+                    { Assert-BoundParameter @testParams } | Should -Not -Throw
+                }
+
+                Should -Invoke -CommandName Assert-RequiredCommandParameter -ParameterFilter {
+                    $RequiredBehavior -eq 'All'
+                } -Exactly -Times 1 -Scope It
             }
 
             It 'Should not throw an error' {
                 InModuleScope -ScriptBlock {
-                    { Assert-BoundParameter -BoundParameterList @{
+                    Set-StrictMode -Version 1.0
+
+                    $testParams = @{
+                        BoundParameterList = @{
                             Parameter1 = 'Value1'
-                        } -RequiredParameter 'Parameter1' } |
-                        Should -Not -Throw
+                        }
+
+                        RequiredParameter  = 'Parameter1'
+                    }
+
+                    { Assert-BoundParameter @testParams } | Should -Not -Throw
                 }
             }
         }
