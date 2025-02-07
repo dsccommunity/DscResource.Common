@@ -106,7 +106,7 @@ function Assert-RequiredCommandParameter
                 break
             }
 
-            AtLeastOnce
+            Any
             {
                 # Get all assigned properties.
                 $requiredProperty = $BoundParameterList.Keys.Where({ $_ -in $RequiredParameter })

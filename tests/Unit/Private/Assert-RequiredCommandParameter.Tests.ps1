@@ -164,7 +164,7 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
         }
     }
 
-    Context 'When RequiredBehavior is ''AtLeastOnce''' {
+    Context 'When RequiredBehavior is ''Any''' {
         Context 'When required parameter is missing' {
             It 'Should throw the correct error' {
                 InModuleScope -ScriptBlock {
@@ -175,7 +175,7 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
                     $testParams = @{
                         BoundParameterList = @{}
                         RequiredParameter  = 'Parameter1'
-                        RequiredBehavior   = 'AtLeastOnce'
+                        RequiredBehavior   = 'Any'
                     }
 
                     { Assert-RequiredCommandParameter @testParams } | Should -Throw -ExpectedMessage $mockErrorMessage
@@ -193,7 +193,7 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
                             Parameter1 = 'Value1'
                         }
                         RequiredParameter  = 'Parameter1'
-                        RequiredBehavior   = 'AtLeastOnce'
+                        RequiredBehavior   = 'Any'
                     }
                 }
 
@@ -209,7 +209,7 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
                     $testParams = @{
                         BoundParameterList = @{}
                         RequiredParameter  = 'Parameter1'
-                        RequiredBehavior   = 'AtLeastOnce'
+                        RequiredBehavior   = 'Any'
                         IfParameterPresent = 'Parameter2'
                     }
 
@@ -230,7 +230,7 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
                             Parameter2 = 'Value2'
                         }
                         RequiredParameter  = 'Parameter1'
-                        RequiredBehavior   = 'AtLeastOnce'
+                        RequiredBehavior   = 'Any'
                         IfParameterPresent = 'Parameter2'
                     }
 
@@ -250,7 +250,7 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
                             Parameter2 = 'Value2'
                         }
                         RequiredParameter  = @('Parameter1', 'Parameter2', 'Parameter3')
-                        RequiredBehavior   = 'AtLeastOnce'
+                        RequiredBehavior   = 'Any'
                         IfParameterPresent = @('Parameter1', 'Parameter2')
                     }
 
