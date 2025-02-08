@@ -43,6 +43,8 @@ ConvertFrom-StringData @'
     ## Assert-RequiredCommandParameter
     RequiredCommandParameter_SpecificParametersMustAllBeSet = The parameters '{0}' must all be specified. (DRC0044)
     RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist = The parameters '{0}' must all be specified if either parameter '{1}' is specified. (DRC0045)
+    RequiredCommandParameter_SpecificParametersAtLeastOneMustBeSet = At least one of the parameters '{0}' must be specified. (DRC0050)
+    RequiredCommandParameter_SpecificParametersAtLeastOneMustBeSetWhenParameterExist = At least one of the parameters '{0}' must be specified if either parameter '{1}' is specified. (DRC0051)
 
     ## Find-Certificate
     CertificatePathError = Certificate Path '{0}' is not valid. (DRC0046)

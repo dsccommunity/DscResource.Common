@@ -39,6 +39,9 @@
     .PARAMETER RequiredParameter
        One or more parameter names that is required to have been specified.
 
+    .PARAMETER RequiredBehavior
+       Whether RequiredParameter requires all or at least one parameter to be present.
+
     .PARAMETER IfParameterPresent
        One or more parameter names that if specified will trigger the evaluation.
        If neither of the parameter names has been specified the evaluation of required
@@ -69,6 +72,11 @@
 
         Throws an exception if the parameter 'Property1' is specified and either
         of the required parameters are not.
+
+    .EXAMPLE
+        Assert-BoundParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange') -RequiredBehavior 'AtLeastOnce'
+
+        Throws an exception if at least one of the two parameters are not specified.
 #>
 function Assert-BoundParameter
 {
@@ -93,6 +101,10 @@ function Assert-BoundParameter
         $RequiredParameter,
 
         [Parameter(ParameterSetName = 'RequiredParameter')]
+        [BoundParameterBehavior]
+        $RequiredBehavior = [BoundParameterBehavior]::All,
+
+        [Parameter(ParameterSetName = 'RequiredParameter')]
         [System.String[]]
         $IfParameterPresent
     )
@@ -108,7 +120,7 @@ function Assert-BoundParameter
             {
                 $errorMessage = `
                     $script:localizedData.ParameterUsageWrong `
-                        -f ($MutuallyExclusiveList1 -join "','"), ($MutuallyExclusiveList2 -join "','")
+                    -f ($MutuallyExclusiveList1 -join "','"), ($MutuallyExclusiveList2 -join "','")
 
                 New-InvalidArgumentException -ArgumentName 'Parameters' -Message $errorMessage
             }
@@ -118,8 +130,12 @@ function Assert-BoundParameter
 
         'RequiredParameter'
         {
-            Assert-RequiredCommandParameter @PSBoundParameters
+            if (-not $PSBoundParameters.ContainsKey('RequiredBehavior'))
+            {
+                $PSBoundParameters.RequiredBehavior = $RequiredBehavior
+            }
 
+            Assert-RequiredCommandParameter @PSBoundParameters
             break
         }
     }

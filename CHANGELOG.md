@@ -11,11 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added Indented.AnalyzerRules and config
 - Use prerelease DscResource.ScriptAnalyzer
+- `BoundParameterBehavior` Enum.
 
 ### Changed
 
 - Move docs generation to separate task.
 - Remove build.yml config not required.
+- `Assert-BoundParameter`
+  - Add additional parameter `RequiredBehavoir`, defaults to the current implementation
+- `Assert-RequiredCommandParameter`
+  - Add additional functionality to to either match all required parameters or
+  one or more. Fixes [#136](https://github.com/dsccommunity/DscResource.Common/issues/136).
 
 ### Fixed
 
