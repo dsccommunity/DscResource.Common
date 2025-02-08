@@ -130,13 +130,12 @@ function Assert-BoundParameter
 
         'RequiredParameter'
         {
-            $requiredCommandParameters = $PSBoundParameters
-            if (-not $requiredCommandParameters.ContainsKey('RequiredBehavior'))
+            if (-not $PSBoundParameters.ContainsKey('RequiredBehavior'))
             {
-                $requiredCommandParameters.RequiredBehavior = $RequiredBehavior
+                $PSBoundParameters.RequiredBehavior = $RequiredBehavior
             }
 
-            Assert-RequiredCommandParameter @requiredCommandParameters
+            Assert-RequiredCommandParameter @PSBoundParameters
             break
         }
     }
