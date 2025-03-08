@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- DscResource.Common
+  - Added GitHub issue template for new command proposals.
+
 ## [0.19.1] - 2025-02-08
 
 ### Added
