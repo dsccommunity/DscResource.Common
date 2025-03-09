@@ -15,7 +15,8 @@
     .NOTES
         This function is similar to Get-ItemPropertyValue, but this command will
         honor the `-ErrorAction` parameter which Get-ItemPropertyValue does not.
-        This command will return `$null` if the specified property name does not exist.
+        This command will by default not throw an exception and instead return
+        `$null` if the specified property name does not exist.
 #>
 function Get-RegistryPropertyValue
 {
@@ -34,15 +35,12 @@ function Get-RegistryPropertyValue
 
     $getItemPropertyValueResult = $null
 
-    Write-Verbose -Message $PSBoundParameters.ContainsKey('ErrorAction') -Verbose
-    Write-Verbose -Message $ErrorActionPreference -Verbose
-
-    $getItemPropertyResult = Get-ItemProperty @PSBoundParameters -ErrorAction 'SilentlyContinue'
-
-    if ($null -ne $getItemPropertyResult)
+    if (-not $PSBoundParameters.ContainsKey('ErrorAction'))
     {
-        $getItemPropertyValueResult = $getItemPropertyResult.$Name
+        $ErrorActionPreference = 'SilentlyContinue'
     }
+
+    $getItemPropertyValueResult = Get-ItemPropertyValue @PSBoundParameters
 
     return $getItemPropertyValueResult
 }

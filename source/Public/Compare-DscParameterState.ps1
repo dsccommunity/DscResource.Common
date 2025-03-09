@@ -120,6 +120,25 @@
         is used to specify the properties 'Name','Status' and
         'StartType' for the comparison.
 
+    .EXAMPLE
+        Compare-DscParameterState -CurrentValues @{
+            IsSingleInstance = 'Yes'
+            NameServer = [Microsoft.Management.Infrastructure.CimInstance[]]@()
+        } -DesiredValues @{
+            NameServers = [Microsoft.Management.Infrastructure.CimInstance[]] @(
+                New-CimInstance -ClassName 'MSFT_KeyValuePair' -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' -Property @{
+                    Key   = 'B.ROOT-SERVERS.NET.'
+                    Value = '199.9.14.201'
+                } -ClientOnly
+            )
+            IsSingleInstance = 'Yes'
+            Verbose = $true
+        } -TurnOffTypeChecking -ReverseCheck
+
+        This example calls Compare-DscParameterState with the current state and
+        the desired state and returns a hashtable array of all the properties
+        that was evaluated not in desired state based on the properties pass in
+        the parameter DesiredValues.
 #>
 function Compare-DscParameterState
 {
