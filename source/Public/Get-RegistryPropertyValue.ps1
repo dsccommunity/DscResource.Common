@@ -12,6 +12,17 @@
     .PARAMETER Name
         Specifies the name of the property to return the value for.
 
+    .EXAMPLE
+        Get-RegistryPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\RS' -Name 'RS'
+
+        Returns the value of the property RS at the specified path.
+
+    .EXAMPLE
+        Get-RegistryPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\RS' -Name 'RS' -ErrorAction 'Stop'
+
+        Returns the value of the property RS at the specified path, and throws an
+        exception if either that path or the name does not exist.
+
     .NOTES
         This function is similar to Get-ItemPropertyValue, but this command will
         honor the `-ErrorAction` parameter which Get-ItemPropertyValue does not.
