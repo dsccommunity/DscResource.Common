@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DscResource.Common
   - Added GitHub issue template for new command proposals.
   - Patch ModuleBuilder to workaround [issue #135](https://github.com/PoshCode/ModuleBuilder/issues/135).
+  - Public command:
+    - Get-RegistryPropertyValue - Get a registry property value.
+
+### Changed
+
+- `Compare-DscParameterState`
+  - Updated comment-based help example.
 
 ## [0.19.1] - 2025-02-08
 
