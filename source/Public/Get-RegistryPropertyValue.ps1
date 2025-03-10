@@ -57,7 +57,7 @@ function Get-RegistryPropertyValue
         $ErrorActionPreference = 'SilentlyContinue'
     }
 
-    $getItemPropertyResult = Get-ItemProperty @PSBoundParameters -ErrorAction:$ErrorActionPreference
+    $getItemPropertyResult = Get-ItemProperty -Path $Path -Name $Name -ErrorAction:$ErrorActionPreference
 
     if ($null -ne $getItemPropertyResult)
     {
