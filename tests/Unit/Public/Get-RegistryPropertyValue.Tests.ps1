@@ -54,54 +54,62 @@ Describe 'Get-RegistryPropertyValue' -Tag 'GetRegistryPropertyValue' {
 
     Context 'When there are no property in the registry' {
         BeforeAll {
-            Mock -CommandName Get-ItemPropertyValue -MockWith {
-                return $null
+            Mock -CommandName Get-ItemProperty -MockWith {
+                return @{
+                    'UnknownProperty' = $mockPropertyValue
+                }
             }
         }
 
         It 'Should return $null' {
             $result = Get-RegistryPropertyValue -Path $mockWrongRegistryPath -Name $mockPropertyName
+
             $result | Should -BeNullOrEmpty
 
-            Should -Invoke -CommandName Get-ItemPropertyValue -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Get-ItemProperty -Exactly -Times 1 -Scope It
         }
     }
 
     Context 'When the call to Get-ItemProperty throws an error (i.e. when the path does not exist)' -Skip:($IsLinux -or $IsMacOS) {
         Context 'When not passing ErrorAction parameter' {
-            It 'Should throw an error' {
+            It 'Should not throw an exception and return $null' {
                 $result = Get-RegistryPropertyValue -Path $mockWrongRegistryPath -Name $mockPropertyName
+
                 $result | Should -BeNullOrEmpty
             }
         }
 
         Context 'When passing ErrorAction SilentlyContinue' {
-            It 'Should throw an error' {
+            It 'Should not throw an exception and return $null' {
                 $result = Get-RegistryPropertyValue -Path $mockWrongRegistryPath -Name $mockPropertyName -ErrorAction 'SilentlyContinue'
+
                 $result | Should -BeNullOrEmpty
             }
         }
 
         Context 'When passing ErrorAction Ignore' {
-            It 'Should throw an error' {
+            It 'Should not throw an exception and return $null' {
                 $result = Get-RegistryPropertyValue -Path $mockWrongRegistryPath -Name $mockPropertyName -ErrorAction 'Ignore'
+
                 $result | Should -BeNullOrEmpty
             }
         }
 
         Context 'When passing ErrorAction Continue' {
-            It 'Should throw an error' {
+            BeforeAll {
+                # TODO: This might work in Pester 6 using `Should-Throw -AllowNonTerminatingError`.
+                Write-Verbose -Message 'Get-ItemProperty is intentionally throwing an non-terminating error, because there was not a known way to mock it.' -Verbose
+            }
+
+            It 'Should throw a non-terminating error and return $null' {
                 $result = Get-RegistryPropertyValue -Path $mockWrongRegistryPath -Name $mockPropertyName -ErrorAction 'Continue'
+
                 $result | Should -BeNullOrEmpty
             }
         }
 
         Context 'When passing ErrorAction Stop' {
-            BeforeAll {
-                Write-Verbose -Message 'Get-ItemPropertyValue is intentionally throwing an exception, because there was not a known way to mock it.' -Verbose
-            }
-
-            It 'Should throw an error' {
+            It 'Should throw a terminating error' {
                 { Get-RegistryPropertyValue -Path $mockWrongRegistryPath -Name $mockPropertyName -ErrorAction 'Stop' } | Should -Throw
             }
         }
@@ -111,19 +119,19 @@ Describe 'Get-RegistryPropertyValue' -Tag 'GetRegistryPropertyValue' {
         BeforeAll {
             $mockCorrectRegistryPath = 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\RS'
 
-            Mock -CommandName Get-ItemPropertyValue -MockWith {
-                return $mockPropertyValue
-            } -ParameterFilter {
-                $Path -eq $mockCorrectRegistryPath `
-                -and $Name -eq $mockPropertyName
+            Mock -CommandName Get-ItemProperty -MockWith {
+                return @{
+                    $mockPropertyName = $mockPropertyValue
+                }
             }
         }
 
         It 'Should return the correct value' {
             $result = Get-RegistryPropertyValue -Path $mockCorrectRegistryPath -Name $mockPropertyName
+
             $result | Should -Be $mockPropertyValue
 
-            Should -Invoke -CommandName Get-ItemPropertyValue -Exactly -Times 1 -Scope It
+            Should -Invoke -CommandName Get-ItemProperty -Exactly -Times 1 -Scope It
         }
     }
 }
