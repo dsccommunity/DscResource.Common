@@ -23,6 +23,12 @@
         Returns the value of the property RS at the specified path, and throws an
         exception if either that path or the name does not exist.
 
+    .EXAMPLE
+        Get-RegistryPropertyValue -Path 'HKCU:\SOFTWARE\Microsoft\Wisp\Touch' -Name 'Friction' -ErrorAction 'SilentlyContinue'
+
+        Returns the value of the property Friction at the specified path, and
+        suppresses any errors that may occur if the path or the name does not exist.
+
     .NOTES
         This function is similar to Get-ItemPropertyValue, but this command will
         honor the `-ErrorAction` parameter which Get-ItemPropertyValue does not.
@@ -44,14 +50,20 @@ function Get-RegistryPropertyValue
         $Name
     )
 
-    $getItemPropertyValueResult = $null
+    $getRegistryPropertyValueResult = $null
 
     if (-not $PSBoundParameters.ContainsKey('ErrorAction'))
     {
         $ErrorActionPreference = 'SilentlyContinue'
     }
 
-    $getItemPropertyValueResult = Get-ItemPropertyValue @PSBoundParameters
+    $getItemPropertyResult = Get-ItemProperty -Path $Path -Name $Name -ErrorAction:$ErrorActionPreference
 
-    return $getItemPropertyValueResult
+    if ($null -ne $getItemPropertyResult)
+    {
+        # If the property name is not found, Get-ItemProperty will return $null.
+        $getRegistryPropertyValueResult = $getItemPropertyResult.$Name
+    }
+
+    return $getRegistryPropertyValueResult
 }
