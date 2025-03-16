@@ -52,4 +52,7 @@ ConvertFrom-StringData @'
 
     ## Get-PSModulePath
     PSModulePath_MissingMyDocumentsPath = The My Documents folder does not exist for user '{0}'. (DRC0048)
+
+    # Format-Path
+    Format_Path_NormalizedPath = Path normalization completed. Original: '{0}', Normalized: '{1}'. (DRC0054)
 '@
