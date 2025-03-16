@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.1] - 2025-03-10
+
+### Fixed
+
+- `Get-RegistryPropertyValue`
+  - Current implementation was not safe and could throw an exception if
+    the property did not exist, even if `-ErrorAction 'SilentlyContinue`
+    was passed. This was fixed by using `Get-ItemProperty` instead of
+    `Get-ItemPropertyValue` ([issue #139](https://github.com/dsccommunity/DscResource.Common/issues/139#issuecomment-2708847681).
+
+## [0.20.0] - 2025-03-09
+
 ### Added
 
 - DscResource.Common
