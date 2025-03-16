@@ -69,14 +69,14 @@ Describe 'Format-Path' {
             Format-Path -Path 'C:/MyFolder/' | Should -Be 'C:\MyFolder\'
         }
 
-        It 'Should not modify paths that are not just drive letters' -Skip:($PSEdition -eq 'Desktop') {
+        It 'Should not modify paths that are not just drive letters on Linux or macOS' -Skip:($PSEdition -eq 'Desktop' -or $IsWindows) {
             Format-Path -Path '/temp/folder' | Should -Be '/temp/folder'
             Format-Path -Path '/temp/folder/' | Should -Be '/temp/folder/'
             Format-Path -Path '/temp\folder/' | Should -Be '/temp/folder/'
             Format-Path -Path '\temp\folder\' | Should -Be '/temp/folder/'
         }
 
-        It 'Should not modify paths that are not just drive letters' -Skip:($IsLinux -or $IsMacOS) {
+        It 'Should not modify paths that are not just drive letters on Windows' -Skip:($IsLinux -or $IsMacOS) {
             Format-Path -Path '/temp/folder' | Should -Be '\temp\folder'
             Format-Path -Path '/temp/folder/' | Should -Be '\temp\folder\'
             Format-Path -Path '/temp\folder/' | Should -Be '\temp\folder\'
