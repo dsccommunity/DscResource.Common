@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- DscResource.Common
+  - Public command:
+    - `Test-PendingRestart` - Test if a pending restart is required.
+
+## [0.21.0] - 2025-03-16
+
+### Added
+
+- DscResource.Common
+  - Public command:
+    - `Format-Path` - Format a file system path based on the operating
+       system and specified parameters.
+
 ## [0.20.1] - 2025-03-10
 
 ### Fixed
