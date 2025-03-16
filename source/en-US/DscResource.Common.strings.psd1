@@ -58,4 +58,7 @@ ConvertFrom-StringData @'
 
     # Format-Path
     Format_Path_NormalizedPath = Path normalization completed. Original: '{0}', Normalized: '{1}'. (DRC0054)
+
+    ## Test-PendingRestart
+    Test_PendingRestart_UnsupportedOs = Unsupported on non-Windows platforms. (DRC0055)
 '@
