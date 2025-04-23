@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove the patch workaround in the pipeline for the ModuleBuilder bug.
+
+### Added
+
+- DscResource.Common
+  - Public command:
+    - `Get-FileProductVersion` - Get the product version of a file.
+
 ## [0.20.1] - 2025-03-10
 
 ### Fixed
