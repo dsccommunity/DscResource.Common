@@ -16,6 +16,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DscResource.Common
   - Public command:
     - `Get-FileProductVersion` - Get the product version of a file.
+    - `Test-PendingRestart` - Test if a pending restart is required.
+
+### Fixed
+
+- Updated multiple test scripts to redirect standard output using file
+  descriptor 3 instead of 2, ensuring that error streams remain unaffected
+  while suppressing other output.
+
+## [0.21.0] - 2025-03-16
+
+### Added
+
+- DscResource.Common
+  - Public command:
+    - `Format-Path` - Format a file system path based on the operating
+       system and specified parameters.
 
 ## [0.20.1] - 2025-03-10
 
