@@ -45,68 +45,47 @@ AfterAll {
     Remove-Module -Name $script:moduleName
 }
 
-Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
+Describe 'Test-PendingRestart' {
     BeforeAll {
-        InModuleScope -ScriptBlock {
-            # Define PendingRestartCheck enum if not already defined in the test context
-            if (-not ('PendingRestartCheck' -as [Type]))
-            {
-                Add-Type -TypeDefinition @'
-                [System.Flags()]
-                public enum PendingRestartCheck
-                {
-                    ComponentBasedServicing = 1,
-                    WindowsUpdate = 2,
-                    PendingFileRename = 4,
-                    PendingComputerRename = 8,
-                    PendingDomainJoin = 16,
-                    ConfigurationManagerClient = 32,
-                    All = 63
-                }
-'@
-            }
+        Mock -CommandName Get-RegistryPropertyValue -MockWith {
+            return $null
         }
 
-        # Mock the function to handle platform detection
-        Mock -CommandName Get-Variable -MockWith { return $true } -ParameterFilter { $Name -eq 'IsWindows' }
-        Mock -CommandName Get-Variable -MockWith { return 'Desktop' } -ParameterFilter { $Name -eq 'PSEdition' }
-
-        # Mock Get-RegistryPropertyValue
-        Mock -CommandName Get-RegistryPropertyValue -MockWith { return $null }
-
-        # Mock Get-ItemProperty
         Mock -CommandName Get-ItemProperty -MockWith {
-            return New-Object -TypeName PSObject -Property @{
-                ComputerName = 'TESTCOMPUTER'
+            return [PSCustomObject] @{
+                ComputerName = 'TestComputer'
             }
         }
     }
 
-    Context 'When running on a non-Windows system' {
+    Context 'When running on a non-Windows system' -Skip:($IsWindows -or $PSEdition -eq 'Desktop') {
         BeforeAll {
-            Mock -CommandName Get-Variable -MockWith { return $false } -ParameterFilter { $Name -eq 'IsWindows' }
-            Mock -CommandName Get-Variable -MockWith { return 'Core' } -ParameterFilter { $Name -eq 'PSEdition' }
             Mock -CommandName Write-Error
         }
 
         It 'Should write an error and return $false' {
             Test-PendingRestart | Should -BeFalse
-            Should -Invoke -CommandName Write-Error -Times 1 -Exactly
+
+            Should -Invoke -CommandName Write-Error -Exactly -Times 1 -Scope It
         }
     }
 
-    Context 'When all checks return no pending restart' {
+    Context 'When all checks return no pending restart' -Skip:($IsLinux -or $IsMacOS) {
         BeforeAll {
             Mock -CommandName Get-RegistryPropertyValue -MockWith { return $null }
 
             Mock -CommandName Get-ItemProperty -MockWith {
                 if ($Path -match 'ActiveComputerName$')
                 {
-                    return @{ ComputerName = 'COMPUTER1' }
+                    return @{
+                        ComputerName = 'COMPUTER1'
+                    }
                 }
                 elseif ($Path -match 'ComputerName$')
                 {
-                    return @{ ComputerName = 'COMPUTER1' }
+                    return @{
+                        ComputerName = 'COMPUTER1'
+                    }
                 }
             }
         }
@@ -121,8 +100,11 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending')
                 {
-                    return @{ RebootPending = 1 }
+                    return @{
+                        RebootPending = 1
+                    }
                 }
+
                 return $null
             }
         }
@@ -132,11 +114,19 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
         }
 
         It 'Should return $true when only ComponentBasedServicing check is specified' {
-            Test-PendingRestart -Check ([PendingRestartCheck]::ComponentBasedServicing) | Should -BeTrue
+            $mockCheckValue = InModuleScope -ScriptBlock {
+                [PendingRestartCheck]::ComponentBasedServicing
+            }
+
+            Test-PendingRestart -Check $mockCheckValue | Should -BeTrue
         }
 
         It 'Should return $false when only WindowsUpdate check is specified' {
-            Test-PendingRestart -Check ([PendingRestartCheck]::WindowsUpdate) | Should -BeFalse
+            $mockCheckValue = InModuleScope -ScriptBlock {
+                [PendingRestartCheck]::WindowsUpdate
+            }
+
+            Test-PendingRestart -Check $mockCheckValue | Should -BeFalse
         }
     }
 
@@ -145,8 +135,11 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired')
                 {
-                    return @{ RebootRequired = 1 }
+                    return @{
+                        RebootRequired = 1
+                    }
                 }
+
                 return $null
             }
         }
@@ -156,11 +149,19 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
         }
 
         It 'Should return $false when only ComponentBasedServicing check is specified' {
-            Test-PendingRestart -Check ([PendingRestartCheck]::ComponentBasedServicing) | Should -BeFalse
+            $mockCheckValue = InModuleScope -ScriptBlock {
+                [PendingRestartCheck]::ComponentBasedServicing
+            }
+
+            Test-PendingRestart -Check $mockCheckValue | Should -BeFalse
         }
 
         It 'Should return $true when only WindowsUpdate check is specified' {
-            Test-PendingRestart -Check ([PendingRestartCheck]::WindowsUpdate) | Should -BeTrue
+            $mockCheckValue = InModuleScope -ScriptBlock {
+                [PendingRestartCheck]::WindowsUpdate
+            }
+
+            Test-PendingRestart -Check $mockCheckValue | Should -BeTrue
         }
     }
 
@@ -169,8 +170,11 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager' -and $Name -eq 'PendingFileRenameOperations')
                 {
-                    return @{ PendingFileRenameOperations = @('file1', 'file2') }
+                    return @{
+                        PendingFileRenameOperations = @('file1', 'file2')
+                    }
                 }
+
                 return $null
             }
         }
@@ -180,7 +184,11 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
         }
 
         It 'Should return $true when only PendingFileRename check is specified' {
-            Test-PendingRestart -Check ([PendingRestartCheck]::PendingFileRename) | Should -BeTrue
+            $mockCheckValue = InModuleScope -ScriptBlock {
+                [PendingRestartCheck]::PendingFileRename
+            }
+
+            Test-PendingRestart -Check $mockCheckValue | Should -BeTrue
         }
     }
 
@@ -189,12 +197,17 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
             Mock -CommandName Get-ItemProperty -MockWith {
                 if ($Path -match 'ActiveComputerName$')
                 {
-                    return @{ ComputerName = 'COMPUTER1' }
+                    return @{
+                        ComputerName = 'COMPUTER1'
+                    }
                 }
                 elseif ($Path -match 'ComputerName$')
                 {
-                    return @{ ComputerName = 'COMPUTER2' }
+                    return @{
+                        ComputerName = 'COMPUTER2'
+                    }
                 }
+
                 return $null
             }
         }
@@ -204,17 +217,25 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
         }
 
         It 'Should return $true when only PendingComputerRename check is specified' {
-            Test-PendingRestart -Check ([PendingRestartCheck]::PendingComputerRename) | Should -BeTrue
+            $mockCheckValue = InModuleScope -ScriptBlock {
+                [PendingRestartCheck]::PendingComputerRename
+            }
+
+            Test-PendingRestart -Check $mockCheckValue | Should -BeTrue
         }
     }
 
     Context 'When PendingDomainJoin check returns pending restart' {
         BeforeAll {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
+                # cSpell:ignore Netlogon
                 if ($Path -eq 'HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon' -and $Name -eq 'JoinDomain')
                 {
-                    return @{ JoinDomain = 1 }
+                    return @{
+                        JoinDomain = 1
+                    }
                 }
+
                 return $null
             }
         }
@@ -224,7 +245,11 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
         }
 
         It 'Should return $true when only PendingDomainJoin check is specified' {
-            Test-PendingRestart -Check ([PendingRestartCheck]::PendingDomainJoin) | Should -BeTrue
+            $mockCheckValue = InModuleScope -ScriptBlock {
+                [PendingRestartCheck]::PendingDomainJoin
+            }
+
+            Test-PendingRestart -Check $mockCheckValue | Should -BeTrue
         }
     }
 
@@ -233,8 +258,11 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SOFTWARE\Microsoft\SMS\Mobile Client\Reboot Management\RebootData')
                 {
-                    return @{ RebootData = 1 }
+                    return @{
+                        RebootData = 1
+                    }
                 }
+
                 return $null
             }
         }
@@ -244,7 +272,11 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
         }
 
         It 'Should return $true when only ConfigurationManagerClient check is specified' {
-            Test-PendingRestart -Check ([PendingRestartCheck]::ConfigurationManagerClient) | Should -BeTrue
+            $mockCheckValue = InModuleScope -ScriptBlock {
+                [PendingRestartCheck]::ConfigurationManagerClient
+            }
+
+            Test-PendingRestart -Check $mockCheckValue | Should -BeTrue
         }
     }
 
@@ -253,14 +285,21 @@ Describe 'Test-PendingRestart' -Skip:($IsLinux -or $IsMacOS) {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired')
                 {
-                    return @{ RebootRequired = 1 }
+                    return @{
+                        RebootRequired = 1
+                    }
                 }
+
                 return $null
             }
         }
 
         It 'Should return $true when one of the checks returns true' {
-            Test-PendingRestart -Check ([PendingRestartCheck]::WindowsUpdate -bor [PendingRestartCheck]::ComponentBasedServicing) | Should -BeTrue
+            $mockCheckValue = InModuleScope -ScriptBlock {
+                [PendingRestartCheck]::WindowsUpdate -bor [PendingRestartCheck]::ComponentBasedServicing
+            }
+
+            Test-PendingRestart -Check $mockCheckValue | Should -BeTrue
         }
     }
 }
