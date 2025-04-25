@@ -95,7 +95,7 @@ Describe 'Test-PendingRestart' {
         }
     }
 
-    Context 'When ComponentBasedServicing check returns pending restart' {
+    Context 'When ComponentBasedServicing check returns pending restart' -Skip:($IsLinux -or $IsMacOS) {
         BeforeAll {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending')
@@ -130,7 +130,7 @@ Describe 'Test-PendingRestart' {
         }
     }
 
-    Context 'When WindowsUpdate check returns pending restart' {
+    Context 'When WindowsUpdate check returns pending restart' -Skip:($IsLinux -or $IsMacOS) {
         BeforeAll {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired')
@@ -165,7 +165,7 @@ Describe 'Test-PendingRestart' {
         }
     }
 
-    Context 'When PendingFileRename check returns pending restart' {
+    Context 'When PendingFileRename check returns pending restart' -Skip:($IsLinux -or $IsMacOS) {
         BeforeAll {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager' -and $Name -eq 'PendingFileRenameOperations')
@@ -192,7 +192,7 @@ Describe 'Test-PendingRestart' {
         }
     }
 
-    Context 'When PendingComputerRename check returns pending restart' {
+    Context 'When PendingComputerRename check returns pending restart' -Skip:($IsLinux -or $IsMacOS) {
         BeforeAll {
             Mock -CommandName Get-ItemProperty -MockWith {
                 if ($Path -match 'ActiveComputerName$')
@@ -225,7 +225,7 @@ Describe 'Test-PendingRestart' {
         }
     }
 
-    Context 'When PendingDomainJoin check returns pending restart' {
+    Context 'When PendingDomainJoin check returns pending restart' -Skip:($IsLinux -or $IsMacOS) {
         BeforeAll {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 # cSpell:ignore Netlogon
@@ -253,7 +253,7 @@ Describe 'Test-PendingRestart' {
         }
     }
 
-    Context 'When ConfigurationManagerClient check returns pending restart' {
+    Context 'When ConfigurationManagerClient check returns pending restart' -Skip:($IsLinux -or $IsMacOS) {
         BeforeAll {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SOFTWARE\Microsoft\SMS\Mobile Client\Reboot Management\RebootData')
@@ -280,7 +280,7 @@ Describe 'Test-PendingRestart' {
         }
     }
 
-    Context 'When multiple checks are specified' {
+    Context 'When multiple checks are specified' -Skip:($IsLinux -or $IsMacOS) {
         BeforeAll {
             Mock -CommandName Get-RegistryPropertyValue -MockWith {
                 if ($Path -eq 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired')
