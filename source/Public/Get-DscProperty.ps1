@@ -58,6 +58,12 @@
         Returns the DSC resource properties that has the specified attributes and
         has a non-null value assigned.
 
+    .EXAMPLE
+        Get-DscProperty -InputObject $this -Attribute @('Optional') -HasValue -IgnoreZeroEnumValue
+
+        Returns the DSC resource properties that has the specified attributes and
+        has a non-null value assigned, and any Enum properties that has a non-zero value.
+
     .OUTPUTS
         [System.Collections.Hashtable]
 
