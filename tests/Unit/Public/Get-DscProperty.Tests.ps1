@@ -625,6 +625,69 @@ Describe 'Get-DscProperty' -Tag 'Public' {
         }
     }
 
+    Context 'When using parameter IgnoreZeroEnumValue' {
+        Context 'When getting all optional properties' {
+            BeforeAll {
+                enum MyEnum
+                {
+                    MyValue1 = 1
+                    MyValue2
+                    MyValue3
+                }
+
+                class MyMockResource
+                {
+                    [DscProperty(Key)]
+                    [System.String]
+                    $MyResourceKeyProperty1
+
+                    [DscProperty(Key)]
+                    [System.String]
+                    $MyResourceKeyProperty2
+
+                    [DscProperty(Mandatory)]
+                    [System.String]
+                    $MyResourceMandatoryProperty
+
+                    [DscProperty()]
+                    [MyEnum]
+                    $MyResourceProperty1
+
+                    [DscProperty()]
+                    [MyEnum]
+                    $MyResourceProperty2
+
+                    [DscProperty(NotConfigurable)]
+                    [System.String]
+                    $MyResourceReadProperty
+                }
+
+                $script:mockResourceBaseInstance = [MyMockResource]::new()
+                $script:mockResourceBaseInstance.MyResourceKeyProperty1 = 'MockValue1'
+                $script:mockResourceBaseInstance.MyResourceKeyProperty2 = 'MockValue2'
+                $script:mockResourceBaseInstance.MyResourceMandatoryProperty = 'MockValue3'
+                $script:mockResourceBaseInstance.MyResourceProperty1 = [MyEnum]::new()
+                $script:mockResourceBaseInstance.MyResourceProperty2 = [MyEnum]::MyValue3
+            }
+
+            It 'Should return the correct value' {
+                $result = Get-DscProperty -Attribute 'Optional' -HasValue -InputObject $script:mockResourceBaseInstance -IgnoreZeroEnumValue
+
+                $result | Should -BeOfType [System.Collections.Hashtable]
+
+                $result.Keys | Should -Not -Contain 'MyResourceMandatoryProperty' -Because 'mandatory properties should not be part of the collection'
+                $result.Keys | Should -Not -Contain 'MyResourceKeyProperty1' -Because 'key properties should not be part of the collection'
+                $result.Keys | Should -Not -Contain 'MyResourceKeyProperty2' -Because 'key properties should not be part of the collection'
+                $result.Keys | Should -Not -Contain 'MyResourceReadProperty' -Because 'read properties should not be part of the collection'
+
+                $result.Keys | Should -Not -Contain 'MyResourceProperty1' -Because 'the enum property has a zero value'
+
+                $result.Keys | Should -Contain 'MyResourceProperty2' -Because 'the enum property has a non zero value'
+                $result.MyResourceProperty2 | Should -Be MyValue3
+            }
+        }
+    }
+
     Context 'When getting specific named properties' {
         BeforeAll {
             class MyMockResource

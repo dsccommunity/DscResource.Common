@@ -26,6 +26,9 @@
         If left out all properties are returned regardless if there is a value
         assigned or not.
 
+    .PARAMETER IgnoreZeroEnumValue
+        Specifies to return only Enum properties that has been assigned a non zero value.
+
     .OUTPUTS
         System.Collections.Hashtable
 
@@ -88,7 +91,11 @@ function Get-DscProperty
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
-        $HasValue
+        $HasValue,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $IgnoreZeroEnumValue
     )
 
     process
@@ -165,6 +172,11 @@ function Get-DscProperty
             }
 
             $getPropertyResult.$currentProperty = $InputObject.$currentProperty
+        }
+
+        if ($IgnoreZeroEnumValue.IsPresent)
+        {
+            $getPropertyResult = $getPropertyResult | Clear-ZeroedEnumPropertyValue
         }
 
         return $getPropertyResult
