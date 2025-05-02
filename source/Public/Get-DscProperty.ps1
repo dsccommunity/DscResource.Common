@@ -77,23 +77,19 @@ function Get-DscProperty
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'BaseSet')]
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'IgnoreZeroEnumValue')]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [PSObject]
         $InputObject,
 
-        [Parameter(ParameterSetName = 'BaseSet')]
-        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue')]
+        [Parameter()]
         [System.String[]]
         $Name,
 
-        [Parameter(ParameterSetName = 'BaseSet')]
-        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue')]
+        [Parameter()]
         [System.String[]]
         $ExcludeName,
 
-        [Parameter(ParameterSetName = 'BaseSet')]
-        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue')]
+        [Parameter()]
         [ValidateSet('Key', 'Mandatory', 'NotConfigurable', 'Optional')]
         [Alias('Type')]
         [System.String[]]
