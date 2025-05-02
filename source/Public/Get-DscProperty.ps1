@@ -26,6 +26,9 @@
         If left out all properties are returned regardless if there is a value
         assigned or not.
 
+    .PARAMETER IgnoreZeroEnumValue
+        Specifies to return only Enum properties that has been assigned a non zero value.
+
     .OUTPUTS
         System.Collections.Hashtable
 
@@ -55,6 +58,12 @@
         Returns the DSC resource properties that has the specified attributes and
         has a non-null value assigned.
 
+    .EXAMPLE
+        Get-DscProperty -InputObject $this -Attribute @('Optional') -HasValue -IgnoreZeroEnumValue
+
+        Returns the DSC resource properties that has the specified attributes and
+        has a non-null value assigned, and any Enum properties that has a non-zero value.
+
     .OUTPUTS
         [System.Collections.Hashtable]
 
@@ -64,31 +73,39 @@
 #>
 function Get-DscProperty
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'Default')]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'HasValue')]
         [PSObject]
         $InputObject,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'HasValue')]
         [System.String[]]
         $Name,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'HasValue')]
         [System.String[]]
         $ExcludeName,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'HasValue')]
         [ValidateSet('Key', 'Mandatory', 'NotConfigurable', 'Optional')]
         [Alias('Type')]
         [System.String[]]
         $Attribute,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'HasValue', Mandatory = $true)]
         [System.Management.Automation.SwitchParameter]
-        $HasValue
+        $HasValue,
+
+        [Parameter(ParameterSetName = 'HasValue')]
+        [System.Management.Automation.SwitchParameter]
+        $IgnoreZeroEnumValue
     )
 
     process
@@ -165,6 +182,11 @@ function Get-DscProperty
             }
 
             $getPropertyResult.$currentProperty = $InputObject.$currentProperty
+        }
+
+        if ($IgnoreZeroEnumValue.IsPresent)
+        {
+            $getPropertyResult = $getPropertyResult | Clear-ZeroedEnumPropertyValue
         }
 
         return $getPropertyResult

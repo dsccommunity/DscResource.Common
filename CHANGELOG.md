@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Public command:
     - `Get-FileProductVersion` - Get the product version of a file.
     - `Test-PendingRestart` - Test if a pending restart is required.
+  - Private command
+    - `Clear-ZeroedEnumPropertyValue` from `DscResource.Base`.
+- `Get-DscProperty`
+  - Add optional parameter `IgnoreZeroEnumValue`.
 
 ### Fixed
 
