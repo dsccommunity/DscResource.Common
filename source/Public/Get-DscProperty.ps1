@@ -73,34 +73,37 @@
 #>
 function Get-DscProperty
 {
-    [CmdletBinding(DefaultParameterSetName = 'BaseSet')]
+    [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'Default')]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'HasValue')]
         [PSObject]
         $InputObject,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'HasValue')]
         [System.String[]]
         $Name,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'HasValue')]
         [System.String[]]
         $ExcludeName,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'Default')]
+        [Parameter(ParameterSetName = 'HasValue')]
         [ValidateSet('Key', 'Mandatory', 'NotConfigurable', 'Optional')]
         [Alias('Type')]
         [System.String[]]
         $Attribute,
 
-        [Parameter(ParameterSetName = 'BaseSet')]
-        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue', Mandatory = $true)]
+        [Parameter(ParameterSetName = 'HasValue', Mandatory = $true)]
         [System.Management.Automation.SwitchParameter]
         $HasValue,
 
-        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue')]
+        [Parameter(ParameterSetName = 'HasValue')]
         [System.Management.Automation.SwitchParameter]
         $IgnoreZeroEnumValue
     )
