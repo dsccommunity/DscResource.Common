@@ -73,29 +73,33 @@
 #>
 function Get-DscProperty
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'BaseSet')]
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'BaseSet')]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ParameterSetName = 'IgnoreZeroEnumValue')]
         [PSObject]
         $InputObject,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'BaseSet')]
+        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue')]
         [System.String[]]
         $Name,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'BaseSet')]
+        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue')]
         [System.String[]]
         $ExcludeName,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'BaseSet')]
+        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue')]
         [ValidateSet('Key', 'Mandatory', 'NotConfigurable', 'Optional')]
         [Alias('Type')]
         [System.String[]]
         $Attribute,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'BaseSet')]
         [Parameter(ParameterSetName = 'IgnoreZeroEnumValue', Mandatory = $true)]
         [System.Management.Automation.SwitchParameter]
         $HasValue,
