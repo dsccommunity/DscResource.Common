@@ -96,10 +96,11 @@ function Get-DscProperty
         $Attribute,
 
         [Parameter()]
+        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue', Mandatory = $true)]
         [System.Management.Automation.SwitchParameter]
         $HasValue,
 
-        [Parameter()]
+        [Parameter(ParameterSetName = 'IgnoreZeroEnumValue')]
         [System.Management.Automation.SwitchParameter]
         $IgnoreZeroEnumValue
     )
