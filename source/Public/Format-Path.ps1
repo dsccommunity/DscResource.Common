@@ -27,6 +27,11 @@
         When specified, removes any trailing directory separator (backslash) from
         paths, including drive letters.
 
+    .PARAMETER ExpandEnvironmentVariable
+        Replaces the name of each environment variable embedded in the specified string
+        with the string equivalent of the value of the variable.
+        Each environment variable must be quoted with the percent sign character (%).
+
     .EXAMPLE
         Format-Path -Path 'C:/MyFolder/'
 
@@ -65,6 +70,11 @@
 
         Returns '/var/log' on Linux/macOS or '\var\log' on Windows.
         Unix-style absolute paths are normalized to use the system's directory separator.
+
+    .EXAMPLE
+        Format-Path -Path '%WinDir%\SubFolder' -ExpandEnvironmentVariable
+
+        Returns the path with the environment variable expanded, e.g., 'C:\Windows\SubFolder'
 #>
 function Format-Path
 {
@@ -82,7 +92,11 @@ function Format-Path
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
-        $NoTrailingDirectorySeparator
+        $NoTrailingDirectorySeparator,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $ExpandEnvironmentVariable
     )
 
     if ($Path -match '^(?:[a-zA-Z]:|\\\\)')
@@ -114,6 +128,11 @@ function Format-Path
             # Insert missing backslash after drive letter if needed (e.g., 'C:temp' -> 'C:\temp').
             $normalizedPath = $normalizedPath -replace '^([a-zA-Z]:)', '$1\'
         }
+    }
+
+    if ($ExpandEnvironmentVariable)
+    {
+        $normalizedPath = [System.Environment]::ExpandEnvironmentVariables($normalizedPath)
     }
 
     Write-Debug -Message ($script:localizedData.Format_Path_NormalizedPath -f $Path, $normalizedPath)
