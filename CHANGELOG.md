@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Format-Path`
+  - Added parameter `ExpandEnvironmentVariable` fixes [#147](https://github.com/dsccommunity/DscResource.Common/issues/147).
+
 ## [0.22.0] - 2025-04-25
 
 ### Removed
