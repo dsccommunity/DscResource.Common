@@ -172,7 +172,7 @@ Describe 'Format-Path' {
             Format-Path -Path '%TestPath%' -ExpandEnvironmentVariable | Should -Be 'C:\TestFolder'
         }
 
-        It 'Should handle paths with multiple environment variables' {
+        It 'Should handle paths with multiple environment variables' -Skip:($IsLinux -or $IsMacOS) {
             $env:BasePath = 'C:\Base'
             $env:SubPath = 'SubFolder'
             Format-Path -Path '%BasePath%\%SubPath%' -ExpandEnvironmentVariable | Should -Be 'C:\Base\SubFolder'
