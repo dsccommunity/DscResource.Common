@@ -99,14 +99,22 @@ function Format-Path
         $ExpandEnvironmentVariable
     )
 
-    if ($Path -match '^(?:[a-zA-Z]:|\\\\)')
+    # Use local variable so it always exists.
+    $normalizedPath = $Path
+
+    if ($ExpandEnvironmentVariable)
+    {
+        $normalizedPath = [System.Environment]::ExpandEnvironmentVariables($normalizedPath)
+    }
+
+    if ($normalizedPath -match '^(?:[a-zA-Z]:|\\\\)')
     {
         # Path starts with a Windows drive letter, normalize to backslashes.
-        $normalizedPath = $Path -replace '/', '\'
+        $normalizedPath = $normalizedPath -replace '/', '\'
     }
     else
     {
-        $normalizedPath = $Path -replace '[\\|/]', [System.IO.Path]::DirectorySeparatorChar
+        $normalizedPath = $normalizedPath -replace '[\\|/]', [System.IO.Path]::DirectorySeparatorChar
     }
 
     # Remove trailing backslash if parameter is specified and path is not just a drive root.
@@ -128,11 +136,6 @@ function Format-Path
             # Insert missing backslash after drive letter if needed (e.g., 'C:temp' -> 'C:\temp').
             $normalizedPath = $normalizedPath -replace '^([a-zA-Z]:)', '$1\'
         }
-    }
-
-    if ($ExpandEnvironmentVariable)
-    {
-        $normalizedPath = [System.Environment]::ExpandEnvironmentVariables($normalizedPath)
     }
 
     Write-Debug -Message ($script:localizedData.Format_Path_NormalizedPath -f $Path, $normalizedPath)
