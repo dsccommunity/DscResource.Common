@@ -27,6 +27,11 @@
         When specified, removes any trailing directory separator (backslash) from
         paths, including drive letters.
 
+    .PARAMETER ExpandEnvironmentVariable
+        Replaces the name of each environment variable embedded in the specified string
+        with the string equivalent of the value of the variable.
+        Each environment variable must be quoted with the percent sign character (%).
+
     .EXAMPLE
         Format-Path -Path 'C:/MyFolder/'
 
@@ -65,6 +70,11 @@
 
         Returns '/var/log' on Linux/macOS or '\var\log' on Windows.
         Unix-style absolute paths are normalized to use the system's directory separator.
+
+    .EXAMPLE
+        Format-Path -Path '%WinDir%\SubFolder' -ExpandEnvironmentVariable
+
+        Returns the path with the environment variable expanded, e.g., 'C:\Windows\SubFolder'
 #>
 function Format-Path
 {
@@ -82,17 +92,29 @@ function Format-Path
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
-        $NoTrailingDirectorySeparator
+        $NoTrailingDirectorySeparator,
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $ExpandEnvironmentVariable
     )
 
-    if ($Path -match '^(?:[a-zA-Z]:|\\\\)')
+    # Use local variable so it always exists.
+    $normalizedPath = $Path
+
+    if ($ExpandEnvironmentVariable)
+    {
+        $normalizedPath = [System.Environment]::ExpandEnvironmentVariables($normalizedPath)
+    }
+
+    if ($normalizedPath -match '^(?:[a-zA-Z]:|\\\\)')
     {
         # Path starts with a Windows drive letter, normalize to backslashes.
-        $normalizedPath = $Path -replace '/', '\'
+        $normalizedPath = $normalizedPath -replace '/', '\'
     }
     else
     {
-        $normalizedPath = $Path -replace '[\\|/]', [System.IO.Path]::DirectorySeparatorChar
+        $normalizedPath = $normalizedPath -replace '[\\|/]', [System.IO.Path]::DirectorySeparatorChar
     }
 
     # Remove trailing backslash if parameter is specified and path is not just a drive root.

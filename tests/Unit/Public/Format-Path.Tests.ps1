@@ -165,4 +165,21 @@ Describe 'Format-Path' {
             }
         }
     }
+
+    Context 'When using ExpandEnvironmentVariable parameter' {
+        It 'Should expand environment variables in the path' {
+            $env:TestPath = 'C:\TestFolder'
+            Format-Path -Path '%TestPath%' -ExpandEnvironmentVariable | Should -Be 'C:\TestFolder'
+        }
+
+        It 'Should handle paths with multiple environment variables' -Skip:($IsLinux -or $IsMacOS) {
+            $env:BasePath = 'C:\Base'
+            $env:SubPath = 'SubFolder'
+            Format-Path -Path '%BasePath%\%SubPath%' -ExpandEnvironmentVariable | Should -Be 'C:\Base\SubFolder'
+        }
+
+        It 'Should not modify paths without environment variables' {
+            Format-Path -Path 'C:\NoEnvVar' -ExpandEnvironmentVariable | Should -Be 'C:\NoEnvVar'
+        }
+    }
 }
