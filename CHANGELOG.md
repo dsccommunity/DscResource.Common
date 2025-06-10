@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Format-Path`
   - Added parameter `ExpandEnvironmentVariable` fixes [#147](https://github.com/dsccommunity/DscResource.Common/issues/147).
+  - Added support to `Compare-DscParameterState` for comparing large hashtables
+    that contain lists of elements.
 
 ## [0.22.0] - 2025-04-25
 

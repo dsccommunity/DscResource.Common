@@ -373,7 +373,9 @@ function Compare-DscParameterState
         }
         #endregion
         #region Check if desired type is array, ifno Hashtable and currenttype hashtable to
-        if ($desiredType.IsArray)
+        if (($desiredType.IsArray -or $desiredType.GetInterfaces().Name -contains 'IEnumerable`1' -or $desiredType.GetInterfaces().Name -contains 'IEnumerable') -and
+        -not ($desiredType -eq [System.Collections.Hashtable] -or $desiredType -eq [System.Collections.Specialized.OrderedDictionary]))
+        #if ($desiredType.IsArray)
         {
             Write-Verbose -Message ($script:localizedData.TestDscParameterCompareMessage -f $key, $desiredType.FullName)
             # Check if the currentValues and desiredValue are empty array.
