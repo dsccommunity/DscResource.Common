@@ -46,10 +46,31 @@ AfterAll {
     Remove-Module -Name $script:moduleName
 }
 
-Describe 'ComputerManagementDsc.Common\Compare-DscParameterState' {
+Describe 'DscResource.Common\Compare-DscParameterState' {
     BeforeAll {
         $verbose = $false
     }
+
+    Context 'When comparing large hashtables' {
+        BeforeAll {
+            $currentValues = Get-Content -Path "$PSScriptRoot/Assets/CurrentState.yml" -Raw | ConvertFrom-Yaml
+            $desiredValues = Get-Content -Path "$PSScriptRoot/Assets/DesiredState.yml" -Raw | ConvertFrom-Yaml
+        }
+
+        Context 'When all values match' {
+
+            It 'Should not throw exception' {
+                {
+                    $script:result = Compare-DscParameterState -CurrentValues $currentValues -DesiredValues $desiredValues -Verbose:$verbose
+                } | Should -Not -Throw
+            }
+
+            It 'Should return null' {
+                $script:result | Should -BeNullOrEmpty
+            }
+        }
+    }
+
 
     Context 'When testing single values' {
         BeforeAll {
