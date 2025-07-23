@@ -1,0 +1,136 @@
+PrecedenceBefore:
+Precedence: 0
+Description: 'contoso Custom; Deployed: 16.11.2023 08:54'
+SourceObjectType: user
+ScopeFilter:
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: E
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+  - ComparisonOperator: ISNOTNULL
+    ComparisonValue: ""
+    Attribute: mail
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: P
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: R
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: RR
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: RS
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: RE
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: XP
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: XS
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: XT
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: X
+    Attribute: employeeType
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: S
+    Attribute: employeeType
+  - ComparisonOperator: EQUAL
+    ComparisonValue: VolkswagenGroupDev
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: S
+    Attribute: employeeType
+  - ComparisonOperator: ISNOTNULL
+    ComparisonValue: ""
+    Attribute: mail
+  - ComparisonOperator: NOTCONTAINS
+    ComparisonValue: "False"
+    Attribute: contosoMSAzureADCloudUser
+- ScopeConditionList:
+  - ComparisonOperator: EQUAL
+    ComparisonValue: XG
+    Attribute: employeeType
+  - ComparisonOperator: EQUAL
+    ComparisonValue: VolkswagenGroupDev
+    Attribute: contosoMSAzureADCloudUser
+Ensure: Present
+Disabled: false
+JoinFilter:
+- JoinConditionList:
+  - CaseSensitive: false
+    CSAttribute: objectSid
+    MVAttribute: objectSid
+- JoinConditionList:
+  - CaseSensitive: false
+    CSAttribute: msExchMasterAccountSid
+    MVAttribute: objectSid
+- JoinConditionList:
+  - CaseSensitive: false
+    CSAttribute: objectSid
+    MVAttribute: msExchMasterAccountSid
+- JoinConditionList:
+  - CaseSensitive: false
+    CSAttribute: objectSid
+    MVAttribute: msRTCSIP-OriginatorSid
+- JoinConditionList:
+  - CaseSensitive: false
+    CSAttribute: mail
+    MVAttribute: mail
+EnablePasswordSync: false
+ImmutableTag:
+PrecedenceAfter:
+Name: Contoso - Inbound - UserJoin - OldAD
+IsLegacyCustomRule: false
+LinkType: Provision
+ConnectorName: contoso.com
+IsStandardRule: false
+TargetObjectType: person
+AttributeFlowMappings: []
+Direction: Inbound
