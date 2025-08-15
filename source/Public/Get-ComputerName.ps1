@@ -8,6 +8,9 @@
         macOS and Linux. Instead this command can be used to get the computer name
         cross-plattform.
 
+    .PARAMETER FullyQualifiedDomainName
+        Returns the fully qualified domain name (FQDN) instead of just the computer name.
+
     .OUTPUTS
         System.String
 
@@ -15,26 +18,41 @@
         Get-ComputerName
 
         Returns the computer name regardless of platform.
+
+    .EXAMPLE
+        Get-ComputerName -FullyQualifiedDomainName
+
+        Returns the fully qualified domain name regardless of platform.
+
+    .NOTES
+        The function uses [System.Environment]::MachineName which works consistently
+        across all platforms where PowerShell runs. When used without the
+        FullyQualifiedDomainName switch, it returns only the short computer name
+        by splitting on the first dot to ensure consistent behavior regardless
+        of how the system hostname is configured.
+
+        For the FullyQualifiedDomainName to return accurate information cross-platform,
+        the system must be properly configured with the correct domain information.
+        On some systems, [System.Environment]::MachineName may only return the
+        short name even when requesting the FQDN if the system is not domain-joined
+        or properly configured with DNS domain information.
 #>
 function Get-ComputerName
 {
     [CmdletBinding()]
     [OutputType([System.String])]
-    param ()
+    param (
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $FullyQualifiedDomainName
+    )
 
-    $computerName = $null
+    $computerName = [System.Environment]::MachineName
 
-    if ($IsLinux -or $IsMacOs)
+    if (-not $FullyQualifiedDomainName)
     {
-        $computerName = hostname
-    }
-    else
-    {
-        <#
-            We could run 'hostname' on Windows too, but $env:COMPUTERNAME
-            is more widely used.
-        #>
-        $computerName = $env:COMPUTERNAME
+        # Return only the short computer name by splitting on the first dot
+        $computerName = ($computerName -split '\.')[0]
     }
 
     return $computerName
