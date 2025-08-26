@@ -125,7 +125,7 @@ function Find-Certificate
     if (-not (Test-Path -Path $certPath))
     {
         # The Certificte Path is not valid
-        New-InvalidArgumentException `
+        New-ArgumentException `
             -Message ($script:localizedData.CertificatePathError -f $certPath) `
             -ArgumentName 'Store'
     } # if
