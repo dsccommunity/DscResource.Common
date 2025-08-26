@@ -194,9 +194,10 @@ function Assert-BoundParameter
 
             if ($itemFoundFromList1.Count -gt 0 -and $itemFoundFromList2.Count -gt 0)
             {
-                $errorMessage = `
-                    $script:localizedData.ParameterUsageWrong `
-                    -f ($MutuallyExclusiveList1 -join "','"), ($MutuallyExclusiveList2 -join "','")
+                $errorMessage = $script:localizedData.ParameterUsageWrong -f (
+                    ($MutuallyExclusiveList1 -join "','"),
+                    ($MutuallyExclusiveList2 -join "','")
+                )
 
                 New-ArgumentException -ArgumentName 'Parameters' -Message $errorMessage
             }
