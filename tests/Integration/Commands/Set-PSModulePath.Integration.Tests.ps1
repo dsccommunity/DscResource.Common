@@ -21,6 +21,18 @@ BeforeDiscovery {
     {
         throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -ResolveDependency -Tasks build" first.'
     }
+
+    # Determines if we should skip tests.
+    if ($IsWindows -or $PSEdition -eq 'Desktop')
+    {
+        $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+
+        $skipTest = -not $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    }
+    else
+    {
+        $skipTest = $true
+    }
 }
 
 BeforeAll {
