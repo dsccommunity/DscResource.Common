@@ -27,11 +27,11 @@
     .NOTES
         The function uses [System.Environment]::MachineName for the short computer name,
         which works consistently across all platforms where PowerShell runs.
-        
+
         When the FullyQualifiedDomainName switch is used, the function attempts to
         retrieve the FQDN using [System.Net.Dns]::GetHostByName() which can resolve
         the full domain name when the system is properly configured with DNS.
-        
+
         If DNS resolution fails or no domain is configured, the function will fall
         back to returning the short computer name even when FQDN is requested.
 #>
@@ -39,7 +39,8 @@ function Get-ComputerName
 {
     [CmdletBinding()]
     [OutputType([System.String])]
-    param (
+    param
+    (
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
         $FullyQualifiedDomainName
@@ -61,7 +62,7 @@ function Get-ComputerName
         catch
         {
             # If DNS resolution fails, fall back to the short name
-            # No action needed as $computerName already contains the short name
+            $fqdn = $computerName
         }
     }
 
