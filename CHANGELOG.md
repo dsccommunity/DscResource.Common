@@ -407,10 +407,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Get-TargetResource function or Get() method in Class based Resources.
   It is based on the code of Test-DscParameterState function to get compliance
   between current and desired state of resources.
-  The OutPut of Compare-DscParameterState is a collection PSObject.
-  The properties of PSObject are Property,InDesiredState,ExpectedType,ActualType,
-  ExpectedValue and ActualValue. The IncludeInDesiredState parameter must
-  be use to add ExpectedValue and ActualValue.
+  The OutPut of Compare-DscParameterState is a collection of PSObject.
+  The properties of each PSObject are Property, InDesiredState, ExpectedType, ActualType,
+  ExpectedValue, and ActualValue. The IncludeInDesiredState parameter must
+  be used to add ExpectedValue and ActualValue.
 - Added pester test to test the PSCredential object with `Compare-DscParameterState`.
 
 ### Changed
