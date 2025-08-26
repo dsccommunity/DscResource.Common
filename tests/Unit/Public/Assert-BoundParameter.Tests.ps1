@@ -57,6 +57,11 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
             # cSpell: disable-next
             MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-RequiredBehavior <BoundParameterBehavior>] [-IfParameterPresent <string[]>] [<CommonParameters>]'
         }
+        @{
+            MockParameterSetName   = 'AtLeastOne'
+            # cSpell: disable-next
+            MockExpectedParameters = '-BoundParameterList <hashtable> -AtLeastOneList <string[]> [<CommonParameters>]'
+        }
     ) {
         InModuleScope -Parameters $_ -ScriptBlock {
             $result = (Get-Command -Name 'Assert-BoundParameter').ParameterSets |
@@ -186,6 +191,41 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 }
             }
         }
+
+        Context 'When using the AtLeastOne parameter set' {
+            Context 'When at least one parameter from the list is bound' {
+                It 'Should not throw an error' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Severity = 'Warning'
+                                OtherParam = 'value'
+                            }
+                            AtLeastOneList = @('Severity', 'MessageId')
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+
+            Context 'When multiple parameters from the list are bound' {
+                It 'Should not throw an error' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Severity = 'Warning'
+                                MessageId = '12345'
+                                OtherParam = 'value'
+                            }
+                            AtLeastOneList = @('Severity', 'MessageId')
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+        }
     }
 
     Context 'When the assert fails' {
@@ -230,6 +270,27 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                         }
                         MutuallyExclusiveList1 = @('param1', 'param2')
                         MutuallyExclusiveList2 = @('param3', 'param4')
+                    }
+
+                    Assert-BoundParameter @assertBoundParameterParameters
+                } | Should -Throw -ExpectedMessage "$errorMessage*"
+            }
+        }
+
+        Context 'When using the AtLeastOne parameter set and none of the required parameters are bound' {
+            It 'Should throw an error' {
+                $errorMessage = InModuleScope -ScriptBlock {
+                    $script:localizedData.Assert_BoundParameter_AtLeastOneParameterMustBeSet
+                }
+
+                $errorMessage = $errorMessage -f "Severity','MessageId"
+
+                {
+                    $assertBoundParameterParameters = @{
+                        BoundParameterList = @{
+                            OtherParam = 'value'
+                        }
+                        AtLeastOneList = @('Severity', 'MessageId')
                     }
 
                     Assert-BoundParameter @assertBoundParameterParameters

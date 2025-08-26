@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Assert-BoundParameter`
+  - Added parameter set `AtLeastOne` with parameter `AtLeastOneList` to
+    validate that at least one parameter from a specified list is bound
+    [#161](https://github.com/dsccommunity/DscResource.Common/issues/161).
 - `Format-Path`
   - Added parameter `ExpandEnvironmentVariable` fixes [#147](https://github.com/dsccommunity/DscResource.Common/issues/147).
   - Added support to `Compare-DscParameterState` for comparing large hashtables
