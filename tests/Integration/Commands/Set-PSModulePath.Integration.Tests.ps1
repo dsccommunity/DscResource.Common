@@ -1,25 +1,32 @@
-BeforeDiscovery {
-    # Determines if we should skip tests.
-    if ($IsWindows -or $PSEdition -eq 'Desktop')
-    {
-        $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Suppressing this rule because Script Analyzer does not understand Pester syntax.')]
+param ()
 
-        $skipTest = -not $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-    }
-    else
+BeforeDiscovery {
+    try
     {
-        $skipTest = $true
+        if (-not (Get-Module -Name 'DscResource.Test'))
+        {
+            # Assumes dependencies have been resolved, so if this module is not available, run 'noop' task.
+            if (-not (Get-Module -Name 'DscResource.Test' -ListAvailable))
+            {
+                # Redirect all streams to $null, except the error stream (stream 2)
+                & "$PSScriptRoot/../../../build.ps1" -Tasks 'noop' 3>&1 4>&1 5>&1 6>&1 > $null
+            }
+
+            # If the dependencies have not been resolved, this will throw an error.
+            Import-Module -Name 'DscResource.Test' -Force -ErrorAction 'Stop'
+        }
+    }
+    catch [System.IO.FileNotFoundException]
+    {
+        throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -ResolveDependency -Tasks build" first.'
     }
 }
 
 BeforeAll {
-    $script:moduleName = 'DscResource.Common'
+    $script:dscModuleName = 'DscResource.Common'
 
-    Remove-Module -Name $script:moduleName -Force -ErrorAction 'SilentlyContinue'
-
-    Get-Module -Name $script:moduleName -ListAvailable |
-        Select-Object -First 1 |
-        Import-Module -Force -ErrorAction 'Stop'
+    Import-Module -Name $script:dscModuleName -Force -ErrorAction 'Stop'
 }
 
 Describe 'Set-PSModulePath' -Tag 'SetPSModulePath' {

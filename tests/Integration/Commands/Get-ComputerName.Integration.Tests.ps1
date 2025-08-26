@@ -1,15 +1,39 @@
-BeforeAll {
-    $script:moduleName = 'DscResource.Common'
+[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Suppressing this rule because Script Analyzer does not understand Pester syntax.')]
+param ()
 
-    # Import the function directly since module build may not be available
-    . "$PSScriptRoot/../../../source/Public/Get-ComputerName.ps1"
+BeforeDiscovery {
+    try
+    {
+        if (-not (Get-Module -Name 'DscResource.Test'))
+        {
+            # Assumes dependencies have been resolved, so if this module is not available, run 'noop' task.
+            if (-not (Get-Module -Name 'DscResource.Test' -ListAvailable))
+            {
+                # Redirect all streams to $null, except the error stream (stream 2)
+                & "$PSScriptRoot/../../../build.ps1" -Tasks 'noop' 3>&1 4>&1 5>&1 6>&1 > $null
+            }
+
+            # If the dependencies have not been resolved, this will throw an error.
+            Import-Module -Name 'DscResource.Test' -Force -ErrorAction 'Stop'
+        }
+    }
+    catch [System.IO.FileNotFoundException]
+    {
+        throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -ResolveDependency -Tasks build" first.'
+    }
 }
 
-Describe 'Get-ComputerName Integration Tests' -Tag 'GetComputerName' {
+BeforeAll {
+    $script:dscModuleName = 'DscResource.Common'
+
+    Import-Module -Name $script:dscModuleName -Force -ErrorAction 'Stop'
+}
+
+Describe 'Get-ComputerName' -Tag 'GetComputerName' {
     Context 'When getting computer name in real environment' {
         It 'Should return a valid computer name without FQDN switch' {
             $result = Get-ComputerName
-            
+
             $result | Should -BeOfType [System.String]
             $result | Should -Not -BeNullOrEmpty
             # Should match the actual machine name from .NET
@@ -20,7 +44,7 @@ Describe 'Get-ComputerName Integration Tests' -Tag 'GetComputerName' {
 
         It 'Should return a computer name with FQDN switch' {
             $result = Get-ComputerName -FullyQualifiedDomainName
-            
+
             $result | Should -BeOfType [System.String]
             $result | Should -Not -BeNullOrEmpty
             # Should be at least as long as the short name
@@ -35,14 +59,14 @@ Describe 'Get-ComputerName Integration Tests' -Tag 'GetComputerName' {
         It 'Should return consistent results on multiple calls' {
             $result1 = Get-ComputerName
             $result2 = Get-ComputerName
-            
+
             $result1 | Should -Be $result2
         }
 
         It 'Should return consistent FQDN results on multiple calls' {
             $result1 = Get-ComputerName -FullyQualifiedDomainName
             $result2 = Get-ComputerName -FullyQualifiedDomainName
-            
+
             $result1 | Should -Be $result2
         }
     }
@@ -51,17 +75,17 @@ Describe 'Get-ComputerName Integration Tests' -Tag 'GetComputerName' {
         It 'Should return the same short name as Environment.MachineName' {
             $functionResult = Get-ComputerName
             $environmentResult = [System.Environment]::MachineName
-            
+
             $functionResult | Should -Be $environmentResult
         }
 
         It 'Should handle DNS resolution appropriately for FQDN' {
             $fqdnResult = Get-ComputerName -FullyQualifiedDomainName
             $shortResult = Get-ComputerName
-            
+
             # FQDN should either be the same as short name (if no domain) or longer
             $fqdnResult.Length | Should -BeGreaterOrEqual $shortResult.Length
-            
+
             # If FQDN is longer, it should start with the short name
             if ($fqdnResult.Length -gt $shortResult.Length) {
                 $fqdnResult | Should -BeLike "$shortResult.*"
