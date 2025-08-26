@@ -53,7 +53,8 @@ function Get-ComputerName
         # Attempt to get FQDN using DNS resolution
         try
         {
-            $fqdn = [System.Net.Dns]::GetHostByName($computerName).HostName
+            $fqdn = [System.Net.Dns]::GetHostEntry([System.Net.Dns]::GetHostName()).HostName
+
             if ($fqdn -and $fqdn -ne $computerName)
             {
                 $computerName = $fqdn
