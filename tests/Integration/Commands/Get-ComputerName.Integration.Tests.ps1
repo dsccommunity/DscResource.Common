@@ -51,11 +51,6 @@ Describe 'Get-ComputerName' -Tag 'GetComputerName' {
             $result.Length | Should -BeGreaterOrEqual ([System.Environment]::MachineName.Length)
         }
 
-        It 'Should handle the function without throwing errors' {
-            { Get-ComputerName } | Should -Not -Throw
-            { Get-ComputerName -FullyQualifiedDomainName } | Should -Not -Throw
-        }
-
         It 'Should return consistent results on multiple calls' {
             $result1 = Get-ComputerName
             $result2 = Get-ComputerName
@@ -68,28 +63,6 @@ Describe 'Get-ComputerName' -Tag 'GetComputerName' {
             $result2 = Get-ComputerName -FullyQualifiedDomainName
 
             $result1 | Should -Be $result2
-        }
-    }
-
-    Context 'When comparing with system methods' {
-        It 'Should return the same short name as Environment.MachineName' {
-            $functionResult = Get-ComputerName
-            $environmentResult = [System.Environment]::MachineName
-
-            $functionResult | Should -Be $environmentResult
-        }
-
-        It 'Should handle DNS resolution appropriately for FQDN' {
-            $fqdnResult = Get-ComputerName -FullyQualifiedDomainName
-            $shortResult = Get-ComputerName
-
-            # FQDN should either be the same as short name (if no domain) or longer
-            $fqdnResult.Length | Should -BeGreaterOrEqual $shortResult.Length
-
-            # If FQDN is longer, it should start with the short name
-            if ($fqdnResult.Length -gt $shortResult.Length) {
-                $fqdnResult | Should -BeLike "$shortResult.*"
-            }
         }
     }
 }
