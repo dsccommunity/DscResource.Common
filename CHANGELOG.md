@@ -29,6 +29,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     proper domain name resolution on Windows, Linux, and macOS.
   - Improved error handling to gracefully fallback to short name when DNS 
     resolution fails.
+- `Compare-DscParameterState`
+  - Changed detailed diagnostic messages from `Write-Verbose` to `Write-Debug`
+    for variable values, type comparisons, and internal diagnostics.
+- `Test-ModuleExist`
+  - Changed module filtering messages from `Write-Verbose` to `Write-Debug`
+    for internal implementation details.
+- `Test-IsNanoServer`
+  - Changed operating system SKU diagnostic message from `Write-Verbose` to `Write-Debug`.
+- `Find-Certificate`
+  - Changed certificate filter diagnostic message from `Write-Verbose` to `Write-Debug`.
 
 ## [0.22.0] - 2025-04-25
 

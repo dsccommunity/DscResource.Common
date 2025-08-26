@@ -136,7 +136,7 @@ function Get-LocalizedDataForInvariantCulture
         }
         else
         {
-            Write-Verbose -Message ('Getting file {0}' -f $languageFile)
+            Write-Debug -Message ('Getting file {0}' -f $languageFile)
         }
 
         $constrainedState = [System.Management.Automation.Runspaces.InitialSessionState]::Create()

@@ -103,7 +103,7 @@ function Test-ModuleExist
 
     if ($modulePath)
     {
-        Write-Verbose -Message "Filtering modules by path '$modulePath'."
+        Write-Debug -Message "Filtering modules by path '$modulePath'."
 
         $modulesToEvaluate = $availableModules |
             Where-Object -FilterScript {
@@ -119,7 +119,7 @@ function Test-ModuleExist
     {
         $moduleVersion, $modulePrerelease = $Version -split '-'
 
-        Write-Verbose -Message "Filtering modules by version '$moduleVersion'."
+        Write-Debug -Message "Filtering modules by version '$moduleVersion'."
 
         $modulesToEvaluate = $modulesToEvaluate |
             Where-Object -FilterScript {
@@ -128,7 +128,7 @@ function Test-ModuleExist
 
         if ($modulesToEvaluate -and $modulePrerelease)
         {
-            Write-Verbose -Message "Filtering modules by prerelease '$modulePrerelease'."
+            Write-Debug -Message "Filtering modules by prerelease '$modulePrerelease'."
 
             $modulesToEvaluate = $modulesToEvaluate |
                 Where-Object -FilterScript {
