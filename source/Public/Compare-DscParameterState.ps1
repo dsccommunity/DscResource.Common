@@ -206,14 +206,14 @@ function Compare-DscParameterState
 
     if ($DesiredValues.GetType().FullName -notin $types)
     {
-        New-InvalidArgumentException `
+        New-ArgumentException `
             -Message ($script:localizedData.InvalidDesiredValuesError -f $DesiredValues.GetType().FullName) `
             -ArgumentName 'DesiredValues'
     }
 
     if ($CurrentValues.GetType().FullName -notin $types)
     {
-        New-InvalidArgumentException `
+        New-ArgumentException `
             -Message ($script:localizedData.InvalidCurrentValuesError -f $CurrentValues.GetType().FullName) `
             -ArgumentName 'CurrentValues'
     }
@@ -221,7 +221,7 @@ function Compare-DscParameterState
     #region check if CimInstance and not have properties in parameters invoke exception
     if ($DesiredValues -is [Microsoft.Management.Infrastructure.CimInstance] -and -not $Properties)
     {
-        New-InvalidArgumentException `
+        New-ArgumentException `
             -Message $script:localizedData.InvalidPropertiesError `
             -ArgumentName Properties
     }
