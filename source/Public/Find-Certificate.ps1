@@ -176,7 +176,7 @@ function Find-Certificate
     # Join all the filters together
     $certFilterScript = '(' + ($certFilters -join ' -and ') + ')'
 
-    Write-Verbose `
+    Write-Debug `
         -Message ($script:localizedData.SearchingForCertificateUsingFilters -f $store, $certFilterScript) `
         -Verbose
 

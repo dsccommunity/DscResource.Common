@@ -309,24 +309,24 @@ function Compare-DscParameterState
             # This is a credential object. Compare only the user name
             if ($currentType.Name -eq 'PSCredential' -and $currentValue.UserName -eq $desiredValue.UserName)
             {
-                Write-Verbose -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
+                Write-Debug -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
                 continue # pass to the next key
             }
             elseif ($currentType.Name -ne 'string')
             {
-                Write-Verbose -Message ($script:localizedData.NoMatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
+                Write-Debug -Message ($script:localizedData.NoMatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
                 $InDesiredStateTable.InDesiredState = $false
             }
 
             # Assume the string is our username when the matching desired value is actually a credential
             if ($currentType.Name -eq 'string' -and $currentValue -eq $desiredValue.UserName)
             {
-                Write-Verbose -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue, $desiredValue.UserName)
+                Write-Debug -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue, $desiredValue.UserName)
                 continue # pass to the next key
             }
             else
             {
-                Write-Verbose -Message ($script:localizedData.NoMatchPsCredentialUsernameMessage -f $currentValue, $desiredValue.UserName)
+                Write-Debug -Message ($script:localizedData.NoMatchPsCredentialUsernameMessage -f $currentValue, $desiredValue.UserName)
                 $InDesiredStateTable.InDesiredState = $false
             }
         }
@@ -337,13 +337,13 @@ function Compare-DscParameterState
             if (($desiredType.Name -ne 'Unknown' -and $currentType.Name -ne 'Unknown') -and
                 $desiredType.FullName -ne $currentType.FullName)
             {
-                Write-Verbose -Message ($script:localizedData.NoMatchTypeMismatchMessage -f $key, $currentType.FullName, $desiredType.FullName)
+                Write-Debug -Message ($script:localizedData.NoMatchTypeMismatchMessage -f $key, $currentType.FullName, $desiredType.FullName)
                 $InDesiredStateTable.InDesiredState = $false
                 continue # pass to the next key
             }
             elseif ($desiredType.Name -eq 'Unknown' -and $desiredType.Name -ne $currentType.Name)
             {
-                Write-Verbose -Message ($script:localizedData.NoMatchTypeMismatchMessage -f $key, $currentType.Name, $desiredType.Name)
+                Write-Debug -Message ($script:localizedData.NoMatchTypeMismatchMessage -f $key, $currentType.Name, $desiredType.Name)
                 $InDesiredStateTable.InDesiredState = $false
                 continue # pass to the next key
             }
@@ -352,7 +352,7 @@ function Compare-DscParameterState
         #region Check if the value of Current and desired state is the same but only if they are not an array
         if ($currentValue -eq $desiredValue -and -not $desiredType.IsArray)
         {
-            Write-Verbose -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+            Write-Debug -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
             continue # pass to the next key
         }
         #endregion check same value
@@ -368,31 +368,31 @@ function Compare-DscParameterState
         # if there no key, don't need to check
         if (-not $checkDesiredValue)
         {
-            Write-Verbose -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+            Write-Debug -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
             continue # pass to the next key
         }
         #endregion
         #region Check if desired type is array, if no Hashtable and current type hashtable to
         if ($desiredType.IsArray -or $desiredType.ImplementedInterfaces -contains [System.Collections.IList])
         {
-            Write-Verbose -Message ($script:localizedData.TestDscParameterCompareMessage -f $key, $desiredType.FullName)
+            Write-Debug -Message ($script:localizedData.TestDscParameterCompareMessage -f $key, $desiredType.FullName)
             # Check if the currentValues and desiredValue are empty array.
             if (-not $currentValue -and -not $desiredValue)
             {
-                Write-Verbose -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, 'empty array', 'empty array')
+                Write-Debug -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, 'empty array', 'empty array')
                 continue
             }
             elseif (-not $currentValue)
             {
                 #If only currentvalue is empty, the configuration isn't compliant.
-                Write-Verbose -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+                Write-Debug -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
                 $InDesiredStateTable.InDesiredState = $false
                 continue
             }
             elseif ($currentValue.Count -ne $desiredValue.Count)
             {
                 #If there is a difference between the number of objects in arrays, this isn't compliant.
-                Write-Verbose -Message ($script:localizedData.NoMatchValueDifferentCountMessage -f $desiredType.FullName, $key, $currentValue.Count, $desiredValue.Count)
+                Write-Debug -Message ($script:localizedData.NoMatchValueDifferentCountMessage -f $desiredType.FullName, $key, $currentValue.Count, $desiredValue.Count)
                 $InDesiredStateTable.InDesiredState = $false
                 continue
             }
@@ -439,7 +439,7 @@ function Compare-DscParameterState
                         if (($desiredType.Name -ne 'Unknown' -and $currentType.Name -ne 'Unknown') -and
                             $desiredType.FullName -ne $currentType.FullName)
                         {
-                            Write-Verbose -Message ($script:localizedData.NoMatchElementTypeMismatchMessage -f $key, $i, $currentType.FullName, $desiredType.FullName)
+                            Write-Debug -Message ($script:localizedData.NoMatchElementTypeMismatchMessage -f $key, $i, $currentType.FullName, $desiredType.FullName)
                             $InDesiredStateTable.InDesiredState = $false
                             continue
                         }
@@ -504,13 +504,13 @@ function Compare-DscParameterState
 
                     if ($desiredArrayValues[$i] -ne $currentArrayValues[$i])
                     {
-                        Write-Verbose -Message ($script:localizedData.NoMatchElementValueMismatchMessage -f $i, $desiredType.FullName, $key, $currentArrayValues[$i], $desiredArrayValues[$i])
+                        Write-Debug -Message ($script:localizedData.NoMatchElementValueMismatchMessage -f $i, $desiredType.FullName, $key, $currentArrayValues[$i], $desiredArrayValues[$i])
                         $InDesiredStateTable.InDesiredState = $false
                         continue
                     }
                     else
                     {
-                        Write-Verbose -Message ($script:localizedData.MatchElementValueMessage -f $i, $desiredType.FullName, $key, $currentArrayValues[$i], $desiredArrayValues[$i])
+                        Write-Debug -Message ($script:localizedData.MatchElementValueMessage -f $i, $desiredType.FullName, $key, $currentArrayValues[$i], $desiredArrayValues[$i])
                         continue
                     }
                 }
@@ -537,7 +537,7 @@ function Compare-DscParameterState
                 #>
                 if ($desiredValue.Keys.Count -eq 0 -and $currentValue.Keys.Count -ne 0)
                 {
-                    Write-Verbose -Message ($script:localizedData.NoMatchKeyMessage -f $desiredType.FullName, $key, $($currentValue.Keys -join ', '))
+                    Write-Debug -Message ($script:localizedData.NoMatchKeyMessage -f $desiredType.FullName, $key, $($currentValue.Keys -join ', '))
                     $InDesiredStateTable.InDesiredState = $false
                 }
                 else{
@@ -580,7 +580,7 @@ function Compare-DscParameterState
 
             if ($desiredValue -ne $currentValue)
             {
-                Write-Verbose -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+                Write-Debug -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
                 $InDesiredStateTable.InDesiredState = $false
             }
         }
