@@ -20,6 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added support to `Compare-DscParameterState` for comparing large hashtables
     that contain lists of elements.
 
+### Changed
+
+- `Get-ComputerName`
+  - Replaced platform-specific logic with cross-platform implementation using 
+    `[System.Environment]::MachineName` for consistent short name behavior.
+  - Enhanced FQDN functionality to use `[System.Net.Dns]::GetHostByName()` for 
+    proper domain name resolution on Windows, Linux, and macOS.
+  - Improved error handling to gracefully fallback to short name when DNS 
+    resolution fails.
+
 ## [0.22.0] - 2025-04-25
 
 ### Removed

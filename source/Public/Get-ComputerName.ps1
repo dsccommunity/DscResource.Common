@@ -8,6 +8,9 @@
         macOS and Linux. Instead this command can be used to get the computer name
         cross-plattform.
 
+    .PARAMETER FullyQualifiedDomainName
+        Returns the fully qualified domain name (FQDN) instead of just the computer name.
+
     .OUTPUTS
         System.String
 
@@ -15,26 +18,53 @@
         Get-ComputerName
 
         Returns the computer name regardless of platform.
+
+    .EXAMPLE
+        Get-ComputerName -FullyQualifiedDomainName
+
+        Returns the fully qualified domain name regardless of platform.
+
+    .NOTES
+        The function uses [System.Environment]::MachineName for the short computer name,
+        which works consistently across all platforms where PowerShell runs.
+
+        When the FullyQualifiedDomainName switch is used, the function attempts to
+        retrieve the FQDN using [System.Net.Dns]::GetHostByName() which can resolve
+        the full domain name when the system is properly configured with DNS.
+
+        If DNS resolution fails or no domain is configured, the function will fall
+        back to returning the short computer name even when FQDN is requested.
 #>
 function Get-ComputerName
 {
     [CmdletBinding()]
     [OutputType([System.String])]
-    param ()
+    param
+    (
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $FullyQualifiedDomainName
+    )
 
-    $computerName = $null
+    $computerName = [System.Environment]::MachineName
 
-    if ($IsLinux -or $IsMacOs)
+    if ($FullyQualifiedDomainName)
     {
-        $computerName = hostname
-    }
-    else
-    {
-        <#
-            We could run 'hostname' on Windows too, but $env:COMPUTERNAME
-            is more widely used.
-        #>
-        $computerName = $env:COMPUTERNAME
+        # Attempt to get FQDN using DNS resolution
+        try
+        {
+            $fqdn = [System.Net.Dns]::GetHostEntry([System.Net.Dns]::GetHostName()).HostName
+
+            if ($fqdn -and $fqdn -ne $computerName)
+            {
+                $computerName = $fqdn
+            }
+        }
+        catch
+        {
+            # If DNS resolution fails, fall back to the short name
+            $fqdn = $computerName
+        }
     }
 
     return $computerName
