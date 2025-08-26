@@ -221,9 +221,7 @@ function Assert-BoundParameter
 
             if ($boundParametersFromList.Count -eq 0)
             {
-                $errorMessage = `
-                    $script:localizedData.Assert_BoundParameter_AtLeastOneParameterMustBeSet `
-                    -f ($AtLeastOneList -join "','")
+                $errorMessage = $script:localizedData.Assert_BoundParameter_AtLeastOneParameterMustBeSet -f ($AtLeastOneList -join "','")
 
                 New-ArgumentException -ArgumentName 'Parameters' -Message $errorMessage
             }
