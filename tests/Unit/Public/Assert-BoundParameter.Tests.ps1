@@ -50,17 +50,17 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
         @{
             MockParameterSetName   = 'MutuallyExclusiveParameters'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -MutuallyExclusiveList1 <string[]> -MutuallyExclusiveList2 <string[]> [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -MutuallyExclusiveList1 <string[]> -MutuallyExclusiveList2 <string[]> [-IfEqualParameterList <hashtable>] [<CommonParameters>]'
         }
         @{
             MockParameterSetName   = 'RequiredParameter'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-RequiredBehavior <BoundParameterBehavior>] [-IfParameterPresent <string[]>] [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-RequiredBehavior <BoundParameterBehavior>] [-IfParameterPresent <string[]>] [-IfEqualParameterList <hashtable>] [<CommonParameters>]'
         }
         @{
             MockParameterSetName   = 'AtLeastOne'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -AtLeastOneList <string[]> [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -AtLeastOneList <string[]> [-IfEqualParameterList <hashtable>] [<CommonParameters>]'
         }
     ) {
         InModuleScope -Parameters $_ -ScriptBlock {
@@ -309,6 +309,271 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 InModuleScope -ScriptBlock {
                     { Assert-BoundParameter -BoundParameterList @{} -RequiredParameter 'Parameter1' } |
                         Should -Throw -ExpectedMessage '*Mocked error*'
+                }
+            }
+        }
+    }
+
+    Context 'When using IfEqualParameterList parameter' {
+        Context 'When using MutuallyExclusiveParameters parameter set' {
+            Context 'When the IfEqualParameterList condition is met' {
+                It 'Should throw an error when mutually exclusive parameters are both present' {
+                    $errorMessage = InModuleScope -ScriptBlock {
+                        $script:localizedData.ParameterUsageWrong
+                    }
+
+                    $errorMessage = $errorMessage -f "Severity", "MessageId"
+
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Severity = 'High'
+                                MessageId = '12345'
+                                Ensure = 'Present'
+                            }
+                            MutuallyExclusiveList1 = @('Severity')
+                            MutuallyExclusiveList2 = @('MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Throw -ExpectedMessage "$errorMessage*"
+                }
+
+                It 'Should not throw an error when mutually exclusive parameters are not both present' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Severity = 'High'
+                                Ensure = 'Present'
+                            }
+                            MutuallyExclusiveList1 = @('Severity')
+                            MutuallyExclusiveList2 = @('MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+
+            Context 'When the IfEqualParameterList condition is not met' {
+                It 'Should not throw an error even when mutually exclusive parameters are both present' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Severity = 'High'
+                                MessageId = '12345'
+                                Ensure = 'Absent'
+                            }
+                            MutuallyExclusiveList1 = @('Severity')
+                            MutuallyExclusiveList2 = @('MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+
+                It 'Should not throw an error when the parameter in IfEqualParameterList is not present' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Severity = 'High'
+                                MessageId = '12345'
+                            }
+                            MutuallyExclusiveList1 = @('Severity')
+                            MutuallyExclusiveList2 = @('MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+
+            Context 'When multiple conditions in IfEqualParameterList must match' {
+                It 'Should throw an error when all conditions are met and mutually exclusive parameters are present' {
+                    $errorMessage = InModuleScope -ScriptBlock {
+                        $script:localizedData.ParameterUsageWrong
+                    }
+
+                    $errorMessage = $errorMessage -f "Severity", "MessageId"
+
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Severity = 'High'
+                                MessageId = '12345'
+                                Ensure = 'Present'
+                                Type = 'Server'
+                            }
+                            MutuallyExclusiveList1 = @('Severity')
+                            MutuallyExclusiveList2 = @('MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                                Type = 'Server'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Throw -ExpectedMessage "$errorMessage*"
+                }
+
+                It 'Should not throw an error when only some conditions are met' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Severity = 'High'
+                                MessageId = '12345'
+                                Ensure = 'Present'
+                                Type = 'Client'
+                            }
+                            MutuallyExclusiveList1 = @('Severity')
+                            MutuallyExclusiveList2 = @('MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                                Type = 'Server'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+        }
+
+        Context 'When using RequiredParameter parameter set' {
+            BeforeAll {
+                Mock -CommandName Assert-RequiredCommandParameter
+            }
+
+            Context 'When the IfEqualParameterList condition is met' {
+                It 'Should call Assert-RequiredCommandParameter when condition is met' {
+                    InModuleScope -ScriptBlock {
+                        $testParams = @{
+                            BoundParameterList = @{
+                                Property1 = 'SpecificValue'
+                                Property2 = 'Value2'
+                            }
+                            RequiredParameter = @('Property2', 'Property3')
+                            IfEqualParameterList = @{
+                                Property1 = 'SpecificValue'
+                            }
+                        }
+
+                        Assert-BoundParameter @testParams
+                    }
+
+                    Should -Invoke -CommandName Assert-RequiredCommandParameter -Exactly -Times 1 -Scope It
+                }
+            }
+
+            Context 'When the IfEqualParameterList condition is not met' {
+                It 'Should not call Assert-RequiredCommandParameter when condition is not met' {
+                    InModuleScope -ScriptBlock {
+                        $testParams = @{
+                            BoundParameterList = @{
+                                Property1 = 'DifferentValue'
+                                Property2 = 'Value2'
+                            }
+                            RequiredParameter = @('Property2', 'Property3')
+                            IfEqualParameterList = @{
+                                Property1 = 'SpecificValue'
+                            }
+                        }
+
+                        Assert-BoundParameter @testParams
+                    }
+
+                    Should -Invoke -CommandName Assert-RequiredCommandParameter -Exactly -Times 0 -Scope It
+                }
+            }
+        }
+
+        Context 'When using AtLeastOne parameter set' {
+            Context 'When the IfEqualParameterList condition is met' {
+                It 'Should throw an error when none of the required parameters are present' {
+                    $errorMessage = InModuleScope -ScriptBlock {
+                        $script:localizedData.Assert_BoundParameter_AtLeastOneParameterMustBeSet
+                    }
+
+                    $errorMessage = $errorMessage -f "Severity','MessageId"
+
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Ensure = 'Present'
+                                OtherParam = 'value'
+                            }
+                            AtLeastOneList = @('Severity', 'MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Throw -ExpectedMessage "$errorMessage*"
+                }
+
+                It 'Should not throw an error when at least one required parameter is present' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Severity = 'High'
+                                Ensure = 'Present'
+                            }
+                            AtLeastOneList = @('Severity', 'MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+
+            Context 'When the IfEqualParameterList condition is not met' {
+                It 'Should not throw an error even when none of the required parameters are present' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Ensure = 'Absent'
+                                OtherParam = 'value'
+                            }
+                            AtLeastOneList = @('Severity', 'MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+
+                It 'Should not throw an error when the parameter in IfEqualParameterList is not present' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                OtherParam = 'value'
+                            }
+                            AtLeastOneList = @('Severity', 'MessageId')
+                            IfEqualParameterList = @{
+                                Ensure = 'Present'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
                 }
             }
         }

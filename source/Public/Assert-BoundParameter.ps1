@@ -52,6 +52,11 @@
        If neither of the parameter names has been specified the evaluation of required
        parameters are not made.
 
+    .PARAMETER IfEqualParameterList
+       A hashtable of parameter names and their expected values. The assertion will
+       only be performed if all the specified parameters in the BoundParameterList
+       have the exact values specified in this hashtable.
+
     .PARAMETER AtLeastOneList
        An array of parameter names where at least one must be bound.
 
@@ -90,6 +95,37 @@
         Assert-BoundParameter -BoundParameterList $PSBoundParameters -AtLeastOneList @('Severity', 'MessageId')
 
         Throws an exception if none of the parameters 'Severity' or 'MessageId' are specified.
+
+    .EXAMPLE
+        $assertBoundParameterParameters = @{
+            BoundParameterList = $PSBoundParameters
+            MutuallyExclusiveList1 = @(
+                'Severity'
+            )
+            MutuallyExclusiveList2 = @(
+                'MessageId'
+            )
+            IfEqualParameterList = @{
+                Ensure = 'Present'
+            }
+        }
+        Assert-BoundParameter @assertBoundParameterParameters
+
+        This example throws an exception if `$PSBoundParameters` contains both
+        the parameters `Severity` and `MessageId` and the parameter `Ensure` has
+        the value `Present`.
+
+    .EXAMPLE
+        Assert-BoundParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('Property2', 'Property3') -IfEqualParameterList @{ Property1 = 'SpecificValue' }
+
+        Throws an exception if the parameter 'Property1' has the value 'SpecificValue'
+        and either of the required parameters are not specified.
+
+    .EXAMPLE
+        Assert-BoundParameter -BoundParameterList $PSBoundParameters -AtLeastOneList @('Severity', 'MessageId') -IfEqualParameterList @{ Ensure = 'Present' }
+
+        Throws an exception if the parameter 'Ensure' has the value 'Present' and
+        none of the parameters 'Severity' or 'MessageId' are specified.
 #>
 function Assert-BoundParameter
 {
@@ -121,10 +157,28 @@ function Assert-BoundParameter
         [System.String[]]
         $IfParameterPresent,
 
+        [Parameter(ParameterSetName = 'MutuallyExclusiveParameters')]
+        [Parameter(ParameterSetName = 'RequiredParameter')]
+        [Parameter(ParameterSetName = 'AtLeastOne')]
+        [System.Collections.Hashtable]
+        $IfEqualParameterList,
+
         [Parameter(ParameterSetName = 'AtLeastOne', Mandatory = $true)]
         [System.String[]]
         $AtLeastOneList
     )
+
+    # Early return if IfEqualParameterList conditions are not met
+    if ($PSBoundParameters.ContainsKey('IfEqualParameterList'))
+    {
+        foreach ($parameterName in $IfEqualParameterList.Keys)
+        {
+            if (-not $BoundParameterList.ContainsKey($parameterName) -or $BoundParameterList[$parameterName] -ne $IfEqualParameterList[$parameterName])
+            {
+                return
+            }
+        }
+    }
 
     switch ($PSCmdlet.ParameterSetName)
     {
@@ -147,6 +201,11 @@ function Assert-BoundParameter
 
         'RequiredParameter'
         {
+            if ($PSBoundParameters.ContainsKey('IfEqualParameterList'))
+            {
+                $PSBoundParameters.Remove('IfEqualParameterList')
+            }
+
             if (-not $PSBoundParameters.ContainsKey('RequiredBehavior'))
             {
                 $PSBoundParameters.RequiredBehavior = $RequiredBehavior
