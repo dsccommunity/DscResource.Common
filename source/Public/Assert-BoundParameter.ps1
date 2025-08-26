@@ -87,9 +87,14 @@
         of the required parameters are not.
 
     .EXAMPLE
-        Assert-BoundParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange') -RequiredBehavior 'AtLeastOnce'
+        Assert-BoundParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange') -RequiredBehavior 'Any'
 
-        Throws an exception if at least one of the two parameters are not specified.
+        Throws an exception if any of the two parameters are not present.
+
+    .EXAMPLE
+        Assert-BoundParameter -BoundParameterList $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange') -RequiredBehavior 'All'
+
+        Throws an exception if all of the specified parameters are not present.
 
     .EXAMPLE
         Assert-BoundParameter -BoundParameterList $PSBoundParameters -AtLeastOneList @('Severity', 'MessageId')
