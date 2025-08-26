@@ -53,7 +53,7 @@ Describe 'Get-ComputerName' {
 
     Context 'When getting computer name without FQDN switch' {
         It 'Should return the short computer name' {
-            $result = Get-ComputerName
+            $result = Get-ComputerName -ErrorAction Stop
             $result | Should -BeOfType [System.String]
             $result | Should -Not -BeNullOrEmpty
             # Should return the same as [System.Environment]::MachineName (short name)
@@ -63,7 +63,7 @@ Describe 'Get-ComputerName' {
 
     Context 'When getting computer name with FQDN switch' {
         It 'Should return the FQDN when DNS resolution succeeds' {
-            $result = Get-ComputerName -FullyQualifiedDomainName
+            $result = Get-ComputerName -FullyQualifiedDomainName -ErrorAction Stop
             $result | Should -BeOfType [System.String]
             $result | Should -Not -BeNullOrEmpty
             # The result should either be FQDN (if DNS works) or short name (if DNS fails)

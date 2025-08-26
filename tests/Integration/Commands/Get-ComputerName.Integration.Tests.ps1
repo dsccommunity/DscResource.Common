@@ -32,7 +32,7 @@ BeforeAll {
 Describe 'Get-ComputerName' -Tag 'GetComputerName' {
     Context 'When getting computer name in real environment' {
         It 'Should return a valid computer name without FQDN switch' {
-            $result = Get-ComputerName
+            $result = Get-ComputerName -ErrorAction Stop
 
             $result | Should -BeOfType [System.String]
             $result | Should -Not -BeNullOrEmpty
@@ -43,7 +43,7 @@ Describe 'Get-ComputerName' -Tag 'GetComputerName' {
         }
 
         It 'Should return a computer name with FQDN switch' {
-            $result = Get-ComputerName -FullyQualifiedDomainName
+            $result = Get-ComputerName -FullyQualifiedDomainName -ErrorAction Stop
 
             $result | Should -BeOfType [System.String]
             $result | Should -Not -BeNullOrEmpty
@@ -52,15 +52,15 @@ Describe 'Get-ComputerName' -Tag 'GetComputerName' {
         }
 
         It 'Should return consistent results on multiple calls' {
-            $result1 = Get-ComputerName
-            $result2 = Get-ComputerName
+            $result1 = Get-ComputerName -ErrorAction Stop
+            $result2 = Get-ComputerName -ErrorAction Stop
 
             $result1 | Should -Be $result2
         }
 
         It 'Should return consistent FQDN results on multiple calls' {
-            $result1 = Get-ComputerName -FullyQualifiedDomainName
-            $result2 = Get-ComputerName -FullyQualifiedDomainName
+            $result1 = Get-ComputerName -FullyQualifiedDomainName -ErrorAction Stop
+            $result2 = Get-ComputerName -FullyQualifiedDomainName -ErrorAction Stop
 
             $result1 | Should -Be $result2
         }
