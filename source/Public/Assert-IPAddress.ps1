@@ -53,7 +53,7 @@ function Assert-IPAddress
 
     if (-not ([System.Net.IPAddress]::TryParse($Address, [ref] $ipAddress)))
     {
-        New-InvalidArgumentException `
+        New-ArgumentException `
             -Message ($script:localizedData.AddressFormatError -f $Address) `
             -ArgumentName 'Address'
     }
@@ -66,7 +66,7 @@ function Assert-IPAddress
             {
                 if ($ipAddress.AddressFamily -ne [System.Net.Sockets.AddressFamily]::InterNetwork.ToString())
                 {
-                    New-InvalidArgumentException `
+                    New-ArgumentException `
                         -Message ($script:localizedData.AddressIPv6MismatchError -f $Address, $AddressFamily) `
                         -ArgumentName 'AddressFamily'
                 }
@@ -76,7 +76,7 @@ function Assert-IPAddress
             {
                 if ($ipAddress.AddressFamily -ne [System.Net.Sockets.AddressFamily]::InterNetworkV6.ToString())
                 {
-                    New-InvalidArgumentException `
+                    New-ArgumentException `
                         -Message ($script:localizedData.AddressIPv4MismatchError -f $Address, $AddressFamily) `
                         -ArgumentName 'AddressFamily'
                 }

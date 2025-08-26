@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Assert-BoundParameter`
+  - Added parameter set `AtLeastOne` with parameter `AtLeastOneList` to
+    validate that at least one parameter from a specified list is bound
+    [#161](https://github.com/dsccommunity/DscResource.Common/issues/161).
+  - Added parameter `IfEqualParameterList` to conditionally perform assertions
+    only when specified parameters have exact values [#160](https://github.com/dsccommunity/DscResource.Common/issues/160).
 - `Format-Path`
   - Added parameter `ExpandEnvironmentVariable` fixes [#147](https://github.com/dsccommunity/DscResource.Common/issues/147).
   - Added support to `Compare-DscParameterState` for comparing large hashtables
@@ -322,8 +328,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - DscResource.Common
-  - updating the Get-LocalizedData to bypass Import-LocalizedData when in Globalization-Invariant mode.
-    The command throws when running on an Invariant culture on Linux in the latest PS versions.
+  - updating the Get-LocalizedData to bypass Import-LocalizedData when in
+    Globalization-Invariant mode.
+    The command throws when running on an Invariant culture on Linux in
+    the latest PS versions.
 
 ## [0.11.0] - 2022-08-01
 
@@ -337,9 +345,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Correction to `Compare-DscParameterState` returning false positive when parameter
-  with an empty hashtable or CimInstance property is passed in `DesriedValues` - fixes
-  [issue #65](https://github.com/dsccommunity/DscResource.Common/issues/65).
-- Correction somes problems in `Compare-DscParameterState` - see [issue #70](https://github.com/dsccommunity/DscResource.Common/issues/70) :
+  with an empty hashtable or CimInstance property is passed in `DesiredValues`,
+  fixes [issue #65](https://github.com/dsccommunity/DscResource.Common/issues/65).
+- Correction some problems in `Compare-DscParameterState`, see
+  [issue #70](https://github.com/dsccommunity/DscResource.Common/issues/70).
   - When you use `-ReverseCheck`, this value is used in recursive call of
   `Test-DscParameterState` and `Compare-DscParameterState`, and that called
   another time the function.
@@ -398,15 +407,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Get-TargetResource function or Get() method in Class based Resources.
   It is based on the code of Test-DscParameterState function to get compliance
   between current and desired state of resources.
-  The OutPut of Compare-DscParameterState is a collection psobject.
-  The properties of psobject are Property,InDesiredState,ExpectedType,ActualType,
-  ExpectedValue and ActualValue. The IncludeInDesiredState parameter must be use to
-  add ExeptedValue and ActualValue.
-- Added pester test to test the pscredential object with `Compare-DscParameterState`.
+  The OutPut of Compare-DscParameterState is a collection of PSObject.
+  The properties of each PSObject are Property, InDesiredState, ExpectedType, ActualType,
+  ExpectedValue, and ActualValue. The IncludeInDesiredState parameter must
+  be used to add ExpectedValue and ActualValue.
+- Added pester test to test the PSCredential object with `Compare-DscParameterState`.
 
 ### Changed
 
-- Cmdlet Test-DscResourceState is now calling Compare-DscParameterState. Possible breaking change.
+- Cmdlet Test-DscResourceState is now calling Compare-DscParameterState.
+  Possible breaking change.
 - IncludeInDesiredState and IncludeValue parameters of Compare-DscParameterState
   are removed in splatting when Test-DscCompareState is called.
 
@@ -419,15 +429,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Fixed
 
 - Correction to `Test-DscParameterState` returning false positive when parameter
-  with an empty array is passed in `DesriedValues` or `CurrentValues` - fixes
+  with an empty array is passed in `DesiredValues` or `CurrentValues` - fixes
   [issue #53](https://github.com/dsccommunity/DscResource.Common/issues/53).
 
 ## [0.9.2] - 2020-07-22
 
 ### Added
 
-- `Test-DscParameterState` can now handle scriptblocks. The parameter 'ValuesToCheck' was renamed to 'Properties' but an alias
-  was added so it is not a braking change. The parameter 'ExcludeProperties' was added.
+- `Test-DscParameterState` can now handle script blocks. The parameter
+  'ValuesToCheck' was renamed to 'Properties' but an alias
+  was added so it is not a braking change. The parameter 'ExcludeProperties'
+  was added.
 - Added a new test for the alias 'ValuesToCheck' pointing to 'Properties'.
 - Added cmdlet `Compare-ResourcePropertyState` that also introduces a new
   design pattern to evaluate properties in both _Test_ and _Set_ - fixes
@@ -458,8 +470,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.8.0] - 2020-05-11
 
-- Added a default value of `en-US` to the `DefaultUICulture` parameter of the `Get-LocalizedData` function
-  [Issue #33](https://github.com/dsccommunity/DscResource.Common/issues/33).
+- Added a default value of `en-US` to the `DefaultUICulture` parameter of
+  the `Get-LocalizedData` function [Issue #33](https://github.com/dsccommunity/DscResource.Common/issues/33).
 - Fixing a problem with the latest ModuleBuild 1.7.0 that breaks the CI pipeline.
 
 ## [0.7.1] - 2020-05-02
@@ -524,7 +536,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed the New-*Exception function unit tests to work correctly on PowerShell version 5, 6 and 7.
+- Fixed the New-*Exception function unit tests to work correctly on PowerShell
+  version 5, 6 and 7.
 
 ## [0.4.0] - 2020-03-09
 
