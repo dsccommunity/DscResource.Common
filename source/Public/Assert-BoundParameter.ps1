@@ -161,6 +161,7 @@ function Assert-BoundParameter
         [Parameter(ParameterSetName = 'MutuallyExclusiveParameters')]
         [Parameter(ParameterSetName = 'AtLeastOne')]
         [Alias('IfEqualParameterList')]
+        [System.Object]
         $IfParameterPresent,
 
         [Parameter(ParameterSetName = 'AtLeastOne', Mandatory = $true)]
