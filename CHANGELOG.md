@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Test-ModuleExist`
   - Changed module filtering messages from `Write-Verbose` to `Write-Debug`
     for internal implementation details.
-  - Localized hardcoded Write-Verbose messages to use localized strings ([#168](https://github.com/dsccommunity/DscResource.Common/issues/168)).
+  - Localized hardcoded `Write-Debug` messages to use localized strings
+    ([#168](https://github.com/dsccommunity/DscResource.Common/issues/168)).
 - `Test-IsNanoServer`
   - Changed operating system SKU diagnostic message from `Write-Verbose` to `Write-Debug`.
 - `Find-Certificate`
