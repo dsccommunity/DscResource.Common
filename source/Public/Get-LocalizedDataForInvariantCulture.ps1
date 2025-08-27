@@ -103,7 +103,7 @@ function Get-LocalizedDataForInvariantCulture
     {
         if ($FileName -match '\.psm1$|\.ps1$|\.psd1$')
         {
-            Write-Debug -Message 'Found an extension to the file name to search. Stripping...'
+            Write-Debug -Message $script:localizedData.Get_LocalizedDataForInvariantCulture_FoundExtension
             $FileName = $FileName -replace '\.psm1$|\.ps1$|\.psd1$'
         }
 
@@ -119,24 +119,24 @@ function Get-LocalizedDataForInvariantCulture
             $filePath = [System.IO.Path]::Combine($localizedFolder, $localizedFileName)
             if (Test-Path -Path $filePath)
             {
-                Write-Debug -Message "Found '$filePath'."
+                Write-Debug -Message ($script:localizedData.Get_LocalizedDataForInvariantCulture_FoundFile -f $filePath)
                 $languageFile = $filePath
                 # Exit loop as we found the first filename.
                 break
             }
             else
             {
-                Write-Debug -Message "File '$filePath' not found."
+                Write-Debug -Message ($script:localizedData.Get_LocalizedDataForInvariantCulture_FileNotFound -f $filePath)
             }
         }
 
         if ([string]::IsNullOrEmpty($languageFile))
         {
-            throw ('File ''{0}'' not found in ''{1}''.' -f ($localizedFileNamesToTry -join ','),$localizedFolder)
+            throw ($script:localizedData.Get_LocalizedDataForInvariantCulture_FileNotFoundInFolder -f ($localizedFileNamesToTry -join ','), $localizedFolder)
         }
         else
         {
-            Write-Debug -Message ('Getting file {0}' -f $languageFile)
+            Write-Debug -Message ($script:localizedData.Get_LocalizedDataForInvariantCulture_GettingFile -f $languageFile)
         }
 
         $constrainedState = [System.Management.Automation.Runspaces.InitialSessionState]::Create()
