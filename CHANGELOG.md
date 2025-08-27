@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     for variable values, type comparisons, and internal diagnostics.
   - Comparison result still uses `Write-Verbose` to provide user-actionable
     information about parameter state differences.
+  - Use ArrayList and not fixed size array.
+  - Remove some ForEach-Object usage.
 - `Test-ModuleExist`
   - Changed module filtering messages from `Write-Verbose` to `Write-Debug`
     for internal implementation details.
@@ -21,9 +23,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Changed operating system SKU diagnostic message from `Write-Verbose` to `Write-Debug`.
 - `Find-Certificate`
   - Changed certificate filter diagnostic message from `Write-Verbose` to `Write-Debug`.
+  - Use ArrayList and not fixed size array.
 - `Get-LocalizedDataForInvariantCulture`
   - Changed file processing message from `Write-Verbose` to `Write-Debug`
     for internal diagnostic information.
+- `Clear-ZeroedEnumPropertyValue`
+  - Add before, end blocks.
+- `Test-DscPropertyState`
+  - Use ArrayList and not fixed size array.
+- `Assert-BoundParameter`
+  - Fix PSSA warning.
+- `ConvertFrom-DscResourceInstance`
+  - Fix PSSA warning.
+- `Get-DscProperty`
+  - Use ArrayList and not fixed size array.
+  - Fix PSSA warning.
+- `Remove-CommonParameter`
+  - Remove use of `Where-Object` and `ForEach-Object`.
 
 ## [0.24.1] - 2025-08-27
 
