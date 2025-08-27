@@ -73,6 +73,7 @@
 #>
 function Get-DscProperty
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('UseSyntacticallyCorrectExamples', '', Justification = 'Because the rule does not yet support parsing the code when a parameter type is not available. The ScriptAnalyzer rule UseSyntacticallyCorrectExamples will always error in the editor due to https://github.com/indented-automation/Indented.ScriptAnalyzerRules/issues/8.')]
     [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType([System.Collections.Hashtable])]
     param
@@ -136,7 +137,7 @@ function Get-DscProperty
         {
             if ($PSBoundParameters.ContainsKey('Attribute'))
             {
-                $propertiesOfAttribute = @()
+                $propertiesOfAttribute = [System.Collections.ArrayList]::new()
 
                 $propertiesOfAttribute += $property | Where-Object -FilterScript {
                     $InputObject.GetType().GetMember($_).CustomAttributes.Where(
@@ -173,9 +174,7 @@ function Get-DscProperty
         {
             if ($HasValue.IsPresent)
             {
-                $isAssigned = Test-DscPropertyIsAssigned -Name $currentProperty -InputObject $InputObject
-
-                if (-not $isAssigned)
+                if (-not (Test-DscPropertyIsAssigned -Name $currentProperty -InputObject $InputObject))
                 {
                     continue
                 }

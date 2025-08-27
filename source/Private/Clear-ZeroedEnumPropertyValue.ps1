@@ -27,10 +27,13 @@ function Clear-ZeroedEnumPropertyValue
         $InputObject
     )
 
-    process
+    begin
     {
         $result = @{}
+    }
 
+    process
+    {
         foreach ($property in $InputObject.Keys)
         {
             $value = $InputObject.$property
@@ -41,7 +44,10 @@ function Clear-ZeroedEnumPropertyValue
 
             $result.$property = $value
         }
+    }
 
+    end
+    {
         return $result
     }
 }

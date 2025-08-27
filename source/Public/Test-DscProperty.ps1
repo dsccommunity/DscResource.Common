@@ -8,7 +8,7 @@
         it is assigned a non-null value.
 
     .PARAMETER InputObject
-        Specifies the object that should be tested for existens of the specified
+        Specifies the object that should be tested for existence of the specified
         property.
 
     .PARAMETER Name
@@ -62,6 +62,7 @@
 #>
 function Test-DscProperty
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('UseSyntacticallyCorrectExamples', '', Justification = 'Because the rule does not yet support parsing the code when a parameter type is not available. The ScriptAnalyzer rule UseSyntacticallyCorrectExamples will always error in the editor due to https://github.com/indented-automation/Indented.ScriptAnalyzerRules/issues/8.')]
     [CmdletBinding()]
     [OutputType([System.Boolean])]
     param

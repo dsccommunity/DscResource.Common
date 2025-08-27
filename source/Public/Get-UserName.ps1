@@ -1,12 +1,12 @@
 <#
     .SYNOPSIS
-        Returns the user name cross-plattform.
+        Returns the user name cross-platform.
 
     .DESCRIPTION
-        Returns the current user name cross-plattform. The variable `$env:USERNAME`
+        Returns the current user name cross-platform. The variable `$env:USERNAME`
         does not exist cross-platform which hinders development and testing on
         macOS and Linux. Instead this command can be used to get the user name
-        cross-plattform.
+        cross-platform.
 
     .OUTPUTS
         System.String
