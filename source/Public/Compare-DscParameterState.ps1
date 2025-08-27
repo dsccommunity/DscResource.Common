@@ -309,7 +309,7 @@ function Compare-DscParameterState
             # This is a credential object. Compare only the user name
             if ($currentType.Name -eq 'PSCredential' -and $currentValue.UserName -eq $desiredValue.UserName)
             {
-                Write-Verbose -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
+                Write-Debug -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue.UserName, $desiredValue.UserName)
                 continue # pass to the next key
             }
             elseif ($currentType.Name -ne 'string')
@@ -321,7 +321,7 @@ function Compare-DscParameterState
             # Assume the string is our username when the matching desired value is actually a credential
             if ($currentType.Name -eq 'string' -and $currentValue -eq $desiredValue.UserName)
             {
-                Write-Verbose -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue, $desiredValue.UserName)
+                Write-Debug -Message ($script:localizedData.MatchPsCredentialUsernameMessage -f $currentValue, $desiredValue.UserName)
                 continue # pass to the next key
             }
             else
@@ -352,7 +352,7 @@ function Compare-DscParameterState
         #region Check if the value of Current and desired state is the same but only if they are not an array
         if ($currentValue -eq $desiredValue -and -not $desiredType.IsArray)
         {
-            Write-Verbose -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+            Write-Debug -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
             continue # pass to the next key
         }
         #endregion check same value
@@ -368,18 +368,18 @@ function Compare-DscParameterState
         # if there no key, don't need to check
         if (-not $checkDesiredValue)
         {
-            Write-Verbose -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
+            Write-Debug -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
             continue # pass to the next key
         }
         #endregion
         #region Check if desired type is array, if no Hashtable and current type hashtable to
         if ($desiredType.IsArray -or $desiredType.ImplementedInterfaces -contains [System.Collections.IList])
         {
-            Write-Verbose -Message ($script:localizedData.TestDscParameterCompareMessage -f $key, $desiredType.FullName)
+            Write-Debug -Message ($script:localizedData.TestDscParameterCompareMessage -f $key, $desiredType.FullName)
             # Check if the currentValues and desiredValue are empty array.
             if (-not $currentValue -and -not $desiredValue)
             {
-                Write-Verbose -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, 'empty array', 'empty array')
+                Write-Debug -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, 'empty array', 'empty array')
                 continue
             }
             elseif (-not $currentValue)
@@ -510,7 +510,7 @@ function Compare-DscParameterState
                     }
                     else
                     {
-                        Write-Verbose -Message ($script:localizedData.MatchElementValueMessage -f $i, $desiredType.FullName, $key, $currentArrayValues[$i], $desiredArrayValues[$i])
+                        Write-Debug -Message ($script:localizedData.MatchElementValueMessage -f $i, $desiredType.FullName, $key, $currentArrayValues[$i], $desiredArrayValues[$i])
                         continue
                     }
                 }
