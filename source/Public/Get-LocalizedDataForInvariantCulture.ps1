@@ -132,7 +132,7 @@ function Get-LocalizedDataForInvariantCulture
 
         if ([string]::IsNullOrEmpty($languageFile))
         {
-            throw ('File ''{0}'' not found in ''{1}''.' -f ($localizedFileNamesToTry -join ','),$localizedFolder)
+            throw ($script:localizedData.Get_LocalizedDataForInvariantCulture_FileNotFoundInFolder -f ($localizedFileNamesToTry -join ','), $localizedFolder)
         }
         else
         {

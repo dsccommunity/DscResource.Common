@@ -76,4 +76,5 @@ ConvertFrom-StringData @'
     Get_LocalizedDataForInvariantCulture_FoundExtension = Found an extension to the file name to search. Stripping... (GLDFIC0002)
     Get_LocalizedDataForInvariantCulture_FoundFile = Found '{0}'. (GLDFIC0003)
     Get_LocalizedDataForInvariantCulture_FileNotFound = File '{0}' not found. (GLDFIC0004)
+    Get_LocalizedDataForInvariantCulture_FileNotFoundInFolder = File '{0}' not found in '{1}'. (GLDFIC0005)
 '@
