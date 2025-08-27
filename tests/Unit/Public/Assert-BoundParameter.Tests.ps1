@@ -62,6 +62,11 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
             # cSpell: disable-next
             MockExpectedParameters = '-BoundParameterList <hashtable> -AtLeastOneList <string[]> [-IfParameterPresent <object>] [<CommonParameters>]'
         }
+        @{
+            MockParameterSetName   = 'NotAllowed'
+            # cSpell: disable-next
+            MockExpectedParameters = '-BoundParameterList <hashtable> -NotAllowedList <string[]> [-IfParameterPresent <object>] [<CommonParameters>]'
+        }
     ) {
         InModuleScope -Parameters $_ -ScriptBlock {
             $result = (Get-Command -Name 'Assert-BoundParameter').ParameterSets |
@@ -219,6 +224,37 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                                 OtherParam = 'value'
                             }
                             AtLeastOneList = @('Severity', 'MessageId')
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+        }
+
+        Context 'When using the NotAllowed parameter set' {
+            Context 'When none of the not allowed parameters are bound' {
+                It 'Should not throw an error' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                AllowedParam = 'value'
+                                OtherParam = 'value'
+                            }
+                            NotAllowedList = @('Parameter1', 'Parameter2')
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+
+            Context 'When empty bound parameter list is provided' {
+                It 'Should not throw an error' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{}
+                            NotAllowedList = @('Parameter1', 'Parameter2')
                         }
 
                         Assert-BoundParameter @assertBoundParameterParameters
@@ -661,6 +697,202 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                             AtLeastOneList = @('Severity', 'MessageId')
                             IfEqualParameterList = @{
                                 Ensure = 'Present'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+        }
+
+        Context 'When using the NotAllowed parameter set' {
+            Context 'When none of the not allowed parameters are bound' {
+                It 'Should not throw an error' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                AllowedParam = 'value'
+                            }
+                            NotAllowedList = @('Parameter1', 'Parameter2')
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+
+                It 'Should not throw an error when no parameters are bound at all' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{}
+                            NotAllowedList = @('Parameter1', 'Parameter2')
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+
+            Context 'When at least one of the not allowed parameters is bound' {
+                It 'Should throw the correct error when the first not allowed parameter is bound' {
+                    InModuleScope -ScriptBlock {
+                        {
+                            $assertBoundParameterParameters = @{
+                                BoundParameterList = @{
+                                    Parameter1 = 'value'
+                                }
+                                NotAllowedList = @('Parameter1', 'Parameter2')
+                            }
+
+                            Assert-BoundParameter @assertBoundParameterParameters
+                        } | Should -Throw -Because 'not allowed parameter Parameter1 is bound'
+                    }
+                }
+
+                It 'Should throw the correct error when the second not allowed parameter is bound' {
+                    InModuleScope -ScriptBlock {
+                        {
+                            $assertBoundParameterParameters = @{
+                                BoundParameterList = @{
+                                    Parameter2 = 'value'
+                                }
+                                NotAllowedList = @('Parameter1', 'Parameter2')
+                            }
+
+                            Assert-BoundParameter @assertBoundParameterParameters
+                        } | Should -Throw -Because 'not allowed parameter Parameter2 is bound'
+                    }
+                }
+
+                It 'Should throw the correct error when multiple not allowed parameters are bound' {
+                    InModuleScope -ScriptBlock {
+                        {
+                            $assertBoundParameterParameters = @{
+                                BoundParameterList = @{
+                                    Parameter1 = 'value1'
+                                    Parameter2 = 'value2'
+                                }
+                                NotAllowedList = @('Parameter1', 'Parameter2')
+                            }
+
+                            Assert-BoundParameter @assertBoundParameterParameters
+                        } | Should -Throw -Because 'multiple not allowed parameters are bound'
+                    }
+                }
+            }
+
+            Context 'When using IfParameterPresent with string array' {
+                It 'Should not throw an error when the trigger parameter is not present' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Parameter1 = 'value'
+                            }
+                            NotAllowedList = @('Parameter1', 'Parameter2')
+                            IfParameterPresent = @('Ensure')
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+
+                It 'Should throw an error when the trigger parameter is present and not allowed parameter is bound' {
+                    InModuleScope -ScriptBlock {
+                        {
+                            $assertBoundParameterParameters = @{
+                                BoundParameterList = @{
+                                    Parameter1 = 'value'
+                                    Ensure = 'Present'
+                                }
+                                NotAllowedList = @('Parameter1', 'Parameter2')
+                                IfParameterPresent = @('Ensure')
+                            }
+
+                            Assert-BoundParameter @assertBoundParameterParameters
+                        } | Should -Throw -Because 'trigger parameter is present and not allowed parameter is bound'
+                    }
+                }
+
+                It 'Should not throw an error when the trigger parameter is present but no not allowed parameters are bound' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                AllowedParam = 'value'
+                                Ensure = 'Present'
+                            }
+                            NotAllowedList = @('Parameter1', 'Parameter2')
+                            IfParameterPresent = 'Ensure' # Testing using single string
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+            }
+
+            Context 'When using IfParameterPresent with hashtable' {
+                It 'Should not throw an error when the parameter does not have the expected value' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Parameter1 = 'value'
+                                Ensure = 'Present'
+                            }
+                            NotAllowedList = @('Parameter1', 'Parameter2')
+                            IfParameterPresent = @{
+                                Ensure = 'Absent'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+
+                It 'Should throw an error when the parameter has the expected value and not allowed parameter is bound' {
+                    InModuleScope -ScriptBlock {
+                        {
+                            $assertBoundParameterParameters = @{
+                                BoundParameterList = @{
+                                    Parameter1 = 'value'
+                                    Ensure = 'Absent'
+                                }
+                                NotAllowedList = @('Parameter1', 'Parameter2')
+                                IfParameterPresent = @{
+                                    Ensure = 'Absent'
+                                }
+                            }
+
+                            Assert-BoundParameter @assertBoundParameterParameters
+                        } | Should -Throw -Because 'parameter has expected value and not allowed parameter is bound'
+                    }
+                }
+
+                It 'Should not throw an error when the parameter has the expected value but no not allowed parameters are bound' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                AllowedParam = 'value'
+                                Ensure = 'Absent'
+                            }
+                            NotAllowedList = @('Parameter1', 'Parameter2')
+                            IfParameterPresent = @{
+                                Ensure = 'Absent'
+                            }
+                        }
+
+                        Assert-BoundParameter @assertBoundParameterParameters
+                    } | Should -Not -Throw
+                }
+
+                It 'Should not throw an error when the parameter in IfParameterPresent is not present' {
+                    {
+                        $assertBoundParameterParameters = @{
+                            BoundParameterList = @{
+                                Parameter1 = 'value'
+                                OtherParam = 'value'
+                            }
+                            NotAllowedList = @('Parameter1', 'Parameter2')
+                            IfParameterPresent = @{
+                                Ensure = 'Absent'
                             }
                         }
 

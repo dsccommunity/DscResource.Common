@@ -1,15 +1,16 @@
 <#
     .SYNOPSIS
-        Throws an error if there is a bound parameter that exists in both the
-        mutually exclusive lists.
+        Asserts that bound parameters meet specified validation rules.
 
     .DESCRIPTION
         This command asserts passed parameters. It takes a hashtable, normally
-        `$PSBoundParameters`. There are three parameter sets for this command.
+        `$PSBoundParameters`.
 
         >There is no built in logic to validate against parameters sets for DSC
         >so this can be used instead to validate the parameters that were set in
         >the configuration.
+
+        Parameter sets:
 
         **MutuallyExclusiveParameters**
 
@@ -27,6 +28,11 @@
 
         Assert that at least one parameter from the specified list has been bound,
         and throws an exception if none are present.
+
+        **NotAllowed**
+
+        Assert that none of the parameters from the specified list have been bound,
+        and throws an exception if any are present.
 
     .PARAMETER BoundParameterList
         The parameters that should be evaluated against the mutually exclusive
@@ -58,6 +64,9 @@
 
     .PARAMETER AtLeastOneList
        An array of parameter names where at least one must be bound.
+
+    .PARAMETER NotAllowedList
+       An array of parameter names that are not allowed to be bound.
 
     .EXAMPLE
         $assertBoundParameterParameters = @{
@@ -130,6 +139,17 @@
 
         Throws an exception if the parameter 'Ensure' has the value 'Present' and
         none of the parameters 'Severity' or 'MessageId' are specified.
+
+    .EXAMPLE
+        Assert-BoundParameter -BoundParameterList $PSBoundParameters -NotAllowedList @('Parameter1', 'Parameter2')
+
+        Throws an exception if any of the parameters 'Parameter1' or 'Parameter2' are specified.
+
+    .EXAMPLE
+        Assert-BoundParameter -BoundParameterList $PSBoundParameters -NotAllowedList @('Parameter1', 'Parameter2') -IfParameterPresent @{ Ensure = 'Absent' }
+
+        Throws an exception if the parameter 'Ensure' has the value 'Absent' and
+        any of the parameters 'Parameter1' or 'Parameter2' are specified.
 #>
 function Assert-BoundParameter
 {
@@ -160,13 +180,18 @@ function Assert-BoundParameter
         [Parameter(ParameterSetName = 'RequiredParameter')]
         [Parameter(ParameterSetName = 'MutuallyExclusiveParameters')]
         [Parameter(ParameterSetName = 'AtLeastOne')]
+        [Parameter(ParameterSetName = 'NotAllowed')]
         [Alias('IfEqualParameterList')]
         [System.Object]
         $IfParameterPresent,
 
         [Parameter(ParameterSetName = 'AtLeastOne', Mandatory = $true)]
         [System.String[]]
-        $AtLeastOneList
+        $AtLeastOneList,
+
+        [Parameter(ParameterSetName = 'NotAllowed', Mandatory = $true)]
+        [System.String[]]
+        $NotAllowedList
     )
 
     # Early return if IfParameterPresent conditions are not met
@@ -250,6 +275,20 @@ function Assert-BoundParameter
             if ($boundParametersFromList.Count -eq 0)
             {
                 $errorMessage = $script:localizedData.Assert_BoundParameter_AtLeastOneParameterMustBeSet -f ($AtLeastOneList -join "','")
+
+                New-ArgumentException -ArgumentName 'Parameters' -Message $errorMessage
+            }
+
+            break
+        }
+
+        'NotAllowed'
+        {
+            $notAllowedParametersFound = $BoundParameterList.Keys.Where({ $_ -in $NotAllowedList })
+
+            if ($notAllowedParametersFound.Count -gt 0)
+            {
+                $errorMessage = $script:localizedData.Assert_BoundParameter_NotAllowedParameterWasSet -f ($notAllowedParametersFound -join "','")
 
                 New-ArgumentException -ArgumentName 'Parameters' -Message $errorMessage
             }

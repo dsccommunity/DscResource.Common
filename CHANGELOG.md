@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Assert-BoundParameter`
+  - Added parameter set `NotAllowed` with parameter `NotAllowedList` to
+    validate that none of the specified parameters are bound, throwing an
+    exception if any are present.
+
 ### Changed
 
 - `Assert-BoundParameter`
