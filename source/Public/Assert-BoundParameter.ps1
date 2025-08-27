@@ -1,11 +1,10 @@
 <#
     .SYNOPSIS
-        Throws an error if there is a bound parameter that exists in both the
-        mutually exclusive lists.
+        Asserts that bound parameters meet specified validation rules.
 
     .DESCRIPTION
         This command asserts passed parameters. It takes a hashtable, normally
-        `$PSBoundParameters`. There are three parameter sets for this command.
+        `$PSBoundParameters`. There are four parameter sets for this command.
 
         >There is no built in logic to validate against parameters sets for DSC
         >so this can be used instead to validate the parameters that were set in
