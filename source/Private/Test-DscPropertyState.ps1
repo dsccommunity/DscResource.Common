@@ -48,14 +48,12 @@ function Test-DscPropertyState
     }
     elseif (
         $Values.DesiredValue -is [Microsoft.Management.Infrastructure.CimInstance[]] `
-        -or $Values.DesiredValue -is [System.Array] -and $Values.DesiredValue[0] -is [Microsoft.Management.Infrastructure.CimInstance]
+            -or $Values.DesiredValue -is [System.Array] -and $Values.DesiredValue[0] -is [Microsoft.Management.Infrastructure.CimInstance]
     )
     {
         if (-not $Values.ContainsKey('KeyProperties'))
         {
-            $errorMessage = $script:localizedData.KeyPropertiesMissing
-
-            New-InvalidOperationException -Message $errorMessage
+            New-InvalidOperationException -Message $script:localizedData.KeyPropertiesMissing
         }
 
         $propertyState = [System.Collections.ArrayList]::new()
@@ -80,23 +78,20 @@ function Test-DscPropertyState
 
             if ($currentCimInstance.Count -gt 1)
             {
-                $errorMessage = $script:localizedData.TooManyCimInstances
-
-                New-InvalidOperationException -Message $errorMessage
+                New-InvalidOperationException -Message $script:localizedData.TooManyCimInstances
             }
 
             if ($currentCimInstance)
             {
-                $keyCimInstanceProperties = $currentCimInstance.CimInstanceProperties |
-                    Where-Object -FilterScript {
+                $keyCimInstanceProperties = $currentCimInstance.CimInstanceProperties.Where({
                         $_.Name -in $Values.KeyProperties
-                    }
+                    })
 
                 <#
                     For each key property build a string representation of the
                     property name and its value.
                 #>
-                $keyPropertyValues = $keyCimInstanceProperties.ForEach({'{0}="{1}"' -f $_.Name, ($_.Value -join ',')})
+                $keyPropertyValues = $keyCimInstanceProperties.ForEach({ '{0}="{1}"' -f $_.Name, ($_.Value -join ',') })
 
                 Write-Debug -Message (
                     $script:localizedData.TestingCimInstance -f @(
@@ -107,16 +102,15 @@ function Test-DscPropertyState
             }
             else
             {
-                $keyCimInstanceProperties = $desiredCimInstance.CimInstanceProperties |
-                    Where-Object -FilterScript {
+                $keyCimInstanceProperties = $desiredCimInstance.CimInstanceProperties.Where({
                         $_.Name -in $Values.KeyProperties
-                    }
+                    })
 
                 <#
                     For each key property build a string representation of the
                     property name and its value.
                 #>
-                $keyPropertyValues = $keyCimInstanceProperties.ForEach({'{0}="{1}"' -f $_.Name, ($_.Value -join ',')})
+                $keyPropertyValues = $keyCimInstanceProperties.ForEach({ '{0}="{1}"' -f $_.Name, ($_.Value -join ',') })
 
                 Write-Debug -Message (
                     $script:localizedData.MissingCimInstance -f @(
@@ -186,21 +180,21 @@ function Test-DscPropertyState
         {
             Write-Debug -Message $script:localizedData.ArrayDoesNotMatch
 
-            $arrayCompare |
-                ForEach-Object -Process {
-                    if ($_.SideIndicator -eq '=>')
-                    {
-                        Write-Debug -Message (
-                            $script:localizedData.ArrayValueIsAbsent -f $_.InputObject
-                        )
-                    }
-                    else
-                    {
-                        Write-Debug -Message (
-                            $script:localizedData.ArrayValueIsPresent -f $_.InputObject
-                        )
-                    }
+            foreach ($item in $arrayCompare)
+            {
+                if ($item.SideIndicator -eq '=>')
+                {
+                    Write-Debug -Message (
+                        $script:localizedData.ArrayValueIsAbsent -f $item.InputObject
+                    )
                 }
+                else
+                {
+                    Write-Debug -Message (
+                        $script:localizedData.ArrayValueIsPresent -f $item.InputObject
+                    )
+                }
+            }
 
             $returnValue = $false
         }
@@ -215,17 +209,7 @@ function Test-DscPropertyState
 
         $returnValue = $false
 
-        $supportedTypes = @(
-            'String'
-            'Int32'
-            'UInt32'
-            'Int16'
-            'UInt16'
-            'Single'
-            'Boolean'
-        )
-
-        if ($desiredType.Name -notin $supportedTypes)
+        if ($desiredType.Name -notin 'String', 'Int32', 'UInt32', 'Int16', 'UInt16', 'Single', 'Boolean')
         {
             Write-Warning -Message ($script:localizedData.UnableToCompareType -f $desiredType.Name)
         }
