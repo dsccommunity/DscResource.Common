@@ -176,9 +176,7 @@ function Find-Certificate
     # Join all the filters together
     $certFilterScript = '(' + ($certFilters -join ' -and ') + ')'
 
-    Write-Verbose `
-        -Message ($script:localizedData.SearchingForCertificateUsingFilters -f $store, $certFilterScript) `
-        -Verbose
+    Write-Debug -Message ($script:localizedData.SearchingForCertificateUsingFilters -f $store, $certFilterScript)
 
     $certs = Get-ChildItem -Path $certPath |
         Where-Object -FilterScript ([ScriptBlock]::Create($certFilterScript))

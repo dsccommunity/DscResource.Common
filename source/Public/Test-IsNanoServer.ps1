@@ -25,7 +25,7 @@ function Test-IsNanoServer
 
     $operatingSystemSKU = (Get-CimInstance -ClassName Win32_OperatingSystem).OperatingSystemSKU
 
-    Write-Verbose -Message ($script:localizedData.TestIsNanoServerOperatingSystemSku -f $operatingSystemSKU)
+    Write-Debug -Message ($script:localizedData.TestIsNanoServerOperatingSystemSku -f $operatingSystemSKU)
 
     return ($operatingSystemSKU -in ($productDatacenterNanoServer, $productStandardNanoServer))
 }
