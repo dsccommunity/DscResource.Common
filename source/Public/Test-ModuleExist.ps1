@@ -103,7 +103,7 @@ function Test-ModuleExist
 
     if ($modulePath)
     {
-        Write-Debug -Message ($script:localizedData.TestModuleExist_FilteringByPath -f $modulePath)
+        Write-Debug -Message ($script:localizedData.Test_ModuleExist_FilteringByPath -f $modulePath)
 
         $modulesToEvaluate = $availableModules |
             Where-Object -FilterScript {
@@ -119,7 +119,7 @@ function Test-ModuleExist
     {
         $moduleVersion, $modulePrerelease = $Version -split '-'
 
-        Write-Debug -Message ($script:localizedData.TestModuleExist_FilteringByVersion -f $moduleVersion)
+        Write-Debug -Message ($script:localizedData.Test_ModuleExist_FilteringByVersion -f $moduleVersion)
 
         $modulesToEvaluate = $modulesToEvaluate |
             Where-Object -FilterScript {
@@ -128,7 +128,7 @@ function Test-ModuleExist
 
         if ($modulesToEvaluate -and $modulePrerelease)
         {
-            Write-Debug -Message ($script:localizedData.TestModuleExist_FilteringByPrerelease -f $modulePrerelease)
+            Write-Debug -Message ($script:localizedData.Test_ModuleExist_FilteringByPrerelease -f $modulePrerelease)
 
             $modulesToEvaluate = $modulesToEvaluate |
                 Where-Object -FilterScript {

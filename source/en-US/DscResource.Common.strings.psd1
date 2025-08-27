@@ -67,7 +67,7 @@ ConvertFrom-StringData @'
     Test_PendingRestart_UnsupportedOs = Unsupported on non-Windows platforms. (DRC0055)
 
     ## Test-ModuleExist
-    TestModuleExist_FilteringByPath = Filtering modules by path '{0}'. (DRC0056)
-    TestModuleExist_FilteringByVersion = Filtering modules by version '{0}'. (DRC0057)
-    TestModuleExist_FilteringByPrerelease = Filtering modules by prerelease '{0}'. (DRC0058)
+    Test_ModuleExist_FilteringByPath = Filtering modules by path '{0}'. (DRC0056)
+    Test_ModuleExist_FilteringByVersion = Filtering modules by version '{0}'. (DRC0057)
+    Test_ModuleExist_FilteringByPrerelease = Filtering modules by prerelease '{0}'. (DRC0058)
 '@
