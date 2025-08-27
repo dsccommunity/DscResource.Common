@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Get-LocalizedDataForInvariantCulture`
   - Changed file processing message from `Write-Verbose` to `Write-Debug`
     for internal diagnostic information.
+  - Localized hardcoded `Write-Debug` messages to use localized strings
+    ([#169](https://github.com/dsccommunity/DscResource.Common/issues/169)).
 
 ### Fixed
 
