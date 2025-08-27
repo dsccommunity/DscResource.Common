@@ -50,17 +50,17 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
         @{
             MockParameterSetName   = 'MutuallyExclusiveParameters'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -MutuallyExclusiveList1 <string[]> -MutuallyExclusiveList2 <string[]> [-IfEqualParameterList <hashtable>] [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -MutuallyExclusiveList1 <string[]> -MutuallyExclusiveList2 <string[]> [-IfParameterPresent <object>] [<CommonParameters>]'
         }
         @{
             MockParameterSetName   = 'RequiredParameter'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-RequiredBehavior <BoundParameterBehavior>] [-IfParameterPresent <string[]>] [-IfEqualParameterList <hashtable>] [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-RequiredBehavior <BoundParameterBehavior>] [-IfParameterPresent <object>] [<CommonParameters>]'
         }
         @{
             MockParameterSetName   = 'AtLeastOne'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -AtLeastOneList <string[]> [-IfEqualParameterList <hashtable>] [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -AtLeastOneList <string[]> [-IfParameterPresent <object>] [<CommonParameters>]'
         }
     ) {
         InModuleScope -Parameters $_ -ScriptBlock {

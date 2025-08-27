@@ -693,29 +693,6 @@ Describe 'Assert-BoundParameter Integration Tests' -Tag 'AssertBoundParameterInt
                         Assert-BoundParameter @assertBoundParameterParameters
                     } | Should -Not -Throw
                 }
-
-                It 'Should work with multiple conditions and IfParameterPresent together' {
-                    {
-                        $assertBoundParameterParameters = @{
-                            BoundParameterList   = @{
-                                ConfigType   = 'Advanced'
-                                Environment  = 'Production'
-                                TriggerParam = 'Present'
-                                Param1       = 'Value1'
-                                Param2       = 'Value2'
-                            }
-                            RequiredParameter    = @('Param1', 'Param2')
-                            IfParameterPresent   = @('TriggerParam')
-                            IfEqualParameterList = @{
-                                ConfigType  = 'Advanced'
-                                Environment = 'Production'
-                            }
-                            ErrorAction          = 'Stop'
-                        }
-
-                        Assert-BoundParameter @assertBoundParameterParameters
-                    } | Should -Not -Throw
-                }
             }
 
             Context 'When the IfEqualParameterList condition is not met' {
