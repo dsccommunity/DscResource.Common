@@ -70,4 +70,11 @@ ConvertFrom-StringData @'
     Test_ModuleExist_FilteringByPath = Filtering modules by path '{0}'. (DRC0056)
     Test_ModuleExist_FilteringByVersion = Filtering modules by version '{0}'. (DRC0057)
     Test_ModuleExist_FilteringByPrerelease = Filtering modules by prerelease '{0}'. (DRC0058)
+
+    ## Get-LocalizedDataForInvariantCulture
+    Get_LocalizedDataForInvariantCulture_GettingFile = Getting file '{0}'. (GLDFIC0001)
+    Get_LocalizedDataForInvariantCulture_FoundExtension = Found an extension to the file name to search. Stripping... (GLDFIC0002)
+    Get_LocalizedDataForInvariantCulture_FoundFile = Found '{0}'. (GLDFIC0003)
+    Get_LocalizedDataForInvariantCulture_FileNotFound = File '{0}' not found. (GLDFIC0004)
+    Get_LocalizedDataForInvariantCulture_FileNotFoundInFolder = File '{0}' not found in '{1}'. (GLDFIC0005)
 '@
