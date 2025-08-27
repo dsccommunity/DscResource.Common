@@ -42,6 +42,7 @@ ConvertFrom-StringData @'
 
     ## Assert-BoundParameter
     Assert_BoundParameter_AtLeastOneParameterMustBeSet = At least one of the parameters '{0}' must be specified. (DRC0052)
+    Assert_BoundParameter_NotAllowedParameterWasSet = The parameter '{0}' is not allowed to be specified. (DRC0053)
 
     ## Assert-RequiredCommandParameter
     RequiredCommandParameter_SpecificParametersMustAllBeSet = The parameters '{0}' must all be specified. (DRC0044)
