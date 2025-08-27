@@ -51,6 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Compare-DscParameterState`
   - Changed detailed diagnostic messages from `Write-Verbose` to `Write-Debug`
     for variable values, type comparisons, and internal diagnostics.
+  - Comparison result still uses `Write-Verbose` to provide user-actionable
+    information about parameter state differences.
 - `Test-ModuleExist`
   - Changed module filtering messages from `Write-Verbose` to `Write-Debug`
     for internal implementation details.
