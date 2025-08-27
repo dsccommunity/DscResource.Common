@@ -4,11 +4,13 @@
 
     .DESCRIPTION
         This command asserts passed parameters. It takes a hashtable, normally
-        `$PSBoundParameters`. There are four parameter sets for this command.
+        `$PSBoundParameters`.
 
         >There is no built in logic to validate against parameters sets for DSC
         >so this can be used instead to validate the parameters that were set in
         >the configuration.
+
+        Parameter sets:
 
         **MutuallyExclusiveParameters**
 
