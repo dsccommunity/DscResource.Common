@@ -24,9 +24,9 @@ BeforeDiscovery {
 }
 
 BeforeAll {
-    $script:dscModuleName = 'DscResource.Common'
+    $script:moduleName = 'DscResource.Common'
 
-    Import-Module -Name $script:dscModuleName -Force -ErrorAction 'Stop'
+    Import-Module -Name $script:moduleName -Force -ErrorAction 'Stop'
 }
 
 Describe 'Assert-BoundParameter Integration Tests' -Tag 'AssertBoundParameterIntegration' {
@@ -687,29 +687,6 @@ Describe 'Assert-BoundParameter Integration Tests' -Tag 'AssertBoundParameterInt
                             RequiredParameter    = @('Param1', 'Param2')
                             RequiredBehavior     = 'Any'
                             IfEqualParameterList = @{ ConfigType = 'Advanced' }
-                            ErrorAction          = 'Stop'
-                        }
-
-                        Assert-BoundParameter @assertBoundParameterParameters
-                    } | Should -Not -Throw
-                }
-
-                It 'Should work with multiple conditions and IfParameterPresent together' {
-                    {
-                        $assertBoundParameterParameters = @{
-                            BoundParameterList   = @{
-                                ConfigType   = 'Advanced'
-                                Environment  = 'Production'
-                                TriggerParam = 'Present'
-                                Param1       = 'Value1'
-                                Param2       = 'Value2'
-                            }
-                            RequiredParameter    = @('Param1', 'Param2')
-                            IfParameterPresent   = @('TriggerParam')
-                            IfEqualParameterList = @{
-                                ConfigType  = 'Advanced'
-                                Environment = 'Production'
-                            }
                             ErrorAction          = 'Stop'
                         }
 

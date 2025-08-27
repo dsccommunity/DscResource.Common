@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Assert-BoundParameter`
+  - Enhanced parameter `IfParameterPresent` to support both string arrays and
+    hashtables for conditional assertion logic.
+  - Added alias `IfEqualParameterList` to parameter `IfParameterPresent` for
+    backward compatibility.
+
 ## [0.24.0] - 2025-08-26
 
 ### Added
@@ -18,18 +26,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added parameter `IfEqualParameterList` to conditionally perform assertions
     only when specified parameters have exact values [#160](https://github.com/dsccommunity/DscResource.Common/issues/160).
 - `Format-Path`
-  - Added parameter `ExpandEnvironmentVariable` fixes [#147](https://github.com/dsccommunity/DscResource.Common/issues/147).
-  - Added support to `Compare-DscParameterState` for comparing large hashtables
-    that contain lists of elements.
+  - Added parameter `ExpandEnvironmentVariable` (issue [#147](https://github.com/dsccommunity/DscResource.Common/issues/147)).
+- `Compare-DscParameterState`
+  - Added support for comparing large hashtables that contain lists of elements.
 
 ### Changed
 
 - `Get-ComputerName`
-  - Replaced platform-specific logic with cross-platform implementation using 
+  - Replaced platform-specific logic with cross-platform implementation using
     `[System.Environment]::MachineName` for consistent short name behavior.
-  - Enhanced FQDN functionality to use `[System.Net.Dns]::GetHostByName()` for 
+  - Enhanced FQDN functionality to use `[System.Net.Dns]::GetHostEntry()` for
     proper domain name resolution on Windows, Linux, and macOS.
-  - Improved error handling to gracefully fallback to short name when DNS 
+  - Improved error handling to gracefully fallback to short name when DNS
     resolution fails.
 
 ## [0.22.0] - 2025-04-25

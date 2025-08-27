@@ -24,9 +24,9 @@ BeforeDiscovery {
 }
 
 BeforeAll {
-    $script:dscModuleName = 'DscResource.Common'
+    $script:moduleName = 'DscResource.Common'
 
-    Import-Module -Name $script:dscModuleName -Force -ErrorAction 'Stop'
+    Import-Module -Name $script:moduleName -Force -ErrorAction 'Stop'
 }
 
 Describe 'Set-DscMachineRebootRequired' -Tag 'Set-DscMachineRebootRequired' {

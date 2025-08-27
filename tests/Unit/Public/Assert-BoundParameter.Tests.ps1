@@ -50,17 +50,17 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
         @{
             MockParameterSetName   = 'MutuallyExclusiveParameters'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -MutuallyExclusiveList1 <string[]> -MutuallyExclusiveList2 <string[]> [-IfEqualParameterList <hashtable>] [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -MutuallyExclusiveList1 <string[]> -MutuallyExclusiveList2 <string[]> [-IfParameterPresent <object>] [<CommonParameters>]'
         }
         @{
             MockParameterSetName   = 'RequiredParameter'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-RequiredBehavior <BoundParameterBehavior>] [-IfParameterPresent <string[]>] [-IfEqualParameterList <hashtable>] [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -RequiredParameter <string[]> [-RequiredBehavior <BoundParameterBehavior>] [-IfParameterPresent <object>] [<CommonParameters>]'
         }
         @{
             MockParameterSetName   = 'AtLeastOne'
             # cSpell: disable-next
-            MockExpectedParameters = '-BoundParameterList <hashtable> -AtLeastOneList <string[]> [-IfEqualParameterList <hashtable>] [<CommonParameters>]'
+            MockExpectedParameters = '-BoundParameterList <hashtable> -AtLeastOneList <string[]> [-IfParameterPresent <object>] [<CommonParameters>]'
         }
     ) {
         InModuleScope -Parameters $_ -ScriptBlock {
@@ -314,9 +314,9 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
         }
     }
 
-    Context 'When using IfEqualParameterList parameter' {
+    Context 'When using alias IfEqualParameterList parameter' {
         Context 'When using MutuallyExclusiveParameters parameter set' {
-            Context 'When the IfEqualParameterList condition is met' {
+            Context 'When the alias IfEqualParameterList condition is met' {
                 It 'Should throw an error when mutually exclusive parameters are both present' {
                     $errorMessage = InModuleScope -ScriptBlock {
                         $script:localizedData.ParameterUsageWrong
@@ -361,7 +361,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 }
             }
 
-            Context 'When the IfEqualParameterList condition is not met' {
+            Context 'When the alias IfEqualParameterList condition is not met' {
                 It 'Should not throw an error even when mutually exclusive parameters are both present' {
                     {
                         $assertBoundParameterParameters = @{
@@ -400,7 +400,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 }
             }
 
-            Context 'When multiple conditions in IfEqualParameterList must match' {
+            Context 'When multiple conditions in alias IfEqualParameterList must match' {
                 It 'Should throw an error when all conditions are met and mutually exclusive parameters are present' {
                     $errorMessage = InModuleScope -ScriptBlock {
                         $script:localizedData.ParameterUsageWrong
@@ -456,7 +456,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 Mock -CommandName Assert-RequiredCommandParameter
             }
 
-            Context 'When the IfEqualParameterList condition is met' {
+            Context 'When the alias IfEqualParameterList condition is met' {
                 It 'Should call Assert-RequiredCommandParameter when condition is met' {
                     InModuleScope -ScriptBlock {
                         $testParams = @{
@@ -477,7 +477,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 }
             }
 
-            Context 'When the IfEqualParameterList condition is not met' {
+            Context 'When the alias IfEqualParameterList condition is not met' {
                 It 'Should not call Assert-RequiredCommandParameter when condition is not met' {
                     InModuleScope -ScriptBlock {
                         $testParams = @{
@@ -497,10 +497,102 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                     Should -Invoke -CommandName Assert-RequiredCommandParameter -Exactly -Times 0 -Scope It
                 }
             }
+
+            Context 'When the IfParameterPresent condition is met using string value' {
+                It 'Should call Assert-RequiredCommandParameter when parameter is present' {
+                    InModuleScope -ScriptBlock {
+                        $testParams = @{
+                            BoundParameterList = @{
+                                Property1 = 'SomeValue'
+                                Property2 = 'Value2'
+                            }
+                            RequiredParameter = @('Property2', 'Property3')
+                            IfParameterPresent = 'Property1'
+                        }
+
+                        Assert-BoundParameter @testParams
+                    }
+
+                    Should -Invoke -CommandName Assert-RequiredCommandParameter -Exactly -Times 1 -Scope It
+                }
+            }
+
+            Context 'When the IfParameterPresent condition is not met using string value' {
+                It 'Should not call Assert-RequiredCommandParameter when parameter is not present' {
+                    InModuleScope -ScriptBlock {
+                        $testParams = @{
+                            BoundParameterList = @{
+                                Property2 = 'Value2'
+                            }
+                            RequiredParameter = @('Property2', 'Property3')
+                            IfParameterPresent = 'Property1'
+                        }
+
+                        Assert-BoundParameter @testParams
+                    }
+
+                    Should -Invoke -CommandName Assert-RequiredCommandParameter -Exactly -Times 0 -Scope It
+                }
+            }
+
+            Context 'When the IfParameterPresent condition is met using string array with two items' {
+                It 'Should call Assert-RequiredCommandParameter when any parameter from array is present' {
+                    InModuleScope -ScriptBlock {
+                        $testParams = @{
+                            BoundParameterList = @{
+                                Property1 = 'SomeValue'
+                                Property3 = 'Value3'
+                            }
+                            RequiredParameter = @('Property3', 'Property4')
+                            IfParameterPresent = @('Property1', 'Property2')
+                        }
+
+                        Assert-BoundParameter @testParams
+                    }
+
+                    Should -Invoke -CommandName Assert-RequiredCommandParameter -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call Assert-RequiredCommandParameter when second parameter from array is present' {
+                    InModuleScope -ScriptBlock {
+                        $testParams = @{
+                            BoundParameterList = @{
+                                Property2 = 'SomeValue'
+                                Property3 = 'Value3'
+                            }
+                            RequiredParameter = @('Property3', 'Property4')
+                            IfParameterPresent = @('Property1', 'Property2')
+                        }
+
+                        Assert-BoundParameter @testParams
+                    }
+
+                    Should -Invoke -CommandName Assert-RequiredCommandParameter -Exactly -Times 1 -Scope It
+                }
+            }
+
+            Context 'When the IfParameterPresent condition is not met using string array with two items' {
+                It 'Should not call Assert-RequiredCommandParameter when none of the parameters from array are present' {
+                    InModuleScope -ScriptBlock {
+                        $testParams = @{
+                            BoundParameterList = @{
+                                Property3 = 'Value3'
+                                Property4 = 'Value4'
+                            }
+                            RequiredParameter = @('Property3', 'Property4')
+                            IfParameterPresent = @('Property1', 'Property2')
+                        }
+
+                        Assert-BoundParameter @testParams
+                    }
+
+                    Should -Invoke -CommandName Assert-RequiredCommandParameter -Exactly -Times 0 -Scope It
+                }
+            }
         }
 
         Context 'When using AtLeastOne parameter set' {
-            Context 'When the IfEqualParameterList condition is met' {
+            Context 'When the alias IfEqualParameterList condition is met' {
                 It 'Should throw an error when none of the required parameters are present' {
                     $errorMessage = InModuleScope -ScriptBlock {
                         $script:localizedData.Assert_BoundParameter_AtLeastOneParameterMustBeSet
@@ -542,7 +634,7 @@ Describe 'Assert-BoundParameter' -Tag 'AssertBoundParameter' {
                 }
             }
 
-            Context 'When the IfEqualParameterList condition is not met' {
+            Context 'When the alias IfEqualParameterList condition is not met' {
                 It 'Should not throw an error even when none of the required parameters are present' {
                     {
                         $assertBoundParameterParameters = @{
