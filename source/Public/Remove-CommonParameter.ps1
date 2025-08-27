@@ -35,13 +35,17 @@ function Remove-CommonParameter
 
     $inputClone = $Hashtable.Clone()
 
-    $commonParameters = [System.Management.Automation.PSCmdlet]::CommonParameters
-    $commonParameters += [System.Management.Automation.PSCmdlet]::OptionalCommonParameters
+    $commonParameters = @(
+        [System.Management.Automation.PSCmdlet]::CommonParameters
+        [System.Management.Automation.PSCmdlet]::OptionalCommonParameters
+        )
 
-    $Hashtable.Keys | Where-Object -FilterScript {
-        $_ -in $commonParameters
-    } | ForEach-Object -Process {
-        $inputClone.Remove($_)
+    foreach ($key in $Hashtable.Keys)
+    {
+        if ($key -in $commonParameters)
+        {
+            $inputClone.Remove($key)
+        }
     }
 
     return $inputClone
