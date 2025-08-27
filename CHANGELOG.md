@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Changed file processing message from `Write-Verbose` to `Write-Debug`
     for internal diagnostic information.
 - `Clear-ZeroedEnumPropertyValue`
-  - Add before, end blocks.
+  - Add begin, end blocks.
 - `Test-DscPropertyState`
   - Use ArrayList and not fixed size array.
 - `Assert-BoundParameter`
