@@ -8,7 +8,7 @@
         it is assigned a non-null value.
 
     .PARAMETER InputObject
-        Specifies the object that should be tested for existens of the specified
+        Specifies the object that should be tested for existence of the specified
         property.
 
     .PARAMETER Name
