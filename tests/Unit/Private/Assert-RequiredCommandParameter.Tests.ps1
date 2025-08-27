@@ -29,7 +29,7 @@ BeforeAll {
     # Make sure there are not other modules imported that will conflict with mocks.
     Get-Module -Name $script:moduleName -All | Remove-Module -Force
 
-    Import-Module -Name $script:moduleName
+    Import-Module -Name $script:moduleName -Force -ErrorAction 'Stop'
 
     $PSDefaultParameterValues['InModuleScope:ModuleName'] = $script:moduleName
     $PSDefaultParameterValues['Mock:ModuleName'] = $script:moduleName
