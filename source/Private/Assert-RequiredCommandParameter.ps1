@@ -26,7 +26,7 @@
         Throws an exception if either of the two parameters are not specified.
 
     .EXAMPLE
-        Assert-RequiredCommandParameter -BoundParameter $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange') -RequiredBehavior 'AtLeastOnce'
+        Assert-RequiredCommandParameter -BoundParameter $PSBoundParameters -RequiredParameter @('PBStartPortRange', 'PBEndPortRange') -RequiredBehavior 'Any'
 
         Throws an exception if at least one of the two parameters are not specified.
 
@@ -84,7 +84,6 @@ function Assert-RequiredCommandParameter
                     {
                         $errorMessage = if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
                         {
-
                             $script:localizedData.RequiredCommandParameter_SpecificParametersMustAllBeSetWhenParameterExist -f ($RequiredParameter -join ''', '''), ($IfParameterPresent -join ''', ''')
                         }
                         else
@@ -116,7 +115,6 @@ function Assert-RequiredCommandParameter
                 {
                     $errorMessage = if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
                     {
-
                         $script:localizedData.RequiredCommandParameter_SpecificParametersAtLeastOneMustBeSetWhenParameterExist -f ($RequiredParameter -join ''', '''), ($IfParameterPresent -join ''', ''')
                     }
                     else
@@ -137,6 +135,5 @@ function Assert-RequiredCommandParameter
                 break
             }
         }
-
     }
 }
