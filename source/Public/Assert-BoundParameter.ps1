@@ -184,17 +184,12 @@ function Assert-BoundParameter
         }
         else
         {
-            # Allow IfParameterPresent to be passed to Assert-RequiredCommandParameter for parameter set RequiredParameter
-            if ($PSCmdlet.ParameterSetName -in @('MutuallyExclusiveParameters', 'AtLeastOne'))
-            {
-                Write-Verbose -Message "IfParameterPresent is a string array: $($IfParameterPresent -join ', ')" -Verbose
-                # Handle string array case (original IfParameterPresent behavior)
-                $hasIfParameterPresent = $BoundParameterList.Keys.Where( { $_ -in $IfParameterPresent } )
+            # Handle string array case (original IfParameterPresent behavior)
+            $hasIfParameterPresent = $BoundParameterList.Keys.Where( { $_ -in $IfParameterPresent } )
 
-                if (-not $hasIfParameterPresent)
-                {
-                    return
-                }
+            if (-not $hasIfParameterPresent)
+            {
+                return
             }
         }
     }
@@ -221,23 +216,29 @@ function Assert-BoundParameter
 
         'RequiredParameter'
         {
+            $assertRequiredCommandParameterParams = @{
+                BoundParameterList = $BoundParameterList
+                RequiredParameter = $RequiredParameter
+                RequiredBehavior = $RequiredBehavior
+            }
+
+            # Pass IfParameterPresent to Assert-RequiredCommandParameter for better error messages
             if ($PSBoundParameters.ContainsKey('IfParameterPresent'))
             {
-                # Convert hashtable to string array if needed for Assert-RequiredCommandParameter
                 if ($IfParameterPresent -is [System.Collections.Hashtable])
                 {
-                    # For hashtable case, we already handled the early return above
-                    # Pass the keys as IfParameterPresent to Assert-RequiredCommandParameter
-                    $PSBoundParameters.IfParameterPresent = $IfParameterPresent.Keys
+                    # For hashtable case, pass the keys as IfParameterPresent
+                    $assertRequiredCommandParameterParams.IfParameterPresent = $IfParameterPresent.Keys
+                }
+                else
+                {
+                    # For string array case, pass as-is
+                    $assertRequiredCommandParameterParams.IfParameterPresent = $IfParameterPresent
                 }
             }
 
-            if (-not $PSBoundParameters.ContainsKey('RequiredBehavior'))
-            {
-                $PSBoundParameters.RequiredBehavior = $RequiredBehavior
-            }
+            Assert-RequiredCommandParameter @assertRequiredCommandParameterParams
 
-            Assert-RequiredCommandParameter @PSBoundParameters
             break
         }
 
