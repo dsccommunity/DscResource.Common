@@ -144,7 +144,7 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
         }
 
         Context 'When the parameters in IfParameterPresent is present and required parameters are present' {
-            It 'Should throw the correct error' {
+            It 'Should not throw an error' {
                 InModuleScope -ScriptBlock {
                     Set-StrictMode -Version 1.0
 
@@ -240,7 +240,7 @@ Describe 'Assert-RequiredCommandParameter' -Tag 'Private' {
         }
 
         Context 'When the parameters in IfParameterPresent is present and one of the required parameters are present' {
-            It 'Should throw the correct error' {
+            It 'Should not throw an error' {
                 InModuleScope -ScriptBlock {
                     Set-StrictMode -Version 1.0
 
