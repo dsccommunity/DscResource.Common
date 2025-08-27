@@ -19,11 +19,6 @@
 #>
 function Remove-CommonParameter
 {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
-        'PSUseShouldProcessForStateChangingFunctions',
-        '',
-        Justification = 'ShouldProcess is not supported in DSC resources.'
-    )]
     [OutputType([System.Collections.Hashtable])]
     [CmdletBinding()]
     param
@@ -35,16 +30,19 @@ function Remove-CommonParameter
 
     $inputClone = $Hashtable.Clone()
 
-    $commonParameters = @(
-        [System.Management.Automation.PSCmdlet]::CommonParameters
-        [System.Management.Automation.PSCmdlet]::OptionalCommonParameters
-        )
+    $commonParameters = [System.Collections.Generic.HashSet[System.String]]::new(
+        [System.String[]](
+            [System.Management.Automation.PSCmdlet]::CommonParameters +
+            [System.Management.Automation.PSCmdlet]::OptionalCommonParameters
+        ),
+        [System.StringComparer]::OrdinalIgnoreCase
+    )
 
     foreach ($key in $Hashtable.Keys)
     {
-        if ($key -in $commonParameters)
+        if ($commonParameters.Contains($key))
         {
-            $inputClone.Remove($key)
+            $null = $inputClone.Remove($key)
         }
     }
 
