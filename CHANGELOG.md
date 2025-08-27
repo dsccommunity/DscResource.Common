@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Get-LocalizedDataForInvariantCulture`
   - Changed file processing message from `Write-Verbose` to `Write-Debug`
     for internal diagnostic information.
+- `Test-ModuleExist`
+  - Localized hardcoded Write-Verbose messages to use localized strings.
 
 ## [0.24.1] - 2025-08-27
 
