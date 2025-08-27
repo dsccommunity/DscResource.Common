@@ -19,6 +19,11 @@
 #>
 function Remove-CommonParameter
 {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSUseShouldProcessForStateChangingFunctions',
+        '',
+        Justification = 'ShouldProcess is not supported in DSC resources.'
+    )]
     [OutputType([System.Collections.Hashtable])]
     [CmdletBinding()]
     param
