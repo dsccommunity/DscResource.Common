@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Test-ModuleExist`
   - Changed module filtering messages from `Write-Verbose` to `Write-Debug`
     for internal implementation details.
+  - Localized hardcoded `Write-Debug` messages to use localized strings
+    ([#168](https://github.com/dsccommunity/DscResource.Common/issues/168)).
 - `Test-IsNanoServer`
   - Changed operating system SKU diagnostic message from `Write-Verbose` to `Write-Debug`.
 - `Find-Certificate`
@@ -24,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Get-LocalizedDataForInvariantCulture`
   - Changed file processing message from `Write-Verbose` to `Write-Debug`
     for internal diagnostic information.
+
+### Fixed
+
+- GitVersion feature branch regex now only match branches starting with
+  `f/` or `feature/` to prevent conflicts with GitHub Copilot Agent branches
+  (issue [#173](https://github.com/dsccommunity/DscResource.Common/issues/173)).
 
 ## [0.24.1] - 2025-08-27
 
