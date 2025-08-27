@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Changed file processing message from `Write-Verbose` to `Write-Debug`
     for internal diagnostic information.
 
+### Fixed
+
+- GitVersion feature branch regex now only match branches starting with
+  `f/` or `feature/` to prevent conflicts with GitHub Copilot Agent branches
+  (issue [#173](https://github.com/dsccommunity/DscResource.Common/issues/173)).
+
 ## [0.24.1] - 2025-08-27
 
 ### Added
