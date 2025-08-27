@@ -203,7 +203,7 @@ function Compare-ResourcePropertyState
             }
     }
 
-    $compareTargetResourceStateReturnValue = @()
+    $compareTargetResourceStateReturnValue = [System.Collections.ArrayList]::new()
 
     foreach ($parameterName in $DesiredValues.Keys)
     {

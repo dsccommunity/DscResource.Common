@@ -184,8 +184,9 @@ function Compare-DscParameterState
         $IncludeValue
     )
 
-    $returnValue = @()
-    #region ConvertCIm to Hashtable
+    $returnValue = [System.Collections.ArrayList]::new()
+
+    #region ConvertCIM to Hashtable
     if ($CurrentValues -is [Microsoft.Management.Infrastructure.CimInstance] -or
         $CurrentValues -is [Microsoft.Management.Infrastructure.CimInstance[]])
     {
@@ -197,12 +198,15 @@ function Compare-DscParameterState
     {
         $DesiredValues = ConvertTo-HashTable -CimInstance $DesiredValues
     }
-    #endregion Endofconverion
+    #endregion EndOfConversion
+
     #region CheckType of object
-    $types = 'System.Management.Automation.PSBoundParametersDictionary',
-        'System.Collections.Hashtable',
-        'Microsoft.Management.Infrastructure.CimInstance',
+    $types = @(
+        'System.Management.Automation.PSBoundParametersDictionary'
+        'System.Collections.Hashtable'
+        'Microsoft.Management.Infrastructure.CimInstance'
         'System.Collections.Specialized.OrderedDictionary'
+    )
 
     if ($DesiredValues.GetType().FullName -notin $types)
     {
@@ -217,7 +221,8 @@ function Compare-DscParameterState
             -Message ($script:localizedData.InvalidCurrentValuesError -f $CurrentValues.GetType().FullName) `
             -ArgumentName 'CurrentValues'
     }
-    #endregion checktype
+    #endregion CheckType
+
     #region check if CimInstance and not have properties in parameters invoke exception
     if ($DesiredValues -is [Microsoft.Management.Infrastructure.CimInstance] -and -not $Properties)
     {
@@ -226,6 +231,7 @@ function Compare-DscParameterState
             -ArgumentName Properties
     }
     #endregion check cim and properties
+
     #Clean value if there are a common parameters provide from Test/Get-TargetResource parameter
     $desiredValuesClean = Remove-CommonParameter -Hashtable $DesiredValues
     #region generate keyList based on $Properties and $excludeProperties value
@@ -240,16 +246,17 @@ function Compare-DscParameterState
 
     if ($ExcludeProperties)
     {
-        $keyList = $keyList | Where-Object -FilterScript { $_ -notin $ExcludeProperties }
+        $keyList = $keyList.Where({ $_ -notin $ExcludeProperties })
     }
     #endregion
+
     #region enumerate of each key in list
     foreach ($key in $keyList)
     {
         #generate default value
         $InDesiredStateTable = [ordered]@{
-            Property        = $key
-            InDesiredState  = $true
+            Property       = $key
+            InDesiredState = $true
         }
         $returnValue += $InDesiredStateTable
         #get value of each key
@@ -259,8 +266,8 @@ function Compare-DscParameterState
         #Check if IncludeValue parameter is used.
         if ($IncludeValue)
         {
-            $InDesiredStateTable['ExpectedValue']   = $desiredValue
-            $InDesiredStateTable['ActualValue']     = $currentValue
+            $InDesiredStateTable['ExpectedValue'] = $desiredValue
+            $InDesiredStateTable['ActualValue'] = $currentValue
         }
 
         #region convert to hashtable if value of key is CimInstance
@@ -274,8 +281,9 @@ function Compare-DscParameterState
         {
             $currentValue = ConvertTo-HashTable -CimInstance $currentValue
         }
-        #endregion converttohashtable
-        #region gettype of value to check if they are the same.
+        #endregion ConvertToHashtable
+
+        #region GetType of value to check if they are the same.
         if ($null -ne $desiredValue)
         {
             $desiredType = $desiredValue.GetType()
@@ -303,7 +311,8 @@ function Compare-DscParameterState
         $InDesiredStateTable['ActualType'] = $currentType
 
         #endregion
-        #region check if the desiredtype if a credential object. Only if the current type isn't unknown.
+
+        #region check if the DesiredType if a credential object. Only if the current type isn't unknown.
         if ($currentType.Name -ne 'Unknown' -and $desiredType.Name -eq 'PSCredential')
         {
             # This is a credential object. Compare only the user name
@@ -384,7 +393,7 @@ function Compare-DscParameterState
             }
             elseif (-not $currentValue)
             {
-                #If only currentvalue is empty, the configuration isn't compliant.
+                #If only CurrentValue is empty, the configuration isn't compliant.
                 Write-Verbose -Message ($script:localizedData.NoMatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
                 $InDesiredStateTable.InDesiredState = $false
                 continue
@@ -407,7 +416,7 @@ function Compare-DscParameterState
                     $currentArrayValues = @($currentArrayValues | Sort-Object)
                 }
                 <#
-                    for all object in collection, check their type.ConvertoString if they are script block.
+                    for all object in collection, check their type.ConvertToString if they are script block.
 
                 #>
                 for ($i = 0; $i -lt $desiredArrayValues.Count; $i++)
@@ -446,9 +455,9 @@ function Compare-DscParameterState
                     }
 
                     <#
-                        Convert a scriptblock into a string as scriptblocks are not comparable
-                        if currentvalue is scriptblock and if desired value is string,
-                        we invoke the result of script block. Ifno, we convert to string.
+                        Convert a scriptblock into a string as ScriptBlocks are not comparable
+                        if CurrentValue is scriptblock and if desired value is string,
+                        we invoke the result of script block. If no, we convert to string.
                         if Desired value
                     #>
 
@@ -478,16 +487,17 @@ function Compare-DscParameterState
                         }
                     }
 
-                    if (($desiredType -eq [System.Collections.Hashtable] -or $desiredType -eq [System.Collections.Specialized.OrderedDictionary]) -and ($currentType -eq [System.Collections.Hashtable]-or $currentType -eq [System.Collections.Specialized.OrderedDictionary]))
+                    if (($desiredType -eq [System.Collections.Hashtable] -or $desiredType -eq [System.Collections.Specialized.OrderedDictionary]) -and ($currentType -eq [System.Collections.Hashtable] -or $currentType -eq [System.Collections.Specialized.OrderedDictionary]))
                     {
                         $param = @{} + $PSBoundParameters
                         $param.CurrentValues = $currentArrayValues[$i]
                         $param.DesiredValues = $desiredArrayValues[$i]
 
-                        'IncludeInDesiredState','IncludeValue','Properties','ReverseCheck' | ForEach-Object {
-                            if ($param.ContainsKey($_))
+                        foreach ($key in 'IncludeInDesiredState', 'IncludeValue', 'Properties', 'ReverseCheck')
+                        {
+                            if ($param.ContainsKey($key))
                             {
-                                $null = $param.Remove($_)
+                                $null = $param.Remove($key)
                             }
                         }
 
@@ -497,7 +507,7 @@ function Compare-DscParameterState
                         }
                         else
                         {
-                            Test-DscParameterState @param | Out-Null
+                            $null = Test-DscParameterState @param
                         }
                         continue
                     }
@@ -516,23 +526,24 @@ function Compare-DscParameterState
                 }
             }
         }
-        elseif (($desiredType -eq [System.Collections.Hashtable] -or $desiredType -eq [System.Collections.Specialized.OrderedDictionary]) -and ($currentType -eq [System.Collections.Hashtable]-or $currentType -eq [System.Collections.Specialized.OrderedDictionary]))
+        elseif (($desiredType -eq [System.Collections.Hashtable] -or $desiredType -eq [System.Collections.Specialized.OrderedDictionary]) -and ($currentType -eq [System.Collections.Hashtable] -or $currentType -eq [System.Collections.Specialized.OrderedDictionary]))
         {
             $param = @{} + $PSBoundParameters
             $param.CurrentValues = $currentValue
             $param.DesiredValues = $desiredValue
 
-            'IncludeInDesiredState','IncludeValue','Properties','ReverseCheck' | ForEach-Object {
-                if ($param.ContainsKey($_))
+            foreach ($key in 'IncludeInDesiredState', 'IncludeValue', 'Properties', 'ReverseCheck')
+            {
+                if ($param.ContainsKey($key))
                 {
-                    $null = $param.Remove($_)
+                    $null = $param.Remove($key)
                 }
             }
 
             if ($InDesiredStateTable.InDesiredState)
             {
                 <#
-                    if desiredvalue is an empty hashtable and not currentvalue, it's not necessery to compare them, it's not compliant.
+                    if Desired Value is an empty hashtable and not Current Value, it's not necessary to compare them, it's not compliant.
                     See issue 65 https://github.com/dsccommunity/DscResource.Common/issues/65
                 #>
                 if ($desiredValue.Keys.Count -eq 0 -and $currentValue.Keys.Count -ne 0)
@@ -540,7 +551,8 @@ function Compare-DscParameterState
                     Write-Verbose -Message ($script:localizedData.NoMatchKeyMessage -f $desiredType.FullName, $key, $($currentValue.Keys -join ', '))
                     $InDesiredStateTable.InDesiredState = $false
                 }
-                else{
+                else
+                {
                     $InDesiredStateTable.InDesiredState = Test-DscParameterState @param
                 }
             }
@@ -552,7 +564,7 @@ function Compare-DscParameterState
         }
         else
         {
-            #Convert a scriptblock into a string as scriptblocks are not comparable
+            #Convert a scriptblock into a string as ScriptBlocks are not comparable
             $wasCurrentValue = $false
             if ($currentValue -is [scriptblock])
             {
@@ -611,27 +623,27 @@ function Compare-DscParameterState
         }
     }
 
-    # Remove in desired state value if IncludeDesirateState parameter is not use
+    # Remove in desired state value if IncludeDesiredState parameter is not use
     if (-not $IncludeInDesiredState)
     {
-        [array]$returnValue = $returnValue.where({$_.InDesiredState -eq $false})
+        [array]$returnValue = $returnValue.Where({ $_.InDesiredState -eq $false })
     }
 
     #change verbose message
     if ($IncludeInDesiredState.IsPresent)
     {
         $returnValue.ForEach({
-            if ($_.InDesiredState)
-            {
-                $localizedString = $script:localizedData.PropertyInDesiredStateMessage
-            }
-            else
-            {
-                $localizedString = $script:localizedData.PropertyNotInDesiredStateMessage
-            }
+                if ($_.InDesiredState)
+                {
+                    $localizedString = $script:localizedData.PropertyInDesiredStateMessage
+                }
+                else
+                {
+                    $localizedString = $script:localizedData.PropertyNotInDesiredStateMessage
+                }
 
-            Write-Verbose -Message ($localizedString -f $_.Property)
-        })
+                Write-Verbose -Message ($localizedString -f $_.Property)
+            })
     }
     <#
         If Compare-DscParameterState is used in precedent step, don't need to convert it
@@ -642,7 +654,7 @@ function Compare-DscParameterState
             {
                 if ($_ -is [System.Collections.Hashtable])
                 {
-                    [pscustomobject]$_
+                    [PSCustomObject]$_
                 }
                 else
                 {

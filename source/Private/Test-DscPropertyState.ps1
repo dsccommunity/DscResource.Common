@@ -58,7 +58,7 @@ function Test-DscPropertyState
             New-InvalidOperationException -Message $errorMessage
         }
 
-        $propertyState = @()
+        $propertyState = [System.Collections.ArrayList]::new()
 
         <#
             It is a collection of CIM instances, then recursively call
@@ -138,7 +138,7 @@ function Test-DscPropertyState
     }
     elseif ($Values.DesiredValue -is [Microsoft.Management.Infrastructure.CimInstance])
     {
-        $propertyState = @()
+        $propertyState = [System.Collections.ArrayList]::new()
 
         <#
             It is a CIM instance, recursively call Test-DscPropertyState for each

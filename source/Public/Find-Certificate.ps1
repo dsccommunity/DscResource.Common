@@ -131,7 +131,7 @@ function Find-Certificate
     } # if
 
     # Assemble the filter to use to select the certificate
-    $certFilters = @()
+    $certFilters = [System.Collections.ArrayList]::new()
 
     if ($PSBoundParameters.ContainsKey('Thumbprint'))
     {
