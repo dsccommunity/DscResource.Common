@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Chnaged
+
+- `Assert-BoundParameter`
+  - Enhanced parameter `IfParameterPresent` to support both string arrays and
+    hashtables for conditional assertion logic.
+  - Added alias `IfEqualParameterList` to parameter `IfParameterPresent` for
+    backward compatibility.
+
 ## [0.24.0] - 2025-08-26
 
 ### Added
@@ -24,11 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `Assert-BoundParameter`
-  - Enhanced parameter `IfParameterPresent` to support both string arrays and
-    hashtables for conditional assertion logic.
-  - Added alias `IfEqualParameterList` to parameter `IfParameterPresent` for
-    backward compatibility.
 - `Get-ComputerName`
   - Replaced platform-specific logic with cross-platform implementation using
     `[System.Environment]::MachineName` for consistent short name behavior.
