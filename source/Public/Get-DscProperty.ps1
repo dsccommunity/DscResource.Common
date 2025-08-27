@@ -137,7 +137,7 @@ function Get-DscProperty
         {
             if ($PSBoundParameters.ContainsKey('Attribute'))
             {
-                $propertiesOfAttribute = @()
+                $propertiesOfAttribute = [System.Collections.ArrayList]::new()
 
                 $propertiesOfAttribute += $property | Where-Object -FilterScript {
                     $InputObject.GetType().GetMember($_).CustomAttributes.Where(
@@ -174,9 +174,7 @@ function Get-DscProperty
         {
             if ($HasValue.IsPresent)
             {
-                $isAssigned = Test-DscPropertyIsAssigned -Name $currentProperty -InputObject $InputObject
-
-                if (-not $isAssigned)
+                if (-not (Test-DscPropertyIsAssigned -Name $currentProperty -InputObject $InputObject))
                 {
                     continue
                 }
