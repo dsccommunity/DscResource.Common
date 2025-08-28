@@ -601,7 +601,7 @@ function Compare-DscParameterState
     #endregion end of enumeration
     if ($ReverseCheck)
     {
-        Write-Verbose -Message $script:localizedData.StartingReverseCheck
+        Write-Debug -Message $script:localizedData.StartingReverseCheck
         $reverseCheckParameters = @{} + $PSBoundParameters
         $reverseCheckParameters['CurrentValues'] = $DesiredValues
         $reverseCheckParameters['DesiredValues'] = $CurrentValues
@@ -642,7 +642,7 @@ function Compare-DscParameterState
                     $localizedString = $script:localizedData.PropertyNotInDesiredStateMessage
                 }
 
-                Write-Verbose -Message ($localizedString -f $_.Property)
+                Write-Debug -Message ($localizedString -f $_.Property)
             })
     }
     <#
