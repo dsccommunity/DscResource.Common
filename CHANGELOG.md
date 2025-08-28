@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     information about parameter state differences.
   - Use ArrayList and not fixed size array.
   - Remove some ForEach-Object usage.
-  - Move non error Verbose messages to Debug.
+  - Move non error Verbose messages to Debug. [#157](https://github.com/dsccommunity/DscResource.Common/issues/157).
 - `Test-ModuleExist`
   - Changed module filtering messages from `Write-Verbose` to `Write-Debug`
     for internal implementation details.
