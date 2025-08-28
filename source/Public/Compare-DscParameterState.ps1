@@ -629,7 +629,7 @@ function Compare-DscParameterState
         [array]$returnValue = $returnValue.Where({ $_.InDesiredState -eq $false })
     }
 
-    #change verbose message
+    #change debug message
     if ($IncludeInDesiredState.IsPresent)
     {
         $returnValue.ForEach({
