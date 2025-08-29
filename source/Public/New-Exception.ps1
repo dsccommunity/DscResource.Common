@@ -5,9 +5,6 @@
     .DESCRIPTION
         Creates an exception that will be returned.
 
-    .OUTPUTS
-        None
-
     .PARAMETER Message
         The message explaining why this error is being thrown.
 
