@@ -36,13 +36,11 @@ function New-InvalidDataException
         $Message
     )
 
-    $errorCategory = [System.Management.Automation.ErrorCategory]::InvalidData
+    $errorSplat = @{
+        Exception     = [System.InvalidOperationException]::new($Message)
+        ErrorId       = $ErrorId
+        ErrorCategory = [System.Management.Automation.ErrorCategory]::InvalidData
+    }
 
-    $exception = New-Object `
-        -TypeName 'System.InvalidOperationException' `
-        -ArgumentList $Message
-
-    $errorRecord = New-ErrorRecord -Exception $exception -ErrorId $ErrorId -ErrorCategory $errorCategory
-
-    throw $errorRecord
+    throw (New-ErrorRecord @errorSplat)
 }

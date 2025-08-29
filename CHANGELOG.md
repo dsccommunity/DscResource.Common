@@ -47,6 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fix PSSA warning.
 - `Remove-CommonParameter`
   - Remove use of `Where-Object` and `ForEach-Object`.
+- Removed use of `New-Object` and used `::new()`.
+- Minimum PowerShell version is now 5.0.
 
 ### Fixed
 

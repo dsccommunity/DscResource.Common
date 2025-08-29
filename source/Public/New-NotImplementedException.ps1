@@ -57,16 +57,12 @@ function New-NotImplementedException
 
     if ($null -eq $ErrorRecord)
     {
-        $notImplementedException = New-Object -TypeName 'System.NotImplementedException' `
-            -ArgumentList @($Message)
+        $notImplementedException = [System.NotImplementedException]::new($Message)
     }
     else
     {
-        $notImplementedException = New-Object -TypeName 'System.NotImplementedException' `
-            -ArgumentList @($Message, $ErrorRecord.Exception)
+        $notImplementedException = [System.NotImplementedException]::new($Message, $ErrorRecord.Exception)
     }
-
-    $errorRecord = New-ErrorRecord -Exception $notImplementedException.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'NotImplemented'
 
     if ($PassThru.IsPresent)
     {
@@ -74,6 +70,6 @@ function New-NotImplementedException
     }
     else
     {
-        throw $errorRecord
+        throw (New-ErrorRecord -Exception $notImplementedException.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'NotImplemented')
     }
 }

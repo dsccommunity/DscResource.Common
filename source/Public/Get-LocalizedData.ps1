@@ -282,7 +282,7 @@ function Get-LocalizedData
     }
     else
     {
-        $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($UICulture)
+        $currentCulture = [System.Globalization.CultureInfo]::new($UICulture)
 
         Write-Debug -Message ("Using specified culture:`n{0}" -f ($currentCulture | Out-String))
     }
@@ -302,7 +302,7 @@ function Get-LocalizedData
         try
         {
             # Current culture is invariant, let's directly evaluate the DefaultUICulture
-            $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($DefaultUICulture)
+            $currentCulture = [System.Globalization.CultureInfo]::new($DefaultUICulture)
 
             Write-Debug -Message ("Invariant culture. Using default culture instead:`n{0}" -f ($currentCulture | Out-String))
 
@@ -384,7 +384,7 @@ function Get-LocalizedData
                     #>
                     try
                     {
-                        $currentCulture = New-Object -TypeName 'System.Globalization.CultureInfo' -ArgumentList @($DefaultUICulture)
+                        $currentCulture = [System.Globalization.CultureInfo]::new($DefaultUICulture)
 
                         Write-Debug -Message ("Did not find matching file for current or parent culture, testing default culture:`n{0}" -f ($currentCulture | Out-String))
                     }

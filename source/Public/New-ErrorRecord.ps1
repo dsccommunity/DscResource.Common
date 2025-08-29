@@ -104,26 +104,12 @@ function New-ErrorRecord
     {
         'ErrorRecord'
         {
-            $errorRecord = New-Object -TypeName 'System.Management.Automation.ErrorRecord' -ArgumentList @(
-                $ErrorRecord,
-                $Exception
-            )
-
-            break
+            return [System.Management.Automation.ErrorRecord]::new($ErrorRecord, $Exception)
         }
 
         'Exception'
         {
-            $errorRecord = New-Object -TypeName 'System.Management.Automation.ErrorRecord' -ArgumentList @(
-                $Exception,
-                $ErrorId,
-                $ErrorCategory,
-                $TargetObject
-            )
-
-            break
+            return [System.Management.Automation.ErrorRecord]::new($Exception, $ErrorId, $ErrorCategory, $TargetObject)
         }
     }
-
-    return $errorRecord
 }

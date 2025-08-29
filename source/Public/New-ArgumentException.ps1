@@ -54,10 +54,7 @@ function New-ArgumentException
         $PassThru
     )
 
-    $argumentException = New-Object -TypeName 'System.ArgumentException' `
-        -ArgumentList @($Message, $ArgumentName)
-
-    $errorRecord = New-ErrorRecord -Exception $argumentException -ErrorId $ArgumentName -ErrorCategory 'InvalidArgument'
+    $argumentException = [System.ArgumentException]::new($Message, $ArgumentName)
 
     if ($PassThru.IsPresent)
     {
@@ -65,6 +62,6 @@ function New-ArgumentException
     }
     else
     {
-        throw $errorRecord
+        $PSCmdlet.ThrowTerminatingError((New-ErrorRecord -Exception $argumentException -ErrorId $ArgumentName -ErrorCategory 'InvalidArgument'))
     }
 }

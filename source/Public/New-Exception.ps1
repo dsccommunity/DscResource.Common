@@ -56,14 +56,10 @@ function New-Exception
 
     if ($null -eq $ErrorRecord)
     {
-        $exception = New-Object -TypeName 'System.Exception' `
-            -ArgumentList @($Message)
+        return [System.Exception]::new($Message)
     }
     else
     {
-        $exception = New-Object -TypeName 'System.Exception' `
-            -ArgumentList @($Message, $ErrorRecord.Exception)
+        return [System.Exception]::new($Message, $ErrorRecord.Exception)
     }
-
-    return $exception
 }
