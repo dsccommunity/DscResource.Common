@@ -282,7 +282,7 @@ function Get-LocalizedData
     }
     else
     {
-        $currentCulture = [System.Globalization.CultureInfo]::new($UICulture)
+        $currentCulture = [System.Globalization.CultureInfo]::GetCultureInfo($UICulture)
 
         Write-Debug -Message ("Using specified culture:`n{0}" -f ($currentCulture | Out-String))
     }
@@ -302,7 +302,7 @@ function Get-LocalizedData
         try
         {
             # Current culture is invariant, let's directly evaluate the DefaultUICulture
-            $currentCulture = [System.Globalization.CultureInfo]::new($DefaultUICulture)
+            $currentCulture = [System.Globalization.CultureInfo]::GetCultureInfo($DefaultUICulture)
 
             Write-Debug -Message ("Invariant culture. Using default culture instead:`n{0}" -f ($currentCulture | Out-String))
 
@@ -325,8 +325,8 @@ function Get-LocalizedData
     [System.String] $languageFile = ''
 
     [System.String[]] $localizedFileNamesToTry = @(
-        ('{0}.psd1' -f $FileName)
         ('{0}.strings.psd1' -f $FileName)
+        ('{0}.psd1' -f $FileName)
     )
 
     while (-not [System.String]::IsNullOrEmpty($currentCulture.Name) -and [System.String]::IsNullOrEmpty($languageFile))
@@ -384,7 +384,7 @@ function Get-LocalizedData
                     #>
                     try
                     {
-                        $currentCulture = [System.Globalization.CultureInfo]::new($DefaultUICulture)
+                        $currentCulture = [System.Globalization.CultureInfo]::GetCultureInfo($DefaultUICulture)
 
                         Write-Debug -Message ("Did not find matching file for current or parent culture, testing default culture:`n{0}" -f ($currentCulture | Out-String))
                     }
@@ -421,11 +421,11 @@ function Get-LocalizedData
         $getLocalizedDataForInvariantCultureParameters = Get-Command -Name 'Get-LocalizedDataForInvariantCulture' -ErrorAction 'Stop'
 
         $PSBoundParameters.Keys.ForEach({
-            if ($_ -notin $getLocalizedDataForInvariantCultureParameters.Parameters.Keys)
-            {
-                $null = $PSBoundParameters.Remove($_)
-            }
-        })
+                if ($_ -notin $getLocalizedDataForInvariantCultureParameters.Parameters.Keys)
+                {
+                    $null = $PSBoundParameters.Remove($_)
+                }
+            })
 
         Write-Debug ('Because culture is invariant, calling Get-LocalizedDataForInvariantCulture using parameters: {0}' -f ($PSBoundParameters | Out-String))
 
