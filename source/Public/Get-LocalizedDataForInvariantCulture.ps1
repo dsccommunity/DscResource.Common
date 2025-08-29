@@ -110,8 +110,8 @@ function Get-LocalizedDataForInvariantCulture
         [string] $languageFile = ''
         $localizedFolder = Join-Path -Path $BaseDirectory -ChildPath $DefaultUICulture
         [string[]] $localizedFileNamesToTry = @(
-            ('{0}.psd1' -f $FileName)
             ('{0}.strings.psd1' -f $FileName)
+            ('{0}.psd1' -f $FileName)
         )
 
         foreach ($localizedFileName in $localizedFileNamesToTry)
