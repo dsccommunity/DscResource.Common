@@ -110,8 +110,8 @@ function Get-LocalizedDataForInvariantCulture
         [string] $languageFile = ''
         $localizedFolder = Join-Path -Path $BaseDirectory -ChildPath $DefaultUICulture
         [string[]] $localizedFileNamesToTry = @(
-            ('{0}.psd1' -f $FileName)
             ('{0}.strings.psd1' -f $FileName)
+            ('{0}.psd1' -f $FileName)
         )
 
         foreach ($localizedFileName in $localizedFileNamesToTry)
@@ -149,31 +149,31 @@ function Get-LocalizedDataForInvariantCulture
         $constrainedState.LanguageMode = [System.Management.Automation.PSLanguageMode]::ConstrainedLanguage
         $constrainedState.DisableFormatUpdates = $true
 
-        $sspe = New-Object System.Management.Automation.Runspaces.SessionStateProviderEntry 'Environment',([Microsoft.PowerShell.Commands.EnvironmentProvider]),$null
+        $sspe = [System.Management.Automation.Runspaces.SessionStateProviderEntry]::new('Environment', ([Microsoft.PowerShell.Commands.EnvironmentProvider]), $null)
         $constrainedState.Providers.Add($sspe)
 
-        $sspe = New-Object System.Management.Automation.Runspaces.SessionStateProviderEntry 'FileSystem',([Microsoft.PowerShell.Commands.FileSystemProvider]),$null
+        $sspe = [System.Management.Automation.Runspaces.SessionStateProviderEntry]::new('FileSystem', ([Microsoft.PowerShell.Commands.FileSystemProvider]), $null)
         $constrainedState.Providers.Add($sspe)
 
-        $ssce = New-Object System.Management.Automation.Runspaces.SessionStateCmdletEntry 'Get-Content',([Microsoft.PowerShell.Commands.GetContentCommand]),$null
+        $ssce = [System.Management.Automation.Runspaces.SessionStateCmdletEntry]::new('Get-Content', ([Microsoft.PowerShell.Commands.GetContentCommand]), $null)
         $constrainedState.Commands.Add($ssce)
 
-        $ssce = New-Object System.Management.Automation.Runspaces.SessionStateCmdletEntry 'Get-Date',([Microsoft.PowerShell.Commands.GetDateCommand]),$null
+        $ssce = [System.Management.Automation.Runspaces.SessionStateCmdletEntry]::new('Get-Date', ([Microsoft.PowerShell.Commands.GetDateCommand]), $null)
         $constrainedState.Commands.Add($ssce)
 
-        $ssce = New-Object System.Management.Automation.Runspaces.SessionStateCmdletEntry 'Get-ChildItem',([Microsoft.PowerShell.Commands.GetChildItemCommand]),$null
+        $ssce = [System.Management.Automation.Runspaces.SessionStateCmdletEntry]::new('Get-ChildItem', ([Microsoft.PowerShell.Commands.GetChildItemCommand]), $null)
         $constrainedState.Commands.Add($ssce)
 
-        $ssce = New-Object System.Management.Automation.Runspaces.SessionStateCmdletEntry 'Get-Item',([Microsoft.PowerShell.Commands.GetItemCommand]),$null
+        $ssce = [System.Management.Automation.Runspaces.SessionStateCmdletEntry]::new('Get-Item', ([Microsoft.PowerShell.Commands.GetItemCommand]), $null)
         $constrainedState.Commands.Add($ssce)
 
-        $ssce = New-Object System.Management.Automation.Runspaces.SessionStateCmdletEntry 'Test-Path',([Microsoft.PowerShell.Commands.TestPathCommand]),$null
+        $ssce = [System.Management.Automation.Runspaces.SessionStateCmdletEntry]::new('Test-Path', ([Microsoft.PowerShell.Commands.TestPathCommand]), $null)
         $constrainedState.Commands.Add($ssce)
 
-        $ssce = New-Object System.Management.Automation.Runspaces.SessionStateCmdletEntry 'Out-String',([Microsoft.PowerShell.Commands.OutStringCommand]),$null
+        $ssce = [System.Management.Automation.Runspaces.SessionStateCmdletEntry]::new('Out-String', ([Microsoft.PowerShell.Commands.OutStringCommand]), $null)
         $constrainedState.Commands.Add($ssce)
 
-        $ssce = New-Object System.Management.Automation.Runspaces.SessionStateCmdletEntry 'ConvertFrom-StringData',([Microsoft.PowerShell.Commands.ConvertFromStringDataCommand]),$null
+        $ssce = [System.Management.Automation.Runspaces.SessionStateCmdletEntry]::new('ConvertFrom-StringData', ([Microsoft.PowerShell.Commands.ConvertFromStringDataCommand]), $null)
         $constrainedState.Commands.Add($ssce)
 
         # $scopedItemOptions = [System.Management.Automation.ScopedItemOptions]::AllScope
@@ -208,8 +208,8 @@ function Get-LocalizedDataForInvariantCulture
             if ($powershell.Streams.Error.Count -gt 0)
             {
                 $powershell.Streams.Error.ForEach({
-                    Write-Error $_
-                })
+                        Write-Error $_
+                    })
             }
         }
         finally

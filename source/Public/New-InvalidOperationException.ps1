@@ -60,16 +60,12 @@ function New-InvalidOperationException
 
     if ($null -eq $ErrorRecord)
     {
-        $invalidOperationException = New-Object -TypeName 'System.InvalidOperationException' `
-            -ArgumentList @($Message)
+        $invalidOperationException = [System.InvalidOperationException]::new($Message)
     }
     else
     {
-        $invalidOperationException = New-Object -TypeName 'System.InvalidOperationException' `
-            -ArgumentList @($Message, $ErrorRecord.Exception)
+        $invalidOperationException = [System.InvalidOperationException]::new($Message, $ErrorRecord.Exception)
     }
-
-    $errorRecord = New-ErrorRecord -Exception $invalidOperationException.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'InvalidOperation'
 
     if ($PassThru.IsPresent)
     {
@@ -77,6 +73,6 @@ function New-InvalidOperationException
     }
     else
     {
-        throw $errorRecord
+        throw (New-ErrorRecord -Exception $invalidOperationException.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'InvalidOperation')
     }
 }

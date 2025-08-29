@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `DscResource.Common`
+  - Removed use of `New-Object` and used `::new()`.
+  - Minimum PowerShell version is now 5.0.
 - `Compare-DscParameterState`
   - Changed detailed diagnostic messages from `Write-Verbose` to `Write-Debug`
     for variable values, type comparisons, and internal diagnostics.

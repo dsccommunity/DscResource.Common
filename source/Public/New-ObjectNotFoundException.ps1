@@ -49,7 +49,5 @@ function New-ObjectNotFoundException
 
     $exception = New-Exception @PSBoundParameters
 
-    $errorRecord = New-ErrorRecord -Exception $exception.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'ObjectNotFound'
-
-    throw $errorRecord
+    throw (New-ErrorRecord -Exception $exception.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'ObjectNotFound')
 }
