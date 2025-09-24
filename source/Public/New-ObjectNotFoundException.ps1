@@ -49,5 +49,11 @@ function New-ObjectNotFoundException
 
     $exception = New-Exception @PSBoundParameters
 
-    throw (New-ErrorRecord -Exception $exception.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'ObjectNotFound')
+    $errorSplat = @{
+        Exception     = $exception.ToString()
+        ErrorId       = 'MachineStateIncorrect'
+        ErrorCategory = [System.Management.Automation.ErrorCategory]::ObjectNotFound
+    }
+
+    $PSCmdlet.ThrowTerminatingError((New-ErrorRecord @errorSplat))
 }
