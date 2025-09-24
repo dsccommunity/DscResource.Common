@@ -55,5 +55,11 @@ function New-InvalidResultException
 
     $exception = New-Exception @PSBoundParameters
 
-    throw (New-ErrorRecord -Exception $exception.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'InvalidResult')
+    $errorSplat = @{
+        Exception     = $exception.ToString()
+        ErrorId       = 'MachineStateIncorrect'
+        ErrorCategory = [System.Management.Automation.ErrorCategory]::InvalidResult
+    }
+
+    $PSCmdlet.ThrowTerminatingError((New-ErrorRecord @errorSplat))
 }

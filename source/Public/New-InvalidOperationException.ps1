@@ -60,19 +60,25 @@ function New-InvalidOperationException
 
     if ($null -eq $ErrorRecord)
     {
-        $invalidOperationException = [System.InvalidOperationException]::new($Message)
+        $exception = [System.InvalidOperationException]::new($Message)
     }
     else
     {
-        $invalidOperationException = [System.InvalidOperationException]::new($Message, $ErrorRecord.Exception)
+        $exception = [System.InvalidOperationException]::new($Message, $ErrorRecord.Exception)
     }
 
     if ($PassThru.IsPresent)
     {
-        return $invalidOperationException
+        return $exception
     }
     else
     {
-        throw (New-ErrorRecord -Exception $invalidOperationException.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'InvalidOperation')
+        $errorSplat = @{
+            Exception     = $exception.ToString()
+            ErrorId       = 'MachineStateIncorrect'
+            ErrorCategory = [System.Management.Automation.ErrorCategory]::InvalidOperation
+        }
+
+        $PSCmdlet.ThrowTerminatingError((New-ErrorRecord @errorSplat))
     }
 }

@@ -55,7 +55,7 @@ Describe 'New-InvalidDataException' {
                 Should -Throw -PassThru
 
             $exception.CategoryInfo.Category | Should -Be 'InvalidData'
-            $exception.FullyQualifiedErrorId | Should -Be $mockErrorId
+            $exception.FullyQualifiedErrorId | Should -BeLike ($mockErrorId + '*')
             $exception.Exception.Message | Should -Be $mockErrorMessage
         }
     }

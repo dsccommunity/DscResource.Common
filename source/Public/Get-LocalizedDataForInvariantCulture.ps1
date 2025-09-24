@@ -132,7 +132,7 @@ function Get-LocalizedDataForInvariantCulture
 
         if ([string]::IsNullOrEmpty($languageFile))
         {
-            throw ($script:localizedData.Get_LocalizedDataForInvariantCulture_FileNotFoundInFolder -f ($localizedFileNamesToTry -join ','), $localizedFolder)
+            $PSCmdlet.ThrowTerminatingError(($script:localizedData.Get_LocalizedDataForInvariantCulture_FileNotFoundInFolder -f ($localizedFileNamesToTry -join ','), $localizedFolder))
         }
         else
         {
@@ -201,7 +201,7 @@ function Get-LocalizedDataForInvariantCulture
             }
             catch
             {
-                throw $_
+                $PSCmdlet.ThrowTerminatingError($_)
             }
 
             # Check for non-terminating errors.
