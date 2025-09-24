@@ -132,7 +132,14 @@ function Get-LocalizedDataForInvariantCulture
 
         if ([string]::IsNullOrEmpty($languageFile))
         {
-            $PSCmdlet.ThrowTerminatingError(($script:localizedData.Get_LocalizedDataForInvariantCulture_FileNotFoundInFolder -f ($localizedFileNamesToTry -join ','), $localizedFolder))
+            $message = ($script:localizedData.Get_LocalizedDataForInvariantCulture_FileNotFoundInFolder -f ($localizedFileNamesToTry -join ','), $localizedFolder)
+            $errorSplat = @{
+                Exception     = [System.IO.FileNotFoundException]::new($message)
+                ErrorId       = 'MachineStateIncorrect'
+                ErrorCategory = [System.Management.Automation.ErrorCategory]::ObjectNotFound
+            }
+
+            $PSCmdlet.ThrowTerminatingError((New-ErrorRecord @errorSplat))
         }
         else
         {
