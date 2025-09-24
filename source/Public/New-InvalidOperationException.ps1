@@ -16,7 +16,7 @@
         The error record containing the exception that is causing this terminating error.
 
     .PARAMETER PassThru
-        If specified, returns the error record instead of throwing it.
+        If specified, returns the exception instead of throwing it.
 
     .EXAMPLE
         try
