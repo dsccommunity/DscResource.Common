@@ -21,7 +21,8 @@ function Clear-ZeroedEnumPropertyValue
 {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
-    param (
+    param
+    (
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [System.Collections.Hashtable]
         $InputObject
