@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - New-*Exception
-  - Use ThrowTerminatingError instead of throw. Fixes [#177](https://github.com/dsccommunity/DscResource.Common/issues/177).
+  - Use `ThrowTerminatingError` instead of `throw`. Fixes [#177](https://github.com/dsccommunity/DscResource.Common/issues/177).
 
 ## [0.24.2] - 2025-08-27
 
