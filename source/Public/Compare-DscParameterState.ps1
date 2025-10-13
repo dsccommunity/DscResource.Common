@@ -359,7 +359,7 @@ function Compare-DscParameterState
         }
         #endregion TestType
         #region Check if the value of Current and desired state is the same but only if they are not an array
-        if ($currentValue -eq $desiredValue -and -not $desiredType.IsArray)
+        if ($currentValue -eq $desiredValue -and -not $desiredType.IsArray -and -not $currentType.IsArray)
         {
             Write-Debug -Message ($script:localizedData.MatchValueMessage -f $desiredType.FullName, $key, $currentValue, $desiredValue)
             continue # pass to the next key
