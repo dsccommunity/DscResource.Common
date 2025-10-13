@@ -569,7 +569,6 @@ Describe 'Test-DscParameterState' {
             }
         }
 
-
         Context 'When array has a value with a different type' {
             BeforeAll {
                 $desiredValues = [PSObject] @{
@@ -618,6 +617,38 @@ Describe 'Test-DscParameterState' {
                     -CurrentValues $currentValues `
                     -DesiredValues $desiredValues `
                     -TurnOffTypeChecking `
+                    -Verbose:$verbose | Should -BeTrue
+            }
+        }
+
+        Context 'When an array in hashtable has different order but SortArrayValues is used' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = 'a', 'b', 'c'
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v3', 'v2', 'v1', 99
+                    }
+                }
+            }
+
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -SortArrayValues `
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $true' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -SortArrayValues `
                     -Verbose:$verbose | Should -BeTrue
             }
         }
@@ -877,39 +908,6 @@ Describe 'Test-DscParameterState' {
                     -Verbose:$verbose | Should -BeFalse
             }
         }
-
-        Context 'When an array in hashtable has different order but SortArrayValues is used' {
-            BeforeAll {
-                $desiredValues = [PSObject] @{
-                    String    = 'a string'
-                    Bool      = $true
-                    Int       = 99
-                    Array     = 'a', 'b', 'c'
-                    Hashtable = @{
-                        k1 = 'Test'
-                        k2 = 123
-                        k3 = 'v3', 'v2', 'v1', 99
-                    }
-                }
-            }
-
-            It 'Should not throw exception' {
-                { Test-DscParameterState `
-                        -CurrentValues $currentValues `
-                        -DesiredValues $desiredValues `
-                        -SortArrayValues `
-                        -Verbose:$verbose } | Should -Not -Throw
-            }
-
-            It 'Should return $true' {
-                Test-DscParameterState `
-                    -CurrentValues $currentValues `
-                    -DesiredValues $desiredValues `
-                    -SortArrayValues `
-                    -Verbose:$verbose | Should -BeTrue
-            }
-        }
-
 
         Context 'When hashtable has a value with a different type' {
             BeforeAll {
