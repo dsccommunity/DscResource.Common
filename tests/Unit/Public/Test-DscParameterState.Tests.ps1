@@ -294,6 +294,34 @@ Describe 'Test-DscParameterState' {
             }
         }
 
+        Context 'When there is a single-valued array and TurnOffTypeChecking is used' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String = 'a string'
+                    Bool   = $true
+                    Int    = '99'
+                    Array  = 'a', 'b', 'c'
+                    SingleValueArray = 'v1' #Using a string by purpose to test single value array handling
+                }
+            }
+
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -TurnOffTypeChecking `
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $false' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -TurnOffTypeChecking `
+                    -Verbose:$verbose | Should -BeFalse
+            }
+        }
+
         Context 'When a value is mismatched but ExcludeProperties is used to exclude then' {
             BeforeAll {
                 $desiredValues = @{
@@ -400,6 +428,7 @@ Describe 'Test-DscParameterState' {
                 Bool      = $true
                 Int       = 99
                 Array     = 'a', 'b', 'c', 1
+                SingleValueArray = 'v1', 'v2' #for testing the comparison of single value arrays in the desired state
                 Hashtable = @{
                     k1 = 'Test'
                     k2 = 123
@@ -941,6 +970,34 @@ Describe 'Test-DscParameterState' {
                     -DesiredValues $desiredValues `
                     -TurnOffTypeChecking `
                     -Verbose:$verbose | Should -BeTrue
+            }
+        }
+
+        Context 'When an array in the desired state has one value and TurnOffTypeChecking is used' {
+            BeforeAll {
+                    String = 'a string'
+                $desiredValues = [PSObject] @{
+                    Bool   = $true
+                    Int    = 99
+                    Array  = 'a', 'b', 'c', '1'
+                    SingleValueArray = 'v1'
+                }
+            }
+
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -TurnOffTypeChecking `
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $false' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -TurnOffTypeChecking `
+                    -Verbose:$verbose | Should -BeFalse
             }
         }
     }
