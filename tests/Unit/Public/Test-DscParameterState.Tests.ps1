@@ -621,6 +621,34 @@ Describe 'Test-DscParameterState' {
             }
         }
 
+        Context 'When an array in the desired state has one value and TurnOffTypeChecking is used' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String = 'a string'
+                    Bool   = $true
+                    Int    = 99
+                    Array  = 'a', 'b', 'c', '1'
+                    SingleValueArray = 'v1'
+                }
+            }
+
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -TurnOffTypeChecking `
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $false' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -TurnOffTypeChecking `
+                    -Verbose:$verbose | Should -BeFalse
+            }
+        }
+
         Context 'When an array in hashtable has different order but SortArrayValues is used' {
             BeforeAll {
                 $desiredValues = [PSObject] @{
@@ -968,34 +996,6 @@ Describe 'Test-DscParameterState' {
                     -DesiredValues $desiredValues `
                     -TurnOffTypeChecking `
                     -Verbose:$verbose | Should -BeTrue
-            }
-        }
-
-        Context 'When an array in the desired state has one value and TurnOffTypeChecking is used' {
-            BeforeAll {
-                $desiredValues = [PSObject] @{
-                    String = 'a string'
-                    Bool   = $true
-                    Int    = 99
-                    Array  = 'a', 'b', 'c', '1'
-                    SingleValueArray = 'v1'
-                }
-            }
-
-            It 'Should not throw exception' {
-                { Test-DscParameterState `
-                        -CurrentValues $currentValues `
-                        -DesiredValues $desiredValues `
-                        -TurnOffTypeChecking `
-                        -Verbose:$verbose } | Should -Not -Throw
-            }
-
-            It 'Should return $false' {
-                Test-DscParameterState `
-                    -CurrentValues $currentValues `
-                    -DesiredValues $desiredValues `
-                    -TurnOffTypeChecking `
-                    -Verbose:$verbose | Should -BeFalse
             }
         }
     }
