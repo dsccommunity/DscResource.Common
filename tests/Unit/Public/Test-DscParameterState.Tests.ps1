@@ -975,8 +975,8 @@ Describe 'Test-DscParameterState' {
 
         Context 'When an array in the desired state has one value and TurnOffTypeChecking is used' {
             BeforeAll {
-                    String = 'a string'
                 $desiredValues = [PSObject] @{
+                    String = 'a string'
                     Bool   = $true
                     Int    = 99
                     Array  = 'a', 'b', 'c', '1'
