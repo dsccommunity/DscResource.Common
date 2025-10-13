@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New-*Exception
   - Use `ThrowTerminatingError` instead of `throw`. Fixes [#177](https://github.com/dsccommunity/DscResource.Common/issues/177).
+- Fix typo in `Clear-ZeroedEnumPropertyValue` help text. Fixes [#181](https://github.com/dsccommunity/DscResource.Common/issues/181).
 
 ## [0.24.2] - 2025-08-27
 
