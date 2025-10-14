@@ -650,7 +650,7 @@ function Compare-DscParameterState
         We use .foreach() method as we are sure that $returnValue is an array.
     #>
     [Array]$returnValue = @(
-        $returnValue.foreach(
+        $returnValue.ForEach(
             {
                 if ($_ -is [System.Collections.Hashtable])
                 {
