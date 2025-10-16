@@ -1258,6 +1258,7 @@ Describe 'DscResource.Common\Compare-DscParameterState' {
                 Bool      = $true
                 Int       = 99
                 Array     = 'a', 'b', 'c', 1
+                SingleValueArray = 'v1', 'v2' #for testing the comparison of single value arrays in the desired state
                 Hashtable = @{
                     k1 = 'Test'
                     k2 = 123
@@ -1511,6 +1512,41 @@ Describe 'DscResource.Common\Compare-DscParameterState' {
                 $script:result.Where({
                     $_.Property -ne 'Array'
                 }).InDesiredState | Should -Not -Contain $false
+            }
+        }
+
+        Context 'When there is a single-valued array and TurnOffTypeChecking is used' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = 'a', 'b', 'c', 1
+                    SingleValueArray = 'v1' #for testing the comparison of single value arrays in the desired state
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                }
+            }
+
+            It 'Should not throw exception' {
+                { $script:result = Compare-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -TurnOffTypeChecking `
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should not be null' {
+                $script:result | Should -Not -BeNullOrEmpty
+            }
+
+            It 'Should return $false for SingleValueArray InDesiredState' {
+                $script:result.Where({
+                    $_.Property -eq 'SingleValueArray'
+                }).InDesiredState | Should -BeFalse
             }
         }
 

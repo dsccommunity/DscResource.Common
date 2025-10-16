@@ -400,6 +400,7 @@ Describe 'Test-DscParameterState' {
                 Bool      = $true
                 Int       = 99
                 Array     = 'a', 'b', 'c', 1
+                SingleValueArray = 'v1', 'v2' #for testing the comparison of single value arrays in the desired state
                 Hashtable = @{
                     k1 = 'Test'
                     k2 = 123
@@ -540,7 +541,6 @@ Describe 'Test-DscParameterState' {
             }
         }
 
-
         Context 'When array has a value with a different type' {
             BeforeAll {
                 $desiredValues = [PSObject] @{
@@ -590,6 +590,39 @@ Describe 'Test-DscParameterState' {
                     -DesiredValues $desiredValues `
                     -TurnOffTypeChecking `
                     -Verbose:$verbose | Should -BeTrue
+            }
+        }
+
+         Context 'When there is a single-valued array and TurnOffTypeChecking is used' {
+            BeforeAll {
+                $desiredValues = [PSObject] @{
+                    String    = 'a string'
+                    Bool      = $true
+                    Int       = 99
+                    Array     = 'a', 'b', 'c', 1
+                    SingleValueArray = 'v1' #for testing the comparison of single value arrays in the desired state
+                    Hashtable = @{
+                        k1 = 'Test'
+                        k2 = 123
+                        k3 = 'v1', 'v2', 'v3'
+                    }
+                }
+            }
+
+            It 'Should not throw exception' {
+                { Test-DscParameterState `
+                        -CurrentValues $currentValues `
+                        -DesiredValues $desiredValues `
+                        -TurnOffTypeChecking `
+                        -Verbose:$verbose } | Should -Not -Throw
+            }
+
+            It 'Should return $false' {
+                Test-DscParameterState `
+                    -CurrentValues $currentValues `
+                    -DesiredValues $desiredValues `
+                    -TurnOffTypeChecking `
+                    -Verbose:$verbose | Should -BeFalse
             }
         }
 
@@ -848,39 +881,6 @@ Describe 'Test-DscParameterState' {
                     -Verbose:$verbose | Should -BeFalse
             }
         }
-
-        Context 'When an array in hashtable has different order but SortArrayValues is used' {
-            BeforeAll {
-                $desiredValues = [PSObject] @{
-                    String    = 'a string'
-                    Bool      = $true
-                    Int       = 99
-                    Array     = 'a', 'b', 'c'
-                    Hashtable = @{
-                        k1 = 'Test'
-                        k2 = 123
-                        k3 = 'v3', 'v2', 'v1', 99
-                    }
-                }
-            }
-
-            It 'Should not throw exception' {
-                { Test-DscParameterState `
-                        -CurrentValues $currentValues `
-                        -DesiredValues $desiredValues `
-                        -SortArrayValues `
-                        -Verbose:$verbose } | Should -Not -Throw
-            }
-
-            It 'Should return $true' {
-                Test-DscParameterState `
-                    -CurrentValues $currentValues `
-                    -DesiredValues $desiredValues `
-                    -SortArrayValues `
-                    -Verbose:$verbose | Should -BeTrue
-            }
-        }
-
 
         Context 'When hashtable has a value with a different type' {
             BeforeAll {

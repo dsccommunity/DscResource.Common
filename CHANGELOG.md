@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New-*Exception
   - Use `ThrowTerminatingError` instead of `throw`. Fixes [#177](https://github.com/dsccommunity/DscResource.Common/issues/177).
+- Compare-DscParameterState
+  - Fixed a bug comparing single-valued arrays in the desired state when
+    TurnOffTypeChecking is used [#184](https://github.com/dsccommunity/DscResource.Common/issues/184).
 - Fix typo in `Clear-ZeroedEnumPropertyValue` help text. Fixes [#181](https://github.com/dsccommunity/DscResource.Common/issues/181).
 
 ### Changed
