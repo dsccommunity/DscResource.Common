@@ -27,9 +27,9 @@ function Get-FileProductVersion
 
     try
     {
-        $fileItem = Get-Item -Path $Path -ErrorAction 'Stop'
+        $fileVersionInfo = Get-FileVersion -Path $Path -ErrorAction 'Stop'
 
-        return [System.Version] $fileItem.VersionInfo.ProductVersion
+        return [System.Version] $fileVersionInfo.ProductVersion
     }
     catch
     {

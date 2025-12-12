@@ -57,6 +57,9 @@ ConvertFrom-StringData @'
     ## Get-FileProductVersion
     Get_FileProductVersion_GetFileProductVersionError = Failed to get product version for file '{0}'. Error: {1}
 
+    ## Get-FileVersion
+    Get_FileVersion_PathIsNotFile = The specified path is not a file. (GFV0001)
+
     ## Get-PSModulePath
     PSModulePath_MissingMyDocumentsPath = The My Documents folder does not exist for user '{0}'. (DRC0048)
 

@@ -1,0 +1,78 @@
+<#
+    .SYNOPSIS
+        Returns the version information for a file.
+
+    .DESCRIPTION
+        Returns the version information for a file including the product version,
+        file version, and other version-related metadata.
+
+    .PARAMETER Path
+        Specifies the file for which to return the version information.
+
+    .EXAMPLE
+        Get-FileVersion -Path 'E:\setup.exe'
+
+        Returns the version information for the file setup.exe.
+
+    .EXAMPLE
+        Get-Item -Path 'E:\setup.exe' | Get-FileVersion
+
+        Returns the version information for the file setup.exe using pipeline input.
+
+    .EXAMPLE
+        'E:\setup.exe' | Get-FileVersion
+
+        Returns the version information for the file setup.exe using pipeline input.
+
+    .INPUTS
+        System.IO.FileInfo
+
+        Accepts a file path via the pipeline.
+
+    .INPUTS
+        System.String
+
+        Accepts a string path via the pipeline.
+
+    .OUTPUTS
+        System.Diagnostics.FileVersionInfo
+
+        Returns the file version information.
+#>
+function Get-FileVersion
+{
+    [OutputType([System.Diagnostics.FileVersionInfo])]
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [Alias('FullName')]
+        [System.IO.FileInfo]
+        $Path
+    )
+
+    process
+    {
+        $originalErrorActionPreference = $ErrorActionPreference
+
+        $ErrorActionPreference = 'Stop'
+
+        $file = Get-Item -Path $Path -ErrorAction 'Stop'
+
+        $ErrorActionPreference = $originalErrorActionPreference
+
+        if ($file.PSIsContainer)
+        {
+            $PSCmdlet.ThrowTerminatingError(
+                [System.Management.Automation.ErrorRecord]::new(
+                    ($script:localizedData.Get_FileVersion_PathIsNotFile -f $file.FullName),
+                    'GFV0001', # cSpell: disable-line
+                    [System.Management.Automation.ErrorCategory]::InvalidArgument,
+                    $file.FullName
+                )
+            )
+        }
+
+        return $file.VersionInfo
+    }
+}

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Get-FileVersion`
+  - New public command to return the version information for a file. This command
+    returns the full `System.Diagnostics.FileVersionInfo` object.
+
+### Changed
+
+- `Get-FileProductVersion`
+  - Changed to use the new `Get-FileVersion` command internally instead of
+    directly accessing `Get-Item` and `VersionInfo`.
+
 ## [0.24.2] - 2025-08-27
 
 ### Changed
