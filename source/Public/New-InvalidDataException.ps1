@@ -42,5 +42,5 @@ function New-InvalidDataException
         ErrorCategory = [System.Management.Automation.ErrorCategory]::InvalidData
     }
 
-    throw (New-ErrorRecord @errorSplat)
+    $PSCmdlet.ThrowTerminatingError((New-ErrorRecord @errorSplat))
 }

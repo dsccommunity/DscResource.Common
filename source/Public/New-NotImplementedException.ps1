@@ -12,7 +12,7 @@
         The error record containing the exception that is causing this terminating error.
 
     .PARAMETER PassThru
-        If specified, returns the error record instead of throwing it.
+        If specified, returns the exception instead of throwing it.
 
     .OUTPUTS
         None
@@ -57,19 +57,25 @@ function New-NotImplementedException
 
     if ($null -eq $ErrorRecord)
     {
-        $notImplementedException = [System.NotImplementedException]::new($Message)
+        $exception = [System.NotImplementedException]::new($Message)
     }
     else
     {
-        $notImplementedException = [System.NotImplementedException]::new($Message, $ErrorRecord.Exception)
+        $exception = [System.NotImplementedException]::new($Message, $ErrorRecord.Exception)
     }
 
     if ($PassThru.IsPresent)
     {
-        return $notImplementedException
+        return $exception
     }
     else
     {
-        throw (New-ErrorRecord -Exception $notImplementedException.ToString() -ErrorId 'MachineStateIncorrect' -ErrorCategory 'NotImplemented')
+        $errorSplat = @{
+            Exception     = $exception.ToString()
+            ErrorId       = 'MachineStateIncorrect'
+            ErrorCategory = [System.Management.Automation.ErrorCategory]::NotImplemented
+        }
+
+        $PSCmdlet.ThrowTerminatingError((New-ErrorRecord @errorSplat))
     }
 }

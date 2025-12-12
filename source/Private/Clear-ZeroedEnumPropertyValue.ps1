@@ -1,10 +1,10 @@
 <#
     .SYNOPSIS
-        Removes any properties from a hashable which have values that are
+        Removes any properties from a hashtable which have values that are
         type [System.Enum] and have an [System.Int32] value of 0.
 
     .DESCRIPTION
-        Removes any properties from a hashable which have values that are
+        Removes any properties from a hashtable which have values that are
         type [System.Enum] and have an [System.Int32] value of 0.
 
     .PARAMETER InputObject
@@ -21,7 +21,8 @@ function Clear-ZeroedEnumPropertyValue
 {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
-    param (
+    param
+    (
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [System.Collections.Hashtable]
         $InputObject
