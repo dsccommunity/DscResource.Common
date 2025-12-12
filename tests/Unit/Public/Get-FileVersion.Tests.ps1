@@ -19,7 +19,7 @@ BeforeDiscovery {
     }
     catch [System.IO.FileNotFoundException]
     {
-        throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -ResolveDependency -Tasks build" first.'
+        throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -ResolveDependency -Tasks noop" first.'
     }
 }
 
@@ -83,23 +83,29 @@ Describe 'Get-FileVersion' -Tag 'Public' {
     Context 'When passing path as the type FileInfo' {
         BeforeAll {
             $script:mockFilePath = (New-Item -Path $TestDrive -Name 'setup.exe' -ItemType 'File' -Force).FullName
+            $script:mockFileInfo = New-Object -TypeName System.IO.FileInfo -ArgumentList $script:mockFilePath
 
             Mock -CommandName Get-Item -MockWith {
-                return @{
+                # Create a mock object that looks like a FileInfo with VersionInfo
+                $mockVersionInfo = [PSCustomObject]@{
+                    ProductVersion = '16.0.1000.6'
+                    FileVersion = '2022.160.1000.6'
+                    ProductName = 'Microsoft SQL Server'
+                }
+
+                $mockItem = [PSCustomObject]@{
                     PSIsContainer = $false
                     FullName = $mockFilePath
-                    VersionInfo = @{
-                        ProductVersion = '16.0.1000.6'
-                        FileVersion = '2022.160.1000.6'
-                        ProductName = 'Microsoft SQL Server'
-                    }
+                    VersionInfo = $mockVersionInfo
                 }
+
+                return $mockItem
             }
         }
 
         Context 'When passing as a named parameter' {
             It 'Should return the correct result' {
-                $result = Get-FileVersion -Path $mockFilePath
+                $result = Get-FileVersion -Path $mockFileInfo
 
                 $result.ProductVersion | Should -Be '16.0.1000.6'
             }
@@ -107,7 +113,7 @@ Describe 'Get-FileVersion' -Tag 'Public' {
 
         Context 'When passing over the pipeline' {
             It 'Should return the correct result' {
-                $result = $mockFilePath | Get-FileVersion
+                $result = $mockFileInfo | Get-FileVersion
 
                 $result.ProductVersion | Should -Be '16.0.1000.6'
             }
