@@ -48,12 +48,9 @@ AfterAll {
 Describe 'Get-FileProductVersion' {
     Context 'When the file exists and has a product version as a string' {
         BeforeAll {
-            Mock -CommandName Get-Item -MockWith {
+            Mock -CommandName Get-FileVersion -MockWith {
                 return [PSCustomObject] @{
-                    Exists      = $true
-                    VersionInfo = [PSCustomObject] @{
-                        ProductVersion = '15.0.2000.5'
-                    }
+                    ProductVersion = '15.0.2000.5'
                 }
             }
         }
@@ -70,12 +67,9 @@ Describe 'Get-FileProductVersion' {
 
     Context 'When the file has a product version as a System.Version object' {
         BeforeAll {
-            Mock -CommandName Get-Item -MockWith {
+            Mock -CommandName Get-FileVersion -MockWith {
                 return [PSCustomObject] @{
-                    Exists      = $true
-                    VersionInfo = [PSCustomObject] @{
-                        ProductVersion = [System.Version] '10.5.3.2'
-                    }
+                    ProductVersion = [System.Version] '10.5.3.2'
                 }
             }
         }
@@ -92,12 +86,9 @@ Describe 'Get-FileProductVersion' {
 
     Context 'When the file has a non-numeric product version' {
         BeforeAll {
-            Mock -CommandName Get-Item -MockWith {
+            Mock -CommandName Get-FileVersion -MockWith {
                 return [PSCustomObject] @{
-                    Exists      = $true
-                    VersionInfo = [PSCustomObject] @{
-                        ProductVersion = 'Not-A-Version-String'
-                    }
+                    ProductVersion = 'Not-A-Version-String'
                 }
             }
         }
@@ -115,9 +106,9 @@ Describe 'Get-FileProductVersion' {
         }
     }
 
-    Context 'When Get-Item throws an exception' {
+    Context 'When Get-FileVersion throws an exception' {
         BeforeAll {
-            Mock -CommandName Get-Item -MockWith {
+            Mock -CommandName Get-FileVersion -MockWith {
                 throw 'Mock exception message'
             }
         }

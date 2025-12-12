@@ -15,7 +15,7 @@
         Returns the product version of the file setup.exe as a System.Version object.
 
     .OUTPUTS
-        System.Version
+        `[System.Version]`
 
         Returns the product version as a System.Version object.
 #>
