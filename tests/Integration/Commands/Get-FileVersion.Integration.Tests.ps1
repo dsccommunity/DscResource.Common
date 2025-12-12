@@ -30,7 +30,7 @@ BeforeAll {
 }
 
 Describe 'Get-FileVersion' -Tag 'Integration' {
-    Context 'When running on Windows' -Skip:($env:RUNNER_OS -ne 'Windows') {
+    Context 'When running on Windows' -Skip:(-not $IsWindows) {
         Context 'When getting version information from notepad.exe' {
             BeforeAll {
                 $script:notepadPath = Join-Path -Path $env:SystemRoot -ChildPath 'System32\notepad.exe'
@@ -93,13 +93,13 @@ Describe 'Get-FileVersion' -Tag 'Integration' {
         }
     }
 
-    Context 'When running on non-Windows platforms' -Skip:($env:RUNNER_OS -eq 'Windows' -or $PSVersionTable.PSVersion.Major -lt 6) {
-        Context 'When getting version information from a shell executable' {
+    Context 'When running on non-Windows platforms' -Skip:($IsWindows -or $PSVersionTable.PSVersion.Major -lt 6) {
+        Context 'When getting version information from a shell executable' -Skip:(-not (Test-Path -Path '/bin/bash')) {
             BeforeAll {
                 $script:bashPath = '/bin/bash'
             }
 
-            It 'Should handle Unix executables appropriately' -Skip:(-not (Test-Path -Path $script:bashPath)) {
+            It 'Should handle Unix executables appropriately' {
                 # Unix executables typically don't have version info like Windows executables
                 # This test verifies the command can be called without error
                 $result = Get-FileVersion -Path $script:bashPath -ErrorAction 'Stop'
