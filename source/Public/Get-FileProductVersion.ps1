@@ -59,9 +59,15 @@ function Get-FileProductVersion
     catch
     {
         $errorMessage = $script:localizedData.Get_FileProductVersion_GetFileProductVersionError -f $Path, $_.Exception.Message
+        $exception = [System.Exception]::new($errorMessage, $_.Exception)
 
-        Write-Error -Message $errorMessage -ErrorId 'GFPV0001' -Category 'ReadError' -TargetObject $Path -Exception $_.Exception
-
-        return
+        $PSCmdlet.ThrowTerminatingError(
+            [System.Management.Automation.ErrorRecord]::new(
+                $exception,
+                'GFPV0001', # cSpell: disable-line
+                [System.Management.Automation.ErrorCategory]::ReadError,
+                $Path
+            )
+        )
     }
 }

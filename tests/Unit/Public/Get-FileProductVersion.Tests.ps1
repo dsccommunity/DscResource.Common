@@ -136,16 +136,15 @@ Describe 'Get-FileProductVersion' {
             }
         }
 
-        It 'Should throw the correct error' {
+        It 'Should throw an error with the correct error ID' {
             $mockFilePath = Join-Path -Path $TestDrive -ChildPath 'testfile.dll'
 
-            $mockGetFileProductVersionErrorMessage = InModuleScope -ScriptBlock {
-                $script:localizedData.Get_FileProductVersion_GetFileProductVersionError
-            }
-
-            {
+            $result = {
                 Get-FileProductVersion -Path $mockFilePath -ErrorAction 'Stop'
-            } | Should -Throw ($mockGetFileProductVersionErrorMessage -f $mockFilePath, 'Mock exception message')
+            } | Should -Throw -PassThru
+
+            # Verify the error ID is correct
+            $result.FullyQualifiedErrorId | Should -BeLike 'GFPV0001,*'
         }
     }
 }
