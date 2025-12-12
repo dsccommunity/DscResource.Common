@@ -55,7 +55,8 @@ ConvertFrom-StringData @'
     SearchingForCertificateUsingFilters = Looking for certificate in Store '{0}' using filter '{1}'. (DRC0047)
 
     ## Get-FileProductVersion
-    Get_FileProductVersion_GetFileProductVersionError = Failed to get product version for file '{0}'. Error: {1}
+    Get_FileProductVersion_GetFileProductVersionError = Failed to get product version for file '{0}'. Error: {1} (GFPV0001)
+    Get_FileProductVersion_InvalidVersionFormat = The product version '{0}' for file '{1}' is not a valid version string. (GFPV0002)
 
     ## Get-FileVersion
     Get_FileVersion_PathIsNotFile = The specified path is not a file. (GFV0001)

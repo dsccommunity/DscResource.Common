@@ -46,7 +46,7 @@ AfterAll {
 }
 
 Describe 'Get-FileProductVersion' {
-    Context 'When the file exists and has a product version' {
+    Context 'When the file exists and has a product version as a string' {
         BeforeAll {
             Mock -CommandName Get-Item -MockWith {
                 return [PSCustomObject] @{
@@ -65,6 +65,53 @@ Describe 'Get-FileProductVersion' {
             $result.Minor | Should -Be 0
             $result.Build | Should -Be 2000
             $result.Revision | Should -Be 5
+        }
+    }
+
+    Context 'When the file has a product version as a System.Version object' {
+        BeforeAll {
+            Mock -CommandName Get-Item -MockWith {
+                return [PSCustomObject] @{
+                    Exists      = $true
+                    VersionInfo = [PSCustomObject] @{
+                        ProductVersion = [System.Version] '10.5.3.2'
+                    }
+                }
+            }
+        }
+
+        It 'Should return the correct product version as a System.Version object' {
+            $result = Get-FileProductVersion -Path (Join-Path -Path $TestDrive -ChildPath 'testfile.dll')
+            $result | Should -BeOfType [System.Version]
+            $result.Major | Should -Be 10
+            $result.Minor | Should -Be 5
+            $result.Build | Should -Be 3
+            $result.Revision | Should -Be 2
+        }
+    }
+
+    Context 'When the file has a non-numeric product version' {
+        BeforeAll {
+            Mock -CommandName Get-Item -MockWith {
+                return [PSCustomObject] @{
+                    Exists      = $true
+                    VersionInfo = [PSCustomObject] @{
+                        ProductVersion = 'Not-A-Version-String'
+                    }
+                }
+            }
+        }
+
+        It 'Should throw a terminating error with the correct error message' {
+            $mockFilePath = Join-Path -Path $TestDrive -ChildPath 'testfile.dll'
+
+            $mockInvalidVersionFormatMessage = InModuleScope -ScriptBlock {
+                $script:localizedData.Get_FileProductVersion_InvalidVersionFormat
+            }
+
+            {
+                Get-FileProductVersion -Path $mockFilePath -ErrorAction 'Stop'
+            } | Should -Throw ($mockInvalidVersionFormatMessage -f 'Not-A-Version-String', $mockFilePath)
         }
     }
 

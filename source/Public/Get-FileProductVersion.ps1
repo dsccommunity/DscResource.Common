@@ -13,6 +13,11 @@
         Get-FileProductVersion -Path 'C:\Temp\setup.exe'
 
         Returns the product version of the file setup.exe as a System.Version object.
+
+    .OUTPUTS
+        System.Version
+
+        Returns the product version as a System.Version object.
 #>
 function Get-FileProductVersion
 {
@@ -29,7 +34,26 @@ function Get-FileProductVersion
     {
         $fileVersionInfo = Get-FileVersion -Path $Path -ErrorAction 'Stop'
 
-        return [System.Version] $fileVersionInfo.ProductVersion
+        $productVersionString = $fileVersionInfo.ProductVersion
+
+        # Try to parse the product version string as a System.Version
+        $parsedVersion = $null
+
+        if (-not [System.Version]::TryParse($productVersionString, [ref] $parsedVersion))
+        {
+            $errorMessage = $script:localizedData.Get_FileProductVersion_InvalidVersionFormat -f $productVersionString, $Path
+
+            $PSCmdlet.ThrowTerminatingError(
+                [System.Management.Automation.ErrorRecord]::new(
+                    $errorMessage,
+                    'GFPV0002', # cSpell: disable-line
+                    [System.Management.Automation.ErrorCategory]::InvalidData,
+                    $Path
+                )
+            )
+        }
+
+        return $parsedVersion
     }
     catch
     {
