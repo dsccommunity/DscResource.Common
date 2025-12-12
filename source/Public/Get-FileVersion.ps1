@@ -67,6 +67,6 @@ function Get-FileVersion
             )
         }
 
-        return $file.VersionInfo
+        $file.VersionInfo
     }
 }
