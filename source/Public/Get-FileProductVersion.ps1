@@ -59,7 +59,7 @@ function Get-FileProductVersion
     {
         $errorMessage = $script:localizedData.Get_FileProductVersion_GetFileProductVersionError -f $Path, $_.Exception.Message
 
-        Write-Error -Message $errorMessage
+        Write-Error -Message $errorMessage -ErrorId 'GFPV0001' -Category 'ReadError' -TargetObject $Path -Exception $_.Exception
 
         return
     }
