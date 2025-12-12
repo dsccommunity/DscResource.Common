@@ -122,18 +122,32 @@ Describe 'Get-FileVersion' -Tag 'Public' {
                     FullName = $TestDrive
                 }
             }
+
+            $localizedString = InModuleScope -ScriptBlock {
+                $script:localizedData.Get_FileVersion_PathIsNotFile
+            }
+
+            $script:expectedMessage = $localizedString -f $TestDrive
         }
 
         It 'Should throw the correct error' {
             { [System.IO.FileInfo] $TestDrive | Get-FileVersion } |
-                Should -Throw -ExpectedMessage ($script:localizedData.Get_FileVersion_PathIsNotFile -f $TestDrive)
+                Should -Throw -ExpectedMessage $script:expectedMessage
         }
     }
 
     Context 'When passing in a directory that was accessed from Get-Item' {
+        BeforeAll {
+            $localizedString = InModuleScope -ScriptBlock {
+                $script:localizedData.Get_FileVersion_PathIsNotFile
+            }
+
+            $script:expectedMessage = $localizedString -f $TestDrive
+        }
+
         It 'Should throw the correct error' {
             { Get-Item -Path $TestDrive | Get-FileVersion -ErrorAction 'Stop' } |
-                Should -Throw -ExpectedMessage ($script:localizedData.Get_FileVersion_PathIsNotFile -f $TestDrive)
+                Should -Throw -ExpectedMessage $script:expectedMessage
         }
     }
 
