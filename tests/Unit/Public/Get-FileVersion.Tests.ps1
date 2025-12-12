@@ -48,9 +48,7 @@ AfterAll {
 Describe 'Get-FileVersion' -Tag 'Public' {
     Context 'When passing path as string' {
         BeforeAll {
-            InModuleScope -ScriptBlock {
-                $script:mockFilePath = (New-Item -Path $TestDrive -Name 'setup.exe' -ItemType 'File' -Force).FullName
-            }
+            $script:mockFilePath = (New-Item -Path $TestDrive -Name 'setup.exe' -ItemType 'File' -Force).FullName
 
             Mock -CommandName Get-Item -MockWith {
                 return @{
@@ -67,34 +65,24 @@ Describe 'Get-FileVersion' -Tag 'Public' {
 
         Context 'When passing as a named parameter' {
             It 'Should return the correct result' {
-                InModuleScope -ScriptBlock {
-                    Set-StrictMode -Version 1.0
+                $result = Get-FileVersion -Path $mockFilePath
 
-                    $result = Get-FileVersion -Path $mockFilePath
-
-                    $result.ProductVersion | Should -Be '16.0.1000.6'
-                }
+                $result.ProductVersion | Should -Be '16.0.1000.6'
             }
         }
 
         Context 'When passing over the pipeline' {
             It 'Should return the correct result' {
-                InModuleScope -ScriptBlock {
-                    Set-StrictMode -Version 1.0
+                $result = $mockFilePath | Get-FileVersion
 
-                    $result = $mockFilePath | Get-FileVersion
-
-                    $result.ProductVersion | Should -Be '16.0.1000.6'
-                }
+                $result.ProductVersion | Should -Be '16.0.1000.6'
             }
         }
     }
 
     Context 'When passing path as the type FileInfo' {
         BeforeAll {
-            InModuleScope -ScriptBlock {
-                $script:mockFilePath = (New-Item -Path $TestDrive -Name 'setup.exe' -ItemType 'File' -Force).FullName
-            }
+            $script:mockFilePath = (New-Item -Path $TestDrive -Name 'setup.exe' -ItemType 'File' -Force).FullName
 
             Mock -CommandName Get-Item -MockWith {
                 return @{
@@ -111,25 +99,17 @@ Describe 'Get-FileVersion' -Tag 'Public' {
 
         Context 'When passing as a named parameter' {
             It 'Should return the correct result' {
-                InModuleScope -ScriptBlock {
-                    Set-StrictMode -Version 1.0
+                $result = Get-FileVersion -Path $mockFilePath
 
-                    $result = Get-FileVersion -Path $mockFilePath
-
-                    $result.ProductVersion | Should -Be '16.0.1000.6'
-                }
+                $result.ProductVersion | Should -Be '16.0.1000.6'
             }
         }
 
         Context 'When passing over the pipeline' {
             It 'Should return the correct result' {
-                InModuleScope -ScriptBlock {
-                    Set-StrictMode -Version 1.0
+                $result = $mockFilePath | Get-FileVersion
 
-                    $result = $mockFilePath | Get-FileVersion
-
-                    $result.ProductVersion | Should -Be '16.0.1000.6'
-                }
+                $result.ProductVersion | Should -Be '16.0.1000.6'
             }
         }
     }
@@ -145,23 +125,15 @@ Describe 'Get-FileVersion' -Tag 'Public' {
         }
 
         It 'Should throw the correct error' {
-            InModuleScope -ScriptBlock {
-                Set-StrictMode -Version 1.0
-
-                { [System.IO.FileInfo] $TestDrive | Get-FileVersion } |
-                    Should -Throw -ExpectedMessage ($script:localizedData.Get_FileVersion_PathIsNotFile -f $TestDrive)
-            }
+            { [System.IO.FileInfo] $TestDrive | Get-FileVersion } |
+                Should -Throw -ExpectedMessage ($script:localizedData.Get_FileVersion_PathIsNotFile -f $TestDrive)
         }
     }
 
     Context 'When passing in a directory that was accessed from Get-Item' {
         It 'Should throw the correct error' {
-            InModuleScope -ScriptBlock {
-                Set-StrictMode -Version 1.0
-
-                { Get-Item -Path $TestDrive | Get-FileVersion -ErrorAction 'Stop' } |
-                    Should -Throw -ExpectedMessage ($script:localizedData.Get_FileVersion_PathIsNotFile -f $TestDrive)
-            }
+            { Get-Item -Path $TestDrive | Get-FileVersion -ErrorAction 'Stop' } |
+                Should -Throw -ExpectedMessage ($script:localizedData.Get_FileVersion_PathIsNotFile -f $TestDrive)
         }
     }
 
