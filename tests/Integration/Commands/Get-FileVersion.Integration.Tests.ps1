@@ -102,7 +102,7 @@ Describe 'Get-FileVersion' -Tag 'Integration' {
             It 'Should handle Unix executables appropriately' -Skip:(-not (Test-Path -Path $script:bashPath)) {
                 # Unix executables typically don't have version info like Windows executables
                 # This test verifies the command can be called without error
-                $result = Get-FileVersion -Path $script:bashPath -ErrorAction SilentlyContinue
+                $result = Get-FileVersion -Path $script:bashPath -ErrorAction 'Stop'
 
                 # Result may be null or empty on Unix systems
                 $result | Should -BeOfType [System.Diagnostics.FileVersionInfo]
