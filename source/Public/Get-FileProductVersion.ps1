@@ -42,10 +42,11 @@ function Get-FileProductVersion
         if (-not [System.Version]::TryParse($productVersionString, [ref] $parsedVersion))
         {
             $errorMessage = $script:localizedData.Get_FileProductVersion_InvalidVersionFormat -f $productVersionString, $Path
+            $exception = [System.Exception]::new($errorMessage)
 
             $PSCmdlet.ThrowTerminatingError(
                 [System.Management.Automation.ErrorRecord]::new(
-                    $errorMessage,
+                    $exception,
                     'GFPV0002', # cSpell: disable-line
                     [System.Management.Automation.ErrorCategory]::InvalidData,
                     $Path

@@ -46,6 +46,29 @@ AfterAll {
 }
 
 Describe 'Get-FileProductVersion' {
+    It 'Should have the correct parameters in parameter set <ExpectedParameterSetName>' -ForEach @(
+        @{
+            ExpectedParameterSetName = '__AllParameterSets'
+            ExpectedParameters       = '[-Path] <string> [<CommonParameters>]'
+        }
+    ) {
+        $result = (Get-Command -Name 'Get-FileProductVersion').ParameterSets |
+            Where-Object -FilterScript { $_.Name -eq $ExpectedParameterSetName } |
+            Select-Object -Property @(
+                @{ Name = 'ParameterSetName'; Expression = { $_.Name } },
+                @{ Name = 'ParameterListAsString'; Expression = { $_.ToString() } }
+            )
+
+        $result.ParameterSetName | Should -Be $ExpectedParameterSetName
+        $result.ParameterListAsString | Should -Be $ExpectedParameters
+    }
+
+    It 'Should have Path as a mandatory parameter' {
+        $parameterInfo = (Get-Command -Name 'Get-FileProductVersion').Parameters['Path']
+
+        $parameterInfo.Attributes.Mandatory | Should -BeTrue
+    }
+
     Context 'When the file exists and has a product version as a string' {
         BeforeAll {
             Mock -CommandName Get-FileVersion -MockWith {
