@@ -53,13 +53,7 @@ function Get-FileVersion
 
     process
     {
-        $originalErrorActionPreference = $ErrorActionPreference
-
-        $ErrorActionPreference = 'Stop'
-
         $file = Get-Item -Path $Path -ErrorAction 'Stop'
-
-        $ErrorActionPreference = $originalErrorActionPreference
 
         if ($file.PSIsContainer)
         {
