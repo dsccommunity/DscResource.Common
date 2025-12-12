@@ -30,7 +30,7 @@ BeforeAll {
 }
 
 Describe 'Get-FileVersion' -Tag 'Integration' {
-    Context 'When running on Windows' -Skip:($env:RUNNER_OS -ne 'Windows' -and $PSVersionTable.PSVersion.Major -ge 6) {
+    Context 'When running on Windows' -Skip:($env:RUNNER_OS -ne 'Windows') {
         Context 'When getting version information from notepad.exe' {
             BeforeAll {
                 $script:notepadPath = Join-Path -Path $env:SystemRoot -ChildPath 'System32\notepad.exe'
