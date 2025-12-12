@@ -36,28 +36,6 @@ function Get-FileProductVersion
     try
     {
         $fileVersionInfo = Get-FileVersion -Path $Path -ErrorAction 'Stop'
-
-        $productVersionString = $fileVersionInfo.ProductVersion
-
-        # Try to parse the product version string as a System.Version
-        $parsedVersion = $null
-
-        if (-not [System.Version]::TryParse($productVersionString, [ref] $parsedVersion))
-        {
-            $errorMessage = $script:localizedData.Get_FileProductVersion_InvalidVersionFormat -f $productVersionString, $Path
-            $exception = [System.Exception]::new($errorMessage)
-
-            $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    $exception,
-                    'GFPV0002', # cSpell: disable-line
-                    [System.Management.Automation.ErrorCategory]::InvalidData,
-                    $Path
-                )
-            )
-        }
-
-        return $parsedVersion
     }
     catch
     {
@@ -73,4 +51,24 @@ function Get-FileProductVersion
             )
         )
     }
+
+    $productVersionString = $fileVersionInfo.ProductVersion
+
+    $parsedVersion = $null
+    if (-not [System.Version]::TryParse($productVersionString, [ref] $parsedVersion))
+    {
+        $errorMessage = $script:localizedData.Get_FileProductVersion_InvalidVersionFormat -f $productVersionString, $Path
+        $exception = [System.Exception]::new($errorMessage)
+
+        $PSCmdlet.ThrowTerminatingError(
+            [System.Management.Automation.ErrorRecord]::new(
+                $exception,
+                'GFPV0002', # cSpell: disable-line
+                [System.Management.Automation.ErrorCategory]::InvalidData,
+                $Path
+            )
+        )
+    }
+
+    return $parsedVersion
 }

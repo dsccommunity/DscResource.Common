@@ -127,6 +127,17 @@ Describe 'Get-FileProductVersion' {
                 Get-FileProductVersion -Path $mockFilePath -ErrorAction 'Stop'
             } | Should -Throw ($mockInvalidVersionFormatMessage -f 'Not-A-Version-String', $mockFilePath)
         }
+
+        It 'Should throw an error with the correct error ID' {
+            $mockFilePath = Join-Path -Path $TestDrive -ChildPath 'testfile.dll'
+
+            $result = {
+                Get-FileProductVersion -Path $mockFilePath -ErrorAction 'Stop'
+            } | Should -Throw -PassThru
+
+            # Verify the error ID is GFPV0002 for invalid version format
+            $result.FullyQualifiedErrorId | Should -BeLike 'GFPV0002,*'
+        }
     }
 
     Context 'When Get-FileVersion throws an exception' {
