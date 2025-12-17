@@ -46,12 +46,18 @@ AfterAll {
 }
 
 Describe 'Get-FileProductVersion' {
-    It 'Should have the correct parameters in parameter set <ExpectedParameterSetName>' -ForEach @(
-        @{
-            ExpectedParameterSetName = '__AllParameterSets'
-            ExpectedParameters       = '[-Path] <string> [<CommonParameters>]'
-        }
-    ) {
+    BeforeDiscovery {
+        $parameterSetTestCases = @(
+            @(
+                @{
+                    ExpectedParameterSetName = '__AllParameterSets'
+                    ExpectedParameters       = '[-Path] <string> [<CommonParameters>]'
+                }
+            )
+        )
+    }
+
+    It 'Should have the correct parameters in parameter set <ExpectedParameterSetName>' -ForEach $parameterSetTestCases {
         $result = (Get-Command -Name 'Get-FileProductVersion').ParameterSets |
             Where-Object -FilterScript { $_.Name -eq $ExpectedParameterSetName } |
             Select-Object -Property @(
@@ -80,6 +86,7 @@ Describe 'Get-FileProductVersion' {
 
         It 'Should return the correct product version as a System.Version object' {
             $result = Get-FileProductVersion -Path (Join-Path -Path $TestDrive -ChildPath 'testfile.dll')
+
             $result | Should -BeOfType [System.Version]
             $result.Major | Should -Be 15
             $result.Minor | Should -Be 0
@@ -99,6 +106,7 @@ Describe 'Get-FileProductVersion' {
 
         It 'Should return the correct product version as a System.Version object' {
             $result = Get-FileProductVersion -Path (Join-Path -Path $TestDrive -ChildPath 'testfile.dll')
+
             $result | Should -BeOfType [System.Version]
             $result.Major | Should -Be 10
             $result.Minor | Should -Be 5

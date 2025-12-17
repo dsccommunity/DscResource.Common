@@ -53,11 +53,11 @@ Describe 'Get-FileVersion' -Tag 'Public' {
             Mock -CommandName Get-Item -MockWith {
                 return @{
                     PSIsContainer = $false
-                    FullName = $mockFilePath
-                    VersionInfo = @{
+                    FullName      = $mockFilePath
+                    VersionInfo   = @{
                         ProductVersion = '16.0.1000.6'
-                        FileVersion = '2022.160.1000.6'
-                        ProductName = 'Microsoft SQL Server'
+                        FileVersion    = '2022.160.1000.6'
+                        ProductName    = 'Microsoft SQL Server'
                     }
                 }
             }
@@ -89,14 +89,14 @@ Describe 'Get-FileVersion' -Tag 'Public' {
                 # Create a mock object that looks like a FileInfo with VersionInfo
                 $mockVersionInfo = [PSCustomObject]@{
                     ProductVersion = '16.0.1000.6'
-                    FileVersion = '2022.160.1000.6'
-                    ProductName = 'Microsoft SQL Server'
+                    FileVersion    = '2022.160.1000.6'
+                    ProductName    = 'Microsoft SQL Server'
                 }
 
                 $mockItem = [PSCustomObject]@{
                     PSIsContainer = $false
-                    FullName = $mockFilePath
-                    VersionInfo = $mockVersionInfo
+                    FullName      = $mockFilePath
+                    VersionInfo   = $mockVersionInfo
                 }
 
                 return $mockItem
@@ -125,7 +125,7 @@ Describe 'Get-FileVersion' -Tag 'Public' {
             Mock -CommandName Get-Item -MockWith {
                 return @{
                     PSIsContainer = $true
-                    FullName = $TestDrive
+                    FullName      = $TestDrive
                 }
             }
 
@@ -158,12 +158,18 @@ Describe 'Get-FileVersion' -Tag 'Public' {
     }
 
     Context 'When validating parameter sets' {
-        It 'Should have the correct parameters in parameter set <ExpectedParameterSetName>' -ForEach @(
-            @{
-                ExpectedParameterSetName = '__AllParameterSets'
-                ExpectedParameters = '[-Path] <FileInfo> [<CommonParameters>]'
-            }
-        ) {
+        BeforeDiscovery {
+            $parameterSetTestCases = @(
+                @(
+                    @{
+                        ExpectedParameterSetName = '__AllParameterSets'
+                        ExpectedParameters       = '[-Path] <FileInfo> [<CommonParameters>]'
+                    }
+                )
+            )
+        }
+
+        It 'Should have the correct parameters in parameter set <ExpectedParameterSetName>' -ForEach $parameterSetTestCases {
             $result = (Get-Command -Name 'Get-FileVersion').ParameterSets |
                 Where-Object -FilterScript { $_.Name -eq $ExpectedParameterSetName } |
                 Select-Object -Property @(
