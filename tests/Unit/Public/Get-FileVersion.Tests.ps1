@@ -83,7 +83,7 @@ Describe 'Get-FileVersion' -Tag 'Public' {
     Context 'When passing path as the type FileInfo' {
         BeforeAll {
             $script:mockFilePath = (New-Item -Path $TestDrive -Name 'setup.exe' -ItemType 'File' -Force).FullName
-            $script:mockFileInfo = New-Object -TypeName System.IO.FileInfo -ArgumentList $script:mockFilePath
+            $script:mockFileInfo = [System.IO.FileInfo]::new($script:mockFilePath)
 
             Mock -CommandName Get-Item -MockWith {
                 # Create a mock object that looks like a FileInfo with VersionInfo
