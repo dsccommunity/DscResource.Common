@@ -118,7 +118,7 @@ function Assert-RequiredCommandParameter
                     }
 
                     $PSCmdlet.ThrowTerminatingError(
-                        (New-ErrorRecord -Exception $errorMessage -ErrorId 'ARCP0001' -ErrorCategory ([System.Management.Automation.ErrorCategory]::InvalidOperation) -TargetObject 'Command parameters')
+                        (New-ErrorRecord -Exception $errorMessage -ErrorId 'ARCP0002' -ErrorCategory ([System.Management.Automation.ErrorCategory]::InvalidOperation) -TargetObject 'Command parameters')
                     )
                 }
 
