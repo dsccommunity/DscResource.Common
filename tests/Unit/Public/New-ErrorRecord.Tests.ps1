@@ -48,13 +48,9 @@ AfterAll {
 Describe 'New-ErrorRecord' {
     Context 'ErrorRecord parameter set' {
         It 'creates a new ErrorRecord based on an existing one and an exception' {
-            $existingErrorRecord = [System.Management.Automation.ErrorRecord]::new(
-                [System.Management.Automation.ParentContainsErrorRecordException]::new('Existing error'),
-                'ExistingErrorId',
-                [System.Management.Automation.ErrorCategory]::InvalidOperation,
-                $null
-            )
-            $newException = [System.Exception]::new('New error')
+            $existingException = [System.Management.Automation.ParentContainsErrorRecordException]::new('Existing error')
+            $existingErrorRecord = New-ErrorRecord -Exception $existingException -ErrorId 'ExistingErrorId' -ErrorCategory ([System.Management.Automation.ErrorCategory]::InvalidOperation) -TargetObject $null
+            $newException = New-Exception -Message 'New error'
             $newErrorRecord = New-ErrorRecord -ErrorRecord $existingErrorRecord -Exception $newException
 
             $newErrorRecord.Exception.Message | Should -Be 'New error'
@@ -65,7 +61,7 @@ Describe 'New-ErrorRecord' {
 
     Context 'Exception parameter set' {
         It 'creates a new ErrorRecord based on an exception, an error category, a target object, and an error ID' {
-            $exception = [System.Exception]::new('An error occurred.')
+            $exception = New-Exception -Message 'An error occurred.'
             $targetObject = New-Object -TypeName PSObject
             $errorRecord = New-ErrorRecord -Exception $exception -ErrorCategory 'InvalidOperation' -TargetObject $targetObject -ErrorId 'MyErrorId'
 

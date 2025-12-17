@@ -92,12 +92,7 @@ function Assert-RequiredCommandParameter
                         }
 
                         $PSCmdlet.ThrowTerminatingError(
-                            [System.Management.Automation.ErrorRecord]::new(
-                                $errorMessage,
-                                'ARCP0001', # cspell: disable-line
-                                [System.Management.Automation.ErrorCategory]::InvalidOperation,
-                                'Command parameters'
-                            )
+                            (New-ErrorRecord -Exception $errorMessage -ErrorId 'ARCP0001' -ErrorCategory ([System.Management.Automation.ErrorCategory]::InvalidOperation) -TargetObject 'Command parameters')
                         )
                     }
                 }
@@ -123,12 +118,7 @@ function Assert-RequiredCommandParameter
                     }
 
                     $PSCmdlet.ThrowTerminatingError(
-                        [System.Management.Automation.ErrorRecord]::new(
-                            $errorMessage,
-                            'ARCP0002', # cspell: disable-line
-                            [System.Management.Automation.ErrorCategory]::InvalidOperation,
-                            'Command parameters'
-                        )
+                        (New-ErrorRecord -Exception $errorMessage -ErrorId 'ARCP0001' -ErrorCategory ([System.Management.Automation.ErrorCategory]::InvalidOperation) -TargetObject 'Command parameters')
                     )
                 }
 

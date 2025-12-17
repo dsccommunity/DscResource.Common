@@ -40,15 +40,10 @@ function Get-FileProductVersion
     catch
     {
         $errorMessage = $script:localizedData.Get_FileProductVersion_GetFileProductVersionError -f $Path, $_.Exception.Message
-        $exception = [System.Exception]::new($errorMessage, $_.Exception)
+        $exception = New-Exception -Message $errorMessage -ErrorRecord $_
 
         $PSCmdlet.ThrowTerminatingError(
-            [System.Management.Automation.ErrorRecord]::new(
-                $exception,
-                'GFPV0001', # cSpell: disable-line
-                [System.Management.Automation.ErrorCategory]::ReadError,
-                $Path
-            )
+            (New-ErrorRecord -Exception $exception -ErrorId 'GFPV0001' -ErrorCategory ([System.Management.Automation.ErrorCategory]::ReadError) -TargetObject $Path) # cSpell: disable-line
         )
     }
 
@@ -58,15 +53,10 @@ function Get-FileProductVersion
     if (-not [System.Version]::TryParse($productVersionString, [ref] $parsedVersion))
     {
         $errorMessage = $script:localizedData.Get_FileProductVersion_InvalidVersionFormat -f $productVersionString, $Path
-        $exception = [System.Exception]::new($errorMessage)
+        $exception = New-Exception -Message $errorMessage
 
         $PSCmdlet.ThrowTerminatingError(
-            [System.Management.Automation.ErrorRecord]::new(
-                $exception,
-                'GFPV0002', # cSpell: disable-line
-                [System.Management.Automation.ErrorCategory]::InvalidData,
-                $Path
-            )
+            (New-ErrorRecord -Exception $exception -ErrorId 'GFPV0002' -ErrorCategory ([System.Management.Automation.ErrorCategory]::InvalidData) -TargetObject $Path) # cSpell: disable-line
         )
     }
 

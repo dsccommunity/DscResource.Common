@@ -52,7 +52,7 @@
             [System.Management.Automation.ErrorCategory]::InvalidOperation,
             $null
         )
-        $newException = [System.Exception]::new('New error')
+        $newException = New-Exception -Message 'New error'
         $newErrorRecord = New-ErrorRecord -ErrorRecord $existingErrorRecord -Exception $newException
         $newErrorRecord.Exception.Message
 

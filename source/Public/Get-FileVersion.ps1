@@ -58,12 +58,7 @@ function Get-FileVersion
         if ($file.PSIsContainer)
         {
             $PSCmdlet.ThrowTerminatingError(
-                [System.Management.Automation.ErrorRecord]::new(
-                    ($script:localizedData.Get_FileVersion_PathIsNotFile -f $file.FullName),
-                    'GFV0001', # cSpell: disable-line
-                    [System.Management.Automation.ErrorCategory]::InvalidArgument,
-                    $file.FullName
-                )
+                (New-ErrorRecord -Exception ($script:localizedData.Get_FileVersion_PathIsNotFile -f $file.FullName) -ErrorId 'GFV0001' -ErrorCategory ([System.Management.Automation.ErrorCategory]::InvalidArgument) -TargetObject $file.FullName) # cSpell: disable-line
             )
         }
 

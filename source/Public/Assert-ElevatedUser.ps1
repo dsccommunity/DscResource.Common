@@ -56,12 +56,7 @@ function Assert-ElevatedUser
     if (-not $isElevated)
     {
         $PSCmdlet.ThrowTerminatingError(
-            [System.Management.Automation.ErrorRecord]::new(
-                $ErrorMessage,
-                'UserNotElevated',
-                [System.Management.Automation.ErrorCategory]::InvalidOperation,
-                'Command parameters'
-            )
+            (New-ErrorRecord -Exception $ErrorMessage -ErrorId 'UserNotElevated' -ErrorCategory ([System.Management.Automation.ErrorCategory]::InvalidOperation) -TargetObject 'Command parameters')
         )
     }
 }

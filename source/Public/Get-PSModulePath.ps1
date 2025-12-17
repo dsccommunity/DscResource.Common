@@ -135,12 +135,7 @@ function Get-PSModulePath
                     if ([System.String]::IsNullOrEmpty($documentsFolder))
                     {
                         $PSCmdlet.ThrowTerminatingError(
-                            [System.Management.Automation.ErrorRecord]::new(
-                                ($script:localizedData.PSModulePath_MissingMyDocumentsPath -f (Get-UserName)),
-                                'MissingMyDocumentsPath',
-                                [System.Management.Automation.ErrorCategory]::ResourceUnavailable,
-                                (Get-UserName)
-                            )
+                            (New-ErrorRecord -Exception ($script:localizedData.PSModulePath_MissingMyDocumentsPath -f (Get-UserName)) -ErrorId 'MissingMyDocumentsPath' -ErrorCategory ([System.Management.Automation.ErrorCategory]::ResourceUnavailable) -TargetObject (Get-UserName))
                         )
                     }
 
