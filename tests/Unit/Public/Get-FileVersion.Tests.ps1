@@ -160,12 +160,10 @@ Describe 'Get-FileVersion' -Tag 'Public' {
     Context 'When validating parameter sets' {
         BeforeDiscovery {
             $parameterSetTestCases = @(
-                @(
-                    @{
-                        ExpectedParameterSetName = '__AllParameterSets'
-                        ExpectedParameters       = '[-Path] <FileInfo> [<CommonParameters>]'
-                    }
-                )
+                @{
+                    ExpectedParameterSetName = '__AllParameterSets'
+                    ExpectedParameters       = '[-Path] <FileInfo> [<CommonParameters>]'
+                }
             )
         }
 

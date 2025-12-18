@@ -48,12 +48,10 @@ AfterAll {
 Describe 'Get-FileProductVersion' {
     BeforeDiscovery {
         $parameterSetTestCases = @(
-            @(
-                @{
-                    ExpectedParameterSetName = '__AllParameterSets'
-                    ExpectedParameters       = '[-Path] <string> [<CommonParameters>]'
-                }
-            )
+            @{
+                ExpectedParameterSetName = '__AllParameterSets'
+                ExpectedParameters       = '[-Path] <string> [<CommonParameters>]'
+            }
         )
     }
 
